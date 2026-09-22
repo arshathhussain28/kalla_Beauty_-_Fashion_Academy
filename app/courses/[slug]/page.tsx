@@ -5,6 +5,8 @@ import { getAllCourses, getCourseBySlug } from "@/data/courses";
 import { getTrainerBySlug } from "@/data/trainers";
 import { buildMetadata } from "@/lib/seo";
 import { LeadForm } from "@/components/forms/LeadForm";
+import { Button } from "@/components/ui/Button";
+import { ThreadRule } from "@/components/ui/ThreadRule";
 import { courseEnquiryWhatsAppLink } from "@/lib/whatsapp";
 
 export function generateStaticParams() {
@@ -38,25 +40,35 @@ export default async function CoursePage({
   const trainer = getTrainerBySlug(course.trainerSlug);
 
   return (
-    <main className="flex-1 px-6 py-24">
-      <div className="mx-auto grid max-w-5xl gap-16 lg:grid-cols-[1.6fr_1fr]">
-        <div>
-          <p className="text-sm uppercase tracking-[0.14em] text-rose-gold">
+    <main className="flex-1">
+      <div className="bg-wine-deep px-6 py-16 text-cream lg:px-12 lg:py-20">
+        <div className="mx-auto max-w-[1200px]">
+          <p className="text-eyebrow font-medium uppercase tracking-[0.24em] text-rose-light">
             {course.category} · {course.discipline}
           </p>
-          <h1 className="mt-3 font-display text-display-lg text-charcoal">{course.name}</h1>
-          <p className="mt-4 text-lg text-charcoal/70">{course.tagline}</p>
-          <p className="mt-2 text-xs uppercase tracking-[0.1em] text-charcoal/50">
+          <h1 className="mt-3 text-h1 font-display font-semibold tracking-[0.01em]">
+            {course.name}
+          </h1>
+          <p className="mt-4 max-w-xl text-body text-cream/85">{course.tagline}</p>
+          <p className="mt-2 text-small uppercase tracking-[0.18em] text-cream/60">
             {course.duration} · {course.level}
           </p>
+        </div>
+      </div>
 
-          <p className="mt-8 max-w-2xl text-charcoal/80">{course.description}</p>
+      <div className="mx-auto grid max-w-[1200px] gap-16 px-6 py-16 lg:grid-cols-[1.6fr_1fr] lg:px-12 lg:py-24">
+        <div>
+          <p className="max-w-2xl text-body text-ink-muted">{course.description}</p>
 
-          <section className="mt-12">
-            <h2 className="font-display text-2xl text-charcoal">What you&apos;ll learn</h2>
-            <ul className="mt-4 space-y-2">
-              {course.highlights.map((item) => (
-                <li key={item} className="text-charcoal/80">
+          <ThreadRule className="my-12" />
+
+          <section>
+            <h2 className="text-h2 font-display font-medium tracking-[0.01em] text-ink">
+              What You&apos;ll Learn
+            </h2>
+            <ul className="mt-5 space-y-2">
+              {course.highlights.map((item, index) => (
+                <li key={index} className="text-body text-ink-muted">
                   — {item}
                 </li>
               ))}
@@ -64,22 +76,28 @@ export default async function CoursePage({
           </section>
 
           <section className="mt-12">
-            <h2 className="font-display text-2xl text-charcoal">Curriculum</h2>
-            <div className="mt-4 space-y-6">
-              {course.curriculum.map((module) => (
-                <div key={module.title}>
-                  <h3 className="text-charcoal">{module.title}</h3>
-                  <p className="mt-1 text-sm text-charcoal/70">{module.summary}</p>
+            <h2 className="text-h2 font-display font-medium tracking-[0.01em] text-ink">
+              Curriculum
+            </h2>
+            <div className="mt-5 space-y-6">
+              {course.curriculum.map((module, index) => (
+                <div key={index}>
+                  <h3 className="text-h3 font-sans font-medium uppercase tracking-[0.06em] text-ink">
+                    {module.title}
+                  </h3>
+                  <p className="mt-1 text-body text-ink-muted">{module.summary}</p>
                 </div>
               ))}
             </div>
           </section>
 
           <section className="mt-12">
-            <h2 className="font-display text-2xl text-charcoal">Career pathways</h2>
-            <ul className="mt-4 space-y-2">
-              {course.careerPaths.map((path) => (
-                <li key={path} className="text-charcoal/80">
+            <h2 className="text-h2 font-display font-medium tracking-[0.01em] text-ink">
+              Career Pathways
+            </h2>
+            <ul className="mt-5 space-y-2">
+              {course.careerPaths.map((path, index) => (
+                <li key={index} className="text-body text-ink-muted">
                   — {path}
                 </li>
               ))}
@@ -88,8 +106,10 @@ export default async function CoursePage({
 
           {trainer && (
             <section className="mt-12">
-              <h2 className="font-display text-2xl text-charcoal">Trainer</h2>
-              <p className="mt-2 text-charcoal/80">
+              <h2 className="text-h2 font-display font-medium tracking-[0.01em] text-ink">
+                Trainer
+              </h2>
+              <p className="mt-3 text-body text-ink-muted">
                 {trainer.name} — {trainer.role}
               </p>
             </section>
@@ -97,12 +117,14 @@ export default async function CoursePage({
 
           {course.faqs.length > 0 && (
             <section className="mt-12">
-              <h2 className="font-display text-2xl text-charcoal">FAQ</h2>
-              <div className="mt-4 space-y-4">
-                {course.faqs.map((faq) => (
-                  <div key={faq.question}>
-                    <p className="text-charcoal">{faq.question}</p>
-                    <p className="mt-1 text-sm text-charcoal/70">{faq.answer}</p>
+              <h2 className="text-h2 font-display font-medium tracking-[0.01em] text-ink">
+                FAQ
+              </h2>
+              <div className="mt-5 space-y-4">
+                {course.faqs.map((faq, index) => (
+                  <div key={index}>
+                    <p className="font-medium text-ink">{faq.question}</p>
+                    <p className="mt-1 text-body text-ink-muted">{faq.answer}</p>
                   </div>
                 ))}
               </div>
@@ -110,26 +132,29 @@ export default async function CoursePage({
           )}
         </div>
 
-        <aside className="h-fit border border-charcoal/15 p-6">
-          <h2 className="font-display text-xl text-charcoal">Enquire about this course</h2>
+        <aside className="h-fit bg-white p-6 shadow-md">
+          <h2 className="text-h3 font-sans font-medium uppercase tracking-[0.06em] text-ink">
+            Enquire About This Course
+          </h2>
           <LeadForm courseSlug={course.slug} className="mt-6" />
-          <a
+          <Button
             href={courseEnquiryWhatsAppLink(course.name)}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-4 block text-center text-sm uppercase tracking-[0.14em] text-charcoal underline underline-offset-4 hover:text-rose-gold"
+            variant="secondary"
+            className="mt-4 w-full"
           >
             WhatsApp Course Advisor
-          </a>
+          </Button>
         </aside>
       </div>
 
-      <div className="mx-auto mt-16 max-w-5xl">
+      <div className="mx-auto mb-16 max-w-[1200px] px-6 lg:px-12">
         <Link
           href="/courses"
-          className="text-sm uppercase tracking-[0.14em] text-charcoal/60 hover:text-rose-gold"
+          className="text-small font-medium uppercase tracking-[0.18em] text-ink-muted hover:text-wine"
         >
-          ← All courses
+          ← All Courses
         </Link>
       </div>
     </main>

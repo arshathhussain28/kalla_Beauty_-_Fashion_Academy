@@ -1,57 +1,93 @@
 @import "tailwindcss";
 
+/*
+ * Design tokens transcribed verbatim from the KALA Brand System (docs/ARCHITECTURE.md
+ * links the source). Do not invent new colours, sizes or motifs here — if something is
+ * missing, it's missing from the brand doc too and belongs in a design review, not a
+ * quiet addition to this file.
+ */
 :root {
-  /* Brand palette — see docs/ARCHITECTURE.md for usage rules (rose gold ≈ 10%, jewelry not paint) */
-  --ivory: #f7f2ed;
-  --sand: #e9ded7;
-  --charcoal: #2a2326;
-  --ink: #171416;
-  --rose-gold: #d2938c;
-  --white: #ffffff;
+  /* Colour — §04, confirmed identical in both supplied brand documents */
+  --kala-cream: #fbf1ef;
+  --kala-cream-deep: #f3e3e0;
+  --kala-wine: #7e1f3d;
+  --kala-wine-deep: #5c1428;
+  --kala-wine-soft: #9a3a56;
+  --kala-rose: #d2938c;
+  --kala-rose-light: #e8c4bc;
+  --kala-rose-deep: #b87168;
+  --kala-ink: #2a1d21;
+  --kala-ink-muted: #6b5358;
+  --kala-border: #e3d2ce;
+  --kala-border-strong: #d2938c;
+  --kala-white: #ffffff;
 
-  /* Semantic aliases used by base elements */
-  --background: var(--ivory);
-  --foreground: var(--charcoal);
-
-  --font-playfair: "Playfair Display", serif;
-  --font-manrope: "Manrope", sans-serif;
+  --background: var(--kala-cream);
+  --foreground: var(--kala-ink);
 }
 
 @theme inline {
-  --color-ivory: var(--ivory);
-  --color-sand: var(--sand);
-  --color-charcoal: var(--charcoal);
-  --color-ink: var(--ink);
-  --color-rose-gold: var(--rose-gold);
-  --color-white: var(--white);
+  --color-cream: var(--kala-cream);
+  --color-cream-deep: var(--kala-cream-deep);
+  --color-wine: var(--kala-wine);
+  --color-wine-deep: var(--kala-wine-deep);
+  --color-wine-soft: var(--kala-wine-soft);
+  --color-rose: var(--kala-rose);
+  --color-rose-light: var(--kala-rose-light);
+  --color-rose-deep: var(--kala-rose-deep);
+  --color-ink: var(--kala-ink);
+  --color-ink-muted: var(--kala-ink-muted);
+  --color-border: var(--kala-border);
+  --color-border-strong: var(--kala-border-strong);
+  --color-white: var(--kala-white);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
 
-  --font-display: var(--font-playfair);
-  --font-sans: var(--font-manrope);
+  --font-display: "Playfair Display", serif;
+  --font-sans: "Jost", sans-serif;
 
-  /* Fluid editorial display scale — desktop caps land in the 80–120px brief range */
-  --text-display-xl: clamp(3.25rem, 2.1rem + 5.2vw, 7.5rem);
-  --text-display-lg: clamp(2.75rem, 1.9rem + 4vw, 5.5rem);
-  --text-display-md: clamp(2.25rem, 1.7rem + 2.6vw, 3.75rem);
-  --text-display-sm: clamp(1.75rem, 1.4rem + 1.6vw, 2.5rem);
+  /* Type scale — §05/§37, exact desktop values. Hero is the one documented mobile
+     exception (64px desktop / 40px mobile) and is handled at its call site, not here. */
+  --text-display: 4rem; /* 64px */
+  --text-display--line-height: 1.05;
+  --text-h1: 2.75rem; /* 44px */
+  --text-h1--line-height: 1.1;
+  --text-h2: 2rem; /* 32px */
+  --text-h2--line-height: 1.2;
+  --text-h3: 1.375rem; /* 22px */
+  --text-h3--line-height: 1.3;
+  --text-body: 1.0625rem; /* 17px */
+  --text-body--line-height: 1.6;
+  --text-small: 0.875rem; /* 14px */
+  --text-small--line-height: 1.55;
+  --text-eyebrow: 0.75rem; /* 12px */
+  --text-eyebrow--line-height: 1.3;
+  --text-button: 0.9375rem; /* 15px */
+  --text-button--line-height: 1;
+  --text-quote: 1.625rem; /* 26px */
+  --text-quote--line-height: 1.45;
+  --text-descriptor: 0.6875rem; /* 11px */
+  --text-descriptor--line-height: 1.2;
 
-  --tracking-editorial: 0.14em;
+  /* Shadows — §09/§19, warm wine-tinted, never grey. Overriding Tailwind's built-in
+     shadow-sm/md/lg so every ordinary `shadow-*` utility is brand-correct by default. */
+  --shadow-sm: 0 1px 3px rgba(92, 20, 40, 0.06);
+  --shadow-md: 0 2px 12px rgba(92, 20, 40, 0.08);
+  --shadow-lg: 0 8px 32px rgba(92, 20, 40, 0.1);
 }
 
 @media (prefers-color-scheme: dark) {
-  /* The brand is a single warm-light editorial theme — section-level dark treatments
-     (e.g. a charcoal band) are authored explicitly via the Section component's `theme`
-     prop, not via prefers-color-scheme. This block only prevents an unstyled flash for
-     OS-level dark mode; it intentionally keeps the same warm palette. */
+  /* KALA is a single warm-light editorial theme end to end — the brand doc defines a
+     dark UI variant (§04) for a possible future dark mode, but nothing in this build
+     switches to it yet, so this block only prevents an OS-dark-mode flash. */
   :root {
-    --background: var(--ivory);
-    --foreground: var(--charcoal);
+    --background: var(--kala-cream);
+    --foreground: var(--kala-ink);
   }
 }
 
 * {
-  border-color: var(--sand);
+  border-color: var(--kala-border);
 }
 
 body {
@@ -61,13 +97,13 @@ body {
 }
 
 ::selection {
-  background: var(--rose-gold);
-  color: var(--white);
+  background: var(--kala-wine);
+  color: var(--kala-cream);
 }
 
 :focus-visible {
-  outline: 2px solid var(--rose-gold);
-  outline-offset: 3px;
+  outline: 2px solid var(--kala-wine);
+  outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {

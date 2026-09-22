@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { DEFAULT_DESCRIPTION, SITE_NAME, getSiteUrl } from "@/lib/seo";
+import { Navbar } from "@/components/navigation/Navbar";
+import { Footer } from "@/components/Footer";
+import { FloatingWhatsApp } from "@/components/conversion/FloatingWhatsApp";
 import "./globals.css";
 
 // Vendored locally (see app/fonts/) rather than fetched via next/font/google at build
@@ -14,10 +17,15 @@ const playfairDisplay = localFont({
   display: "swap",
 });
 
-const manrope = localFont({
-  src: "./fonts/manrope-variable.woff2",
-  variable: "--font-manrope",
-  weight: "200 800",
+// Body/UI face per the KALA Brand System (§05 Typography): Jost, a geometric humanist
+// sans. The brand's script face is intentionally NOT loaded here — per the brand doc
+// it exists only for the tagline as it appears inside the logo artwork itself and "may
+// never set a headline, a name, a price, a caption or a button." Live tagline text on
+// the site is set in Playfair Display (Title Case), matching the brand's own headline list.
+const jost = localFont({
+  src: "./fonts/jost-variable.woff2",
+  variable: "--font-jost",
+  weight: "300 700",
   style: "normal",
   display: "swap",
 });
@@ -25,7 +33,7 @@ const manrope = localFont({
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
   title: {
-    default: `${SITE_NAME} — Craft. Confidence. Career.`,
+    default: `${SITE_NAME} — Craft Your Confidence`,
     template: `%s | ${SITE_NAME}`,
   },
   description: DEFAULT_DESCRIPTION,
@@ -38,10 +46,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${playfairDisplay.variable} ${manrope.variable} h-full`}
+      className={`${playfairDisplay.variable} ${jost.variable} h-full`}
     >
-      <body className="min-h-full flex flex-col bg-ivory text-charcoal antialiased font-sans">
+      <body className="flex min-h-full flex-col bg-cream pb-14 font-sans text-ink antialiased lg:pb-0">
+        <Navbar />
         {children}
+        <Footer />
+        <FloatingWhatsApp />
       </body>
     </html>
   );

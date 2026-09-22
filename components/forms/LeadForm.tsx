@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import { leadFormSchema } from "@/lib/validation";
 import { trackEvent } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/Button";
 
 const INTERESTS = [
   { value: "makeup", label: "Makeup" },
@@ -29,8 +30,12 @@ const CONTACT_TIMES = [
 
 type Status = "idle" | "submitting" | "success" | "error";
 
+// §16 Website System, Forms spec: cream inputs, 1px border, 2px radius, 48px tall,
+// labels above, focus ring 2px wine (the ring itself comes from the global
+// :focus-visible rule in globals.css).
 const inputClasses =
-  "w-full border border-charcoal/20 bg-white px-4 py-3 text-sm text-charcoal placeholder:text-charcoal/40 focus:border-rose-gold";
+  "h-12 w-full rounded-sm border border-border bg-cream px-4 text-body text-ink placeholder:text-ink-muted focus:border-wine";
+const labelClasses = "text-small font-medium uppercase tracking-[0.18em] text-ink-muted";
 
 interface LeadFormProps {
   courseSlug?: string;
@@ -98,9 +103,9 @@ export function LeadForm({ courseSlug, className }: LeadFormProps) {
 
   if (status === "success") {
     return (
-      <div className={cn("border border-rose-gold/40 bg-white p-8 text-center", className)}>
-        <p className="font-display text-2xl text-charcoal">Thank you.</p>
-        <p className="mt-2 text-sm text-charcoal/70">
+      <div className={cn("border border-rose bg-white p-8 text-center", className)}>
+        <p className="font-display text-2xl text-ink">Thank you.</p>
+        <p className="mt-2 text-small text-ink-muted">
           A course advisor will reach out shortly with your course details.
         </p>
       </div>
@@ -118,14 +123,12 @@ export function LeadForm({ courseSlug, className }: LeadFormProps) {
       </div>
 
       <fieldset>
-        <legend className="text-sm uppercase tracking-[0.14em] text-charcoal/70">
-          What are you interested in?
-        </legend>
+        <legend className={labelClasses}>What are you interested in?</legend>
         <div className="mt-3 flex flex-wrap gap-2">
           {INTERESTS.map((option) => (
             <label
               key={option.value}
-              className="cursor-pointer border border-charcoal/20 px-4 py-2 text-sm has-[:checked]:border-rose-gold has-[:checked]:bg-rose-gold has-[:checked]:text-white"
+              className="cursor-pointer rounded-sm border border-border px-4 py-2 text-small text-ink has-[:checked]:border-wine has-[:checked]:bg-wine has-[:checked]:text-cream"
             >
               <input
                 type="radio"
@@ -141,14 +144,12 @@ export function LeadForm({ courseSlug, className }: LeadFormProps) {
       </fieldset>
 
       <fieldset>
-        <legend className="text-sm uppercase tracking-[0.14em] text-charcoal/70">
-          What are you looking to achieve?
-        </legend>
+        <legend className={labelClasses}>What are you looking to achieve?</legend>
         <div className="mt-3 flex flex-wrap gap-2">
           {GOALS.map((option) => (
             <label
               key={option.value}
-              className="cursor-pointer border border-charcoal/20 px-4 py-2 text-sm has-[:checked]:border-rose-gold has-[:checked]:bg-rose-gold has-[:checked]:text-white"
+              className="cursor-pointer rounded-sm border border-border px-4 py-2 text-small text-ink has-[:checked]:border-wine has-[:checked]:bg-wine has-[:checked]:text-cream"
             >
               <input type="radio" name="goal" value={option.value} required className="sr-only" />
               {option.label}
@@ -158,24 +159,21 @@ export function LeadForm({ courseSlug, className }: LeadFormProps) {
       </fieldset>
 
       <div>
-        <label htmlFor="name" className="text-sm uppercase tracking-[0.14em] text-charcoal/70">
+        <label htmlFor="name" className={labelClasses}>
           Name
         </label>
         <input id="name" name="name" type="text" required className={cn(inputClasses, "mt-2")} />
       </div>
 
       <div>
-        <label htmlFor="phone" className="text-sm uppercase tracking-[0.14em] text-charcoal/70">
+        <label htmlFor="phone" className={labelClasses}>
           Phone / WhatsApp
         </label>
         <input id="phone" name="phone" type="tel" required className={cn(inputClasses, "mt-2")} />
       </div>
 
       <div>
-        <label
-          htmlFor="preferredContactTime"
-          className="text-sm uppercase tracking-[0.14em] text-charcoal/70"
-        >
+        <label htmlFor="preferredContactTime" className={labelClasses}>
           Preferred contact time
         </label>
         <select
@@ -196,18 +194,19 @@ export function LeadForm({ courseSlug, className }: LeadFormProps) {
       </div>
 
       {status === "error" && errorMessage && (
-        <p role="alert" className="text-sm text-red-700">
+        <p role="alert" className="text-small text-red-700">
           {errorMessage}
         </p>
       )}
 
-      <button
+      <Button
         type="submit"
+        variant="primary"
         disabled={status === "submitting"}
-        className="w-full border border-charcoal bg-charcoal px-8 py-4 text-sm uppercase tracking-[0.14em] text-ivory transition-colors hover:bg-transparent hover:text-charcoal disabled:cursor-not-allowed disabled:opacity-60"
+        className="w-full disabled:cursor-not-allowed disabled:opacity-60"
       >
         {status === "submitting" ? "Sending…" : "Get Course Details"}
-      </button>
+      </Button>
     </form>
   );
 }

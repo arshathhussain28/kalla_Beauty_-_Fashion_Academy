@@ -102,7 +102,7 @@ export const courses: Course[] = [
     level: "All Levels",
     description:
       "A placeholder overview of the Hair Styling & Design programme — replace with real curriculum narrative before publishing.",
-    highlights: ["Placeholder highlight", "Placeholder highlight"],
+    highlights: ["Placeholder highlight — e.g. cutting fundamentals", "Placeholder highlight — e.g. live client sessions"],
     curriculum: [
       {
         title: "Placeholder module — Cutting Fundamentals",
@@ -131,7 +131,7 @@ export const courses: Course[] = [
     level: "Beginner",
     description:
       "A placeholder overview of the Professional Tailoring programme — replace with real curriculum narrative before publishing.",
-    highlights: ["Placeholder highlight", "Placeholder highlight"],
+    highlights: ["Placeholder highlight — e.g. pattern drafting", "Placeholder highlight — e.g. finished garment"],
     curriculum: [
       {
         title: "Placeholder module — Pattern Making",
@@ -160,7 +160,7 @@ export const courses: Course[] = [
     level: "Intermediate",
     description:
       "A placeholder overview of the Fashion Design programme — replace with real curriculum narrative before publishing.",
-    highlights: ["Placeholder highlight", "Placeholder highlight"],
+    highlights: ["Placeholder highlight — e.g. concept to collection", "Placeholder highlight — e.g. capsule presentation"],
     curriculum: [
       {
         title: "Placeholder module — Design Fundamentals",

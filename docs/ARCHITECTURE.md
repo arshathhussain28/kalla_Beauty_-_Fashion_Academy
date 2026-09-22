@@ -1,225 +1,239 @@
 # KALA Beauty & Fashion Academy — Architecture
 
-Status: **Foundation stage.** This document covers design system, sitemap, component
-architecture, data architecture, technical architecture and security architecture.
-Homepage visual composition, Navbar/Footer, and full section-level UI are intentionally
-**not yet built** — they're scoped for the next stage, after creative-direction sign-off.
-Everything below is real, running code (see `npm run dev`), not a mockup.
+Status: **Real brand system implemented.** The design tokens, typography, component
+specs and homepage below are transcribed from the client's own brand documents —
+`KALA Brand System.pdf` (46pp, "Version 1.0 · Implementation Ready") and
+`KALA — Master Brand Design System.pdf` / `.pptx` (21pp, "Client Presentation") —
+supplied 2026-09-22, not invented or guessed. Where those two documents disagreed (see
+§1), a judgment call is flagged explicitly so it can be corrected in one place.
+
+Course/trainer/testimonial *content* is still placeholder (clearly marked in
+`data/*.ts`); the *system* — colour, type, spacing, components, motifs, copy voice —
+is real.
 
 ---
 
 ## 1. Design System
 
-### Palette (`app/globals.css`)
+### The one open discrepancy between the two brand documents
 
-| Token | Hex | Usage |
-|---|---|---|
-| `ivory` | `#F7F2ED` | Primary light background |
-| `sand` | `#E9DED7` | Secondary background, borders, cards |
-| `charcoal` | `#2A2326` | Primary text, primary dark sections |
-| `ink` | `#171416` | Deepest dark, reserved for high-contrast moments |
-| `rose-gold` | `#D2938C` | Accent only — target ~10% of any view. Used for eyebrow labels, active states, underlines, small accents. Never as a large fill. |
-| `white` | `#FFFFFF` | Cards on dark sections, contrast text |
+Colour is identical in both documents. **Typography differs**:
 
-Tailwind v4 is CSS-first here (no `tailwind.config.ts`) — tokens are declared in
-`app/globals.css` under `@theme inline` and generate utilities directly: `bg-ivory`,
-`text-charcoal`, `border-rose-gold`, `font-display`, `font-sans`, etc.
+- `KALA Brand System.pdf` (46pp, detailed, "Implementation Ready," reconciles exact
+  values against "the uniform sheet"): **Playfair Display + Jost**, and explicitly
+  justifies Playfair because "it carries the same fashion-magazine authority as the
+  logo's own lettering, which is why it is the match."
+- `Master Brand Design System` (21pp, "Client Presentation" deck): **Cormorant
+  Garamond + Montserrat/Manrope**, with no justification given.
+
+This build uses **Playfair Display + Jost** — the 46-page document is more rigorous,
+reconciles itself against real production artefacts (the uniform sheet, the logo
+lettering), and reads as the later/authoritative system. If the client actually
+confirmed Cormorant + Montserrat as final, this is a two-file change
+(`app/layout.tsx` font loading + `app/globals.css` `--font-display`/`--font-sans`) —
+flag it and it's a fast fix, not a rebuild.
+
+### Colour (`app/globals.css`, confirmed identical in both documents)
+
+| Token | Hex | Use | Share |
+|---|---|---|---|
+| `cream` (Blush Cream) | `#FBF1EF` | Default ground for every surface | 60% |
+| `wine` (KALA Wine) | `#7E1F3D` | Logo, headlines, CTA fill, uniform embroidery | 25% |
+| `rose` (Rose Gold) | `#D2938C` | Hairlines, dividers, small accents only — never a fill | 10% |
+| `wine-deep` (Deep Wine) | `#5C1428` | Shadow, CTA pressed state, footer ground | 5% |
+| `wine-soft` | `#9A3A56` | Link hover, secondary accents | — |
+| `rose-light` | `#E8C4BC` | Tinted fills, hover tints | — |
+| `rose-deep` | `#B87168` | Eyebrow labels on cream (rose at 2.4:1 fails body-text contrast) | — |
+| `ink` | `#2A1D21` | All body copy — never pure black | — |
+| `ink-muted` | `#6B5358` | Captions, metadata, form hints | — |
+| `border` / `border-strong` | `#E3D2CE` / `#D2938C` | Hairlines, card edges | — |
+
+Hold 60/25/10/5. "If a design feels heavy, the fault is almost always wine over 25% —
+add cream, do not add a new colour" (brand doc, verbatim).
 
 ### Typography
 
-- **Display:** Playfair Display (variable, vendored locally at `app/fonts/`) — large
-  editorial headlines, high contrast serif, reads as fashion-editorial rather than
-  generic-AI-SaaS.
-- **Body/UI:** Manrope (variable, vendored locally) — modern, geometric, distinct from
-  the ubiquitous Inter/system-ui "AI product" look.
-- **Fluid scale:** `text-display-xl` (~52–120px), `-lg` (~44–88px), `-md` (~36–60px),
-  `-sm` (~28–40px), all via `clamp()` so desktop hits the 80–120px brief without manual
-  breakpoints and mobile never overflows.
-- Both fonts are self-hosted `next/font/local` files, not fetched from Google at
-  request time — zero external font requests, no CLS.
+- **Display — Playfair Display**, vendored locally at `app/fonts/` (not fetched via
+  `next/font/google` — see §6). Title Case or CAPS, never lowercase.
+- **Body/UI — Jost**, vendored locally. Sentence case body, CAPS labels at
+  wide tracking.
+- **Script — intentionally not loaded.** The brand doc locks it to the exact string
+  "Craft Your Confidence" *as it appears inside the logo artwork* and says it "may
+  never set a headline, a name, a price, a caption or a button." Adding a script
+  webfont to set the live hero headline would violate that rule, so the tagline's
+  script treatment lives only in the logo image (`public/brand/`); live headline text
+  uses Playfair Title Case instead (which is also how the brand doc's own "10
+  Headlines" list writes it).
 
-### Surface & shape conventions
+Exact type scale (desktop; Hero is the one documented mobile exception, 64px → 40px):
 
-- **Radius:** minimal to none (`rounded-none`/`rounded-sm`). No `rounded-xl/2xl/3xl`
-  "SaaS card" look anywhere.
-- **Buttons:** rectangular, bordered, uppercase, letter-spaced (`tracking-[0.14em]`),
-  generous padding — see `LeadForm`'s submit button for the reference implementation.
-- **Motion:** slow, intentional, fade/reveal-based. `prefers-reduced-motion` is honored
-  globally in `globals.css`. Framer Motion is installed and ready; not yet used —
-  section-level reveals belong to the visual implementation stage.
-- **Focus/selection:** rose-gold focus ring and text-selection color are set globally
-  for accessibility and brand consistency.
+| Role | Family | Weight | Size | Line | Tracking | Case |
+|---|---|---|---|---|---|---|
+| Display | Playfair | 600 | 64px | 1.05 | +0.01em | Title |
+| H1 | Playfair | 600 | 44px | 1.10 | +0.01em | Title |
+| H2 | Playfair | 500 | 32px | 1.20 | +0.01em | Title |
+| H3 | Jost | 500 | 22px | 1.30 | +0.06em | CAPS |
+| Body | Jost | 400 | 17px | 1.60 | 0 | Sentence |
+| Small | Jost | 400 | 14px | 1.55 | 0 | Sentence |
+| Eyebrow | Jost | 500 | 12px | 1.30 | +0.24em | CAPS |
+| Button | Jost | 500 | 15px | 1.00 | +0.12em | CAPS |
+| Quote | Playfair italic | 400 | 26px | 1.45 | 0 | Sentence |
+| Descriptor | Jost | 400 | 11px | 1.20 | +0.30em | CAPS |
+
+All ten are Tailwind v4 `--text-*` tokens in `globals.css` (size + line-height baked
+in; weight/tracking/case applied as explicit utility classes at each call site, not
+relied on as implicit token behaviour).
+
+### Shape, spacing, shadow, motif
+
+- **Radius** — cards/frames `rounded-none` (0), buttons/inputs `rounded-sm` (2px),
+  image tiles `rounded` (4px, the bare Tailwind default), modals `rounded-lg` (8px),
+  avatars `rounded-full`. Buttons are **never** a pill.
+- **Arch** — the brand's one soft shape: `rounded-t-[200px]` on photograph top
+  corners only (see `CourseCard`). Tailwind's arbitrary-value syntax covers this with
+  no custom token needed.
+- **Spacing** — the brand's 4px scale (xs4/sm8/md16/lg24/xl32/2xl48/3xl64/4xl96) maps
+  exactly onto Tailwind's default spacing scale (`p-1`…`p-24`), so no custom spacing
+  tokens were needed either.
+- **Shadow** — Tailwind's built-in `shadow-sm/md/lg` are overridden in `@theme` to the
+  brand's warm wine-tinted values (`rgba(92,20,40,…)`), so every ordinary
+  `shadow-*` utility is brand-correct by default, everywhere.
+- **Thread Rule** (`components/ui/ThreadRule.tsx`) — the signature 1px rose-gold rule
+  broken by one diamond. Used once per layout, never twice.
+- **Double frame** and **lotus motif** exist in the brand doc but are not yet used —
+  reserved for a future certificate/festival-artwork context, not the current pages.
 
 ---
 
 ## 2. Sitemap
 
-| Route | Status | Notes |
-|---|---|---|
-| `/` | Placeholder (design-token smoke test) | Full 14-section composition is next stage |
-| `/courses` | Functional, minimally styled | Data-driven from `data/courses.ts` |
-| `/courses/[slug]` | Functional, minimally styled | Full content model + working `LeadForm` + WhatsApp CTA |
-| `/why-kala` | Stub | Learn-by-making journey visual pending |
-| `/the-work` | Stub | Editorial work grid pending real photography |
-| `/about` | Stub | Brand story pending |
-| `/contact` | Functional, minimally styled | `LeadForm` + WhatsApp CTA |
-| `/api/leads` (POST) | Functional | Validates, honeypot-checks, rate-limits |
-| `/sitemap.xml`, `/robots.txt`, `/icon` | Functional | Generated from `data/courses.ts` + env |
-| `/*` (404) | Functional | Branded copy per spec §36 |
-
-Primary nav (per spec §6): `Courses · Why KALA · The Work · About` + `Enquire Now` CTA.
-Not yet implemented as a component (see Component Architecture).
+| Route | Status |
+|---|---|
+| `/` | **Real homepage**, 9 sections per the brand doc's own hierarchy (§4) |
+| `/courses` | Real, `CourseCard` grid |
+| `/courses/[slug]` | Real, full content model + `LeadForm` + WhatsApp CTA |
+| `/why-kala`, `/the-work`, `/about` | Stub (`PageStub`) — pending photography/content |
+| `/contact` | Real, `LeadForm` + WhatsApp CTA |
+| `/privacy`, `/terms` | Stub — placeholder routes so footer links resolve |
+| `/api/leads` (POST) | Real — Zod validation, honeypot, rate limit |
+| `/sitemap.xml`, `/robots.txt`, `/icon` | Real |
 
 ---
 
 ## 3. Component Architecture
 
-Planned inventory, organized by `components/<domain>/`. **Built** = exists and used
-today. **Planned** = named and scoped, not yet built (visual stage).
-
 ```
 components/
   ui/
-    PageStub.tsx        [Built]  temporary placeholder for un-designed routes
-    Button.tsx           [Planned] canonical CTA — replaces ad-hoc classes in LeadForm
+    Button.tsx            primary/secondary, 2px radius, never a pill
+    SectionHeading.tsx     eyebrow → headline → body, enforced order
+    ThreadRule.tsx           the signature motif divider
+    PageStub.tsx               placeholder for un-designed routes
   navigation/
-    Navbar.tsx            [Planned]
-    MobileMenu.tsx         [Planned]
-    StickyMobileBar.tsx     [Planned] WhatsApp + Call, mobile only
-  courses/
-    CourseCard.tsx           [Planned]
-    CourseGrid.tsx            [Planned]
-    CategoryCard.tsx           [Planned] hover-reveal, "Find Your Craft"
-  sections/
-    Hero.tsx                    [Planned]
-    SectionHeading.tsx            [Planned]
-    BrandStatement.tsx              [Planned]
-    StudentWorkCard.tsx               [Planned]
-    TrainerCard.tsx                     [Planned]
-    TestimonialCard.tsx                   [Planned] before/experience/after structure
-    FAQAccordion.tsx                        [Planned]
-    FinalCTA.tsx                              [Planned]
-  forms/
-    LeadForm.tsx        [Built]  used on /contact and /courses/[slug]
+    Navbar.tsx             cream, 72px, sticky, scroll border, mobile menu
+  Footer.tsx                deep wine, 3 columns, monogram bottom-left
   conversion/
-    WhatsAppButton.tsx    [Planned] wraps lib/whatsapp.ts helpers
-  Footer.tsx               [Planned]
+    FloatingWhatsApp.tsx   mobile bottom bar + desktop floating button
+  courses/
+    CourseCard.tsx          white/shadow-md/arched image/eyebrow→H3→summary→link
+  forms/
+    LeadForm.tsx            shared by /contact and /courses/[slug]
+  sections/                (homepage only, in page order)
+    Hero.tsx
+    FeaturedCourses.tsx
+    WhyKala.tsx
+    StudentWorkTeaser.tsx
+    Faculty.tsx
+    Testimonials.tsx
+    Statistics.tsx
+    EnquirySection.tsx
 ```
 
-`LeadForm` was deliberately built now (not deferred) because it's conversion/data
-plumbing, not visual design — it proves the form → validation → API → success path
-end-to-end. Its current styling is intentionally plain and will be restyled, not
-rebuilt, once Navbar/Button/visual language land.
+Not yet built: `TrainerCard`/`TestimonialCard` as standalone reusable components
+(currently inlined in their one section each — genuine premature abstraction to
+extract before a second use case exists); a real masonry+lightbox gallery for
+`/the-work` (the homepage teaser is a simple 4-tile grid, not the full gallery); GSAP
+(not yet needed — Framer Motion is installed but also not yet used, since no page
+uses scroll-triggered motion yet).
 
 ---
 
 ## 4. Homepage Section Architecture
 
-Per spec §7, 14 sections in this order, alternating light/dark/sand and
-image/text/full-width for visual rhythm — none of these are built yet:
+The brand doc's own page hierarchy (§16 Website System), not the longer 13–14 section
+version from the generic planning prompt — "one dominant element per layout" and the
+brand's overall restraint principle argue for the tighter structure:
 
-1. Hero — large type + real photography, two CTAs (Explore Courses / Talk to an Advisor)
-2. Brand Statement — "Your talent deserves a craft"
-3. Discover Your Craft — category hover cards (Beauty/Makeup/Hair, Fashion/Tailoring/Design)
-4. Why KALA — Watch → Practice → Create → Refine → Present
-5. Craft → Confidence → Career
-6. The Work / Student Work
-7. Learn by Making
-8. Inside KALA — studio/classroom/tools/trainers
-9. Trainers / People
-10. Testimonials
-11. Courses
-12. FAQ
-13. Final Admission CTA
-14. Footer
+1. **Hero** — promise + one CTA (wine photo-band, 70vh, never 100vh)
+2. **Courses** — the reason they came (cream)
+3. **Why KALA** — three proof points: Craft / Confidence / Career (white)
+4. **Student work** — the evidence (cream)
+5. **Faculty** — the credibility (white)
+6. **Testimonials** — the reassurance (cream)
+7. **Statistics** — **the one wine band per page** (never doubled with the CTA)
+8. **Enquiry** — the form (white)
+9. **Footer** — deep wine
+
+Section background rhythm alternates cream/white down the page with exactly one wine
+interruption, per the brand doc's explicit rule.
 
 ---
 
 ## 5. Data Architecture
 
-TypeScript-first, framework-agnostic today so a CMS can own this data later without a
-UI rewrite (spec §23) — components consume typed accessor functions, not raw arrays.
-
-- **`data/courses.ts`** — `Course` (slug, category, discipline, duration, level,
-  curriculum modules, career paths, FAQs, trainer reference, images) +
-  `getAllCourses()` / `getCourseBySlug()` / `getCoursesByCategory()`.
-- **`data/trainers.ts`** — `Trainer` + `getTrainerBySlug()`.
-- **`data/testimonials.ts`** — `Testimonial` with the before/experience/after shape
-  from spec §15, + `getTestimonialsForCourse()`.
-- **`data/faqs.ts`** — site-level `SiteFaq[]` for the homepage FAQ section (course-level
-  FAQs live on the course record itself).
-- **`lib/validation.ts`** — `leadFormSchema` (Zod), shared verbatim by the client form
-  and the server route so they can never drift.
-
-All current records are **explicitly placeholder** (see file-header comments) —
-structure is real, content is not, per instruction not to invent facts about KALA.
+Unchanged in shape from Stage 1 (`data/courses.ts`, `trainers.ts`, `testimonials.ts`,
+`faqs.ts` — see git history for the original notes); course/trainer/testimonial
+*content* is still placeholder. Course duration/category copy was left as originally
+placeholders rather than swapped to the brand doc's example course lines ("Professional
+Beauty · 12 weeks · 120 practice hours" etc.) — those examples illustrate voice, not a
+confirmed catalogue, and mixing "voice example" numbers into structured data risked
+them being read as real. Statistics section numerals (`components/sections/Statistics.tsx`)
+do use the brand doc's own example figures (120 practice hours, 14 students, 6 weeks),
+clearly commented as illustrative pending real confirmation.
 
 ---
 
 ## 6. Technical Architecture
 
-- **Stack:** Next.js 16.3 (App Router, Turbopack), React 19, TypeScript (strict),
-  Tailwind CSS v4, Framer Motion (installed, unused so far), Zod, `clsx` +
-  `tailwind-merge` (`lib/utils.ts#cn`).
-- **Rendering:** static generation by default; `/courses/[slug]` uses
-  `generateStaticParams`; `/api/leads` is the one dynamic route. Cache Components is
-  **not** enabled — standard Next.js rendering model, no `"use cache"` requirements.
-- **Routing:** file-system App Router. Route groups (e.g. `(marketing)`) are available
-  if/when Navbar variants are needed, not used yet since there's only one section today.
-- **Fonts:** vendored locally at `app/fonts/*.woff2` and loaded via `next/font/local`
-  rather than `next/font/google`. This sandbox's Turbopack build could not reach
-  `fonts.gstatic.com` at build time (TLS/proxy quirk specific to Turbopack's fetcher —
-  plain Node `fetch` and `curl` both reached it fine), so the files are self-hosted
-  directly. This is equal-or-better practice regardless of environment; no action
-  needed when this moves to a normal dev machine or CI.
-- **Env vars:** documented in `.env.example` (site URL, WhatsApp number, analytics IDs,
-  leads webhook placeholders, rate-limit tuning). Nothing secret is required yet because
-  no real CRM/analytics/WhatsApp Business API is wired in.
-- **Lead backend:** `POST /api/leads` validates with the shared Zod schema, checks a
-  honeypot field, applies a best-effort in-memory rate limit, and currently
-  console-logs the structured lead (dev only) in place of real persistence — clearly
-  marked `TODO(lead-backend)` for the real CRM/DB/webhook integration.
+Unchanged from Stage 1 (Next.js 16.3 App Router/Turbopack, React 19, TypeScript
+strict, Tailwind v4, Zod, `clsx`+`tailwind-merge`) plus:
+
+- **`lucide-react`** — the brand's specified icon family (1.5px stroke, outline only,
+  wine default / rose-gold decorative / cream-on-wine). Only icons from the brand
+  doc's approved per-category list are used.
+- **Fonts**: Playfair Display *and* Jost are both vendored locally at
+  `app/fonts/*.woff2` via `next/font/local`, for the same reason noted in Stage 1 —
+  this sandbox's Turbopack build can't reach `fonts.gstatic.com` at build time even
+  though plain Node `fetch`/`curl` can. Not an issue outside this sandbox, but
+  self-hosting is equal-or-better practice regardless, so no reason to revert it.
+- **Logo asset**: `public/brand/kala-logo-primary.jpg` — the client's supplied primary
+  illustrated lockup (crowned profile + K + needle/thread + dress form + wordmark).
+  This is the *only* lockup variant supplied as a file; the brand doc's L2
+  (horizontal)/L3 (compact)/L4 (monogram) variants don't exist as separate assets yet.
+  The Navbar approximates L2 by pairing a small crop of the primary mark with a plain
+  "KALA" wordmark and dropping the descriptor (per the brand doc's own rule: step down
+  the lockup ladder rather than shrinking the descriptor into illegibility). Get the
+  real L2–L4 exports from whoever holds the source file before this goes further —
+  it's the audit's own "outstanding action #1" (vector redraw).
 
 ---
 
 ## 7. Security Architecture
 
-**Done now** (doesn't need creative or product input):
-
-- Security headers via `next.config.ts#headers()`: `X-Content-Type-Options: nosniff`,
-  `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`,
-  restrictive `Permissions-Policy`, HSTS.
-- Server-side validation on `/api/leads` via the same Zod schema as the client — the
-  client check is a UX nicety, never trusted alone.
-- Honeypot field on `LeadForm` (visually hidden, `aria-hidden`, `tabIndex={-1}`); a
-  filled honeypot returns a fake-success response so bots don't learn to skip it.
-- Best-effort in-memory rate limiting on the leads endpoint (per-IP, sliding window).
-- No secrets in client code — the WhatsApp number is intentionally public (it's a
-  click-to-chat link, not an API credential); actual WhatsApp Business API tokens, a
-  future CMS's credentials, and any DB/webhook secrets are server-only env vars per
-  `.env.example` and are never referenced from a Client Component.
-- Generic error responses from `/api/leads` — no stack traces or internal details
-  reach the client.
-
-**Deliberately deferred** to the dedicated Security phase (spec §42 Phase 14), once
-there's a real surface of third-party scripts to tune against:
-
-- Content-Security-Policy — needs to be written against the actual analytics/WhatsApp/
-  maps scripts this project ends up loading, not guessed in advance. A guessed CSP
-  either does nothing (`unsafe-inline` everywhere) or breaks the app in ways that are
-  hard to diagnose without those scripts present yet.
-- Nonce-based script hardening.
-- Real persistence + auth for `/api/leads` (currently no DB/CMS exists to authorize
-  against).
-- Dependency audit as part of CI (no CI pipeline exists yet).
+Unchanged from Stage 1 — see git history. Nothing in this pass touched
+`/api/leads`, headers, or validation.
 
 ---
 
-## What's deliberately *not* in this stage
+## What's still open
 
-Per the project's own staged workflow (architecture → creative direction → visual
-implementation → design review → launch QA), this stage stops short of: Navbar/Footer,
-Hero and all 14 homepage sections, the category-hover "Find Your Craft" interaction,
-photography/imagery treatment, and any Framer Motion usage. Building those now would
-lock in visual decisions before creative direction has reviewed the design system —
-the next message in this project should be the Creative Director pass.
+- Real photography (the brand doc is explicit: authentic over stock is "the single
+  biggest differentiator available" — every image slot in this build is a tinted
+  placeholder, deliberately not a stock photo, ready to swap).
+- Real course catalogue, trainer bios, testimonials, admissions statistics.
+- L2/L3/L4 logo lockup files and a vector master (flagged as the brand audit's own
+  blocking gap).
+- `/why-kala`, `/the-work`, `/about` full compositions (currently stubs).
+- A real masonry+lightbox gallery for `/the-work`.
+- CSP hardening, once real third-party scripts (analytics, maps) exist to tune it
+  against.

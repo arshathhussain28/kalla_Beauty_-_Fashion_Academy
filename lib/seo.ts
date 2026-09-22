@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 
 export const SITE_NAME = "KALA Beauty & Fashion Academy";
-export const SITE_TAGLINE = "Craft. Confidence. Career.";
+export const SITE_TAGLINE = "Craft Your Confidence";
+// Positioning statement, verbatim from the KALA Brand System (§01 Brand Strategy).
 export const DEFAULT_DESCRIPTION =
-  "Professional Beauty & Fashion Education built around practical skill, confidence and career opportunity.";
+  "A premium beauty and fashion academy training women in makeup, hair, tailoring and fashion design to a professional standard — small cohorts, working tutors, a real portfolio.";
 
 export function getSiteUrl(): string {
   return process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
