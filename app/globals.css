@@ -1,26 +1,82 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Brand palette — see docs/ARCHITECTURE.md for usage rules (rose gold ≈ 10%, jewelry not paint) */
+  --ivory: #f7f2ed;
+  --sand: #e9ded7;
+  --charcoal: #2a2326;
+  --ink: #171416;
+  --rose-gold: #d2938c;
+  --white: #ffffff;
+
+  /* Semantic aliases used by base elements */
+  --background: var(--ivory);
+  --foreground: var(--charcoal);
+
+  --font-playfair: "Playfair Display", serif;
+  --font-manrope: "Manrope", sans-serif;
 }
 
 @theme inline {
+  --color-ivory: var(--ivory);
+  --color-sand: var(--sand);
+  --color-charcoal: var(--charcoal);
+  --color-ink: var(--ink);
+  --color-rose-gold: var(--rose-gold);
+  --color-white: var(--white);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  --font-display: var(--font-playfair);
+  --font-sans: var(--font-manrope);
+
+  /* Fluid editorial display scale — desktop caps land in the 80–120px brief range */
+  --text-display-xl: clamp(3.25rem, 2.1rem + 5.2vw, 7.5rem);
+  --text-display-lg: clamp(2.75rem, 1.9rem + 4vw, 5.5rem);
+  --text-display-md: clamp(2.25rem, 1.7rem + 2.6vw, 3.75rem);
+  --text-display-sm: clamp(1.75rem, 1.4rem + 1.6vw, 2.5rem);
+
+  --tracking-editorial: 0.14em;
 }
 
 @media (prefers-color-scheme: dark) {
+  /* The brand is a single warm-light editorial theme — section-level dark treatments
+     (e.g. a charcoal band) are authored explicitly via the Section component's `theme`
+     prop, not via prefers-color-scheme. This block only prevents an unstyled flash for
+     OS-level dark mode; it intentionally keeps the same warm palette. */
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: var(--ivory);
+    --foreground: var(--charcoal);
   }
+}
+
+* {
+  border-color: var(--sand);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: var(--rose-gold);
+  color: var(--white);
+}
+
+:focus-visible {
+  outline: 2px solid var(--rose-gold);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
