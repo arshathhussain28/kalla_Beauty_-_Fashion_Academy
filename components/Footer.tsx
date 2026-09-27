@@ -17,14 +17,28 @@ export function Footer() {
     <footer className="border-t border-rose bg-wine-deep text-cream">
       <div className="mx-auto max-w-[1200px] px-6 py-16 lg:px-12">
         <div className="grid gap-12 sm:grid-cols-3">
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col items-start gap-4">
+            {/* items-start matters here: a flex-col container defaults to
+                align-items: stretch, which was forcing this image to the column's
+                full width and squashing/stretching it despite w-auto. */}
+            {/* Stacked, not side-by-side — this column is too narrow at sm/md for the
+                tracked descriptor to sit next to the icon without wrapping mid-word. */}
+            {/* alt="" — decorative right above the "KALA" text. */}
             <Image
-              src="/brand/kala-logo-primary.jpg"
-              alt="KALA"
-              width={56}
-              height={56}
-              className="h-14 w-14 rounded-sm object-cover"
+              src="/brand/kala-icon.jpg?v=3"
+              alt=""
+              width={944}
+              height={944}
+              className="h-12 w-auto rounded-sm"
             />
+            <span className="flex flex-col">
+              <span className="font-display text-2xl font-semibold leading-none tracking-[0.01em] text-cream">
+                KALA
+              </span>
+              <span className="mt-1.5 text-descriptor font-sans uppercase tracking-[0.2em] text-rose-light">
+                Beauty &amp; Fashion Academy
+              </span>
+            </span>
             <p className="max-w-[26ch] text-small text-cream/75">
               We teach the craft. You keep the confidence.
             </p>

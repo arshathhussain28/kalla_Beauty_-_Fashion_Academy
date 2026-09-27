@@ -19,6 +19,13 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  images: {
+    // Brand assets are versioned with a "?v=N" query string so browsers don't keep
+    // serving a stale cached render after the underlying file is replaced (the file
+    // itself, e.g. the logo, gets edited/re-cropped in place rather than renamed).
+    // Next.js 16 requires local `next/image` query strings to be explicitly allowed.
+    localPatterns: [{ pathname: "/brand/**", search: "?v=3" }],
+  },
   async headers() {
     return [
       {

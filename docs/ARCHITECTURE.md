@@ -206,15 +206,20 @@ strict, Tailwind v4, Zod, `clsx`+`tailwind-merge`) plus:
   this sandbox's Turbopack build can't reach `fonts.gstatic.com` at build time even
   though plain Node `fetch`/`curl` can. Not an issue outside this sandbox, but
   self-hosting is equal-or-better practice regardless, so no reason to revert it.
-- **Logo asset**: `public/brand/kala-logo-primary.jpg` — the client's supplied primary
-  illustrated lockup (crowned profile + K + needle/thread + dress form + wordmark).
-  This is the *only* lockup variant supplied as a file; the brand doc's L2
-  (horizontal)/L3 (compact)/L4 (monogram) variants don't exist as separate assets yet.
-  The Navbar approximates L2 by pairing a small crop of the primary mark with a plain
-  "KALA" wordmark and dropping the descriptor (per the brand doc's own rule: step down
-  the lockup ladder rather than shrinking the descriptor into illegibility). Get the
-  real L2–L4 exports from whoever holds the source file before this goes further —
-  it's the audit's own "outstanding action #1" (vector redraw).
+- **Logo assets**: `public/brand/kala-logo-primary.jpg` (1254×1254, the client's
+  supplied primary illustrated lockup — full illustration + wordmark + descriptor +
+  script tagline, extracted from the brand PDF's own embedded copy rather than the
+  lower-resolution pptx export, kept as the master reference) and
+  `public/brand/kala-icon.jpg` (950×695, a crop of the illustration only — crown,
+  profile, K, needle/thread, spool, dress form — with the wordmark and descriptor
+  cropped out). Navbar and Footer both use `kala-icon.jpg` paired with **live** "KALA"
+  text and a "Beauty & Fashion Academy" descriptor, rather than the full raster
+  lockup — raster text baked into a JPEG never stays crisp at small display sizes or
+  under zoom the way real HTML text does, which was the original complaint. This is
+  still an approximation of the brand doc's proper L2 (horizontal)/L3 (compact)/L4
+  (monogram) lockups, which don't exist as separate source files — get the real
+  exports from whoever holds the vector master before this goes further; it's the
+  brand audit's own "outstanding action #1" (vector redraw).
 
 ---
 

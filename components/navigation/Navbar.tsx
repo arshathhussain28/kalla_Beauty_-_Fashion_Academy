@@ -39,16 +39,23 @@ export function Navbar() {
     >
       <div className="mx-auto flex h-full max-w-[1200px] items-center justify-between px-6 lg:px-12">
         <Link href="/" className="flex items-center gap-3" aria-label="KALA home">
+          {/* alt="" — decorative alongside the "KALA" text right next to it; the
+              Link's aria-label already gives the accessible name for this unit. */}
           <Image
-            src="/brand/kala-logo-primary.jpg"
-            alt="KALA"
-            width={44}
-            height={44}
-            className="h-11 w-11 rounded-sm object-cover"
+            src="/brand/kala-icon.jpg?v=3"
+            alt=""
+            width={944}
+            height={944}
+            className="h-16 w-auto rounded-sm"
             priority
           />
-          <span className="font-display text-xl font-semibold tracking-[0.01em] text-wine">
-            KALA
+          <span className="flex flex-col justify-center">
+            <span className="font-display text-2xl font-semibold leading-none tracking-[0.01em] text-wine">
+              KALA
+            </span>
+            <span className="mt-1.5 hidden text-descriptor font-sans uppercase tracking-[0.3em] text-rose-deep sm:block">
+              Beauty &amp; Fashion Academy
+            </span>
           </span>
         </Link>
 
