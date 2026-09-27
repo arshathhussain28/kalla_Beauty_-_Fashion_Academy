@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { generalEnquiryWhatsAppLink } from "@/lib/whatsapp";
+import { SITE_LOCATION, SITE_PHONE_DISPLAY, SITE_PHONE_TEL } from "@/data/site";
 
 // §16 Website System: Deep Wine ground, cream type, rose-gold hairline above, three
 // columns, monogram bottom-left.
@@ -74,16 +75,19 @@ export function Footer() {
               >
                 WhatsApp Us
               </a>
-              <a href="tel:+910000000000" className="transition-colors hover:text-rose-light">
-                Call the Academy
+              <a
+                href={`tel:${SITE_PHONE_TEL}`}
+                className="transition-colors hover:text-rose-light"
+              >
+                Call {SITE_PHONE_DISPLAY}
               </a>
               <a
-                href="https://maps.google.com"
+                href={`https://maps.google.com/?q=${encodeURIComponent(`KALA Beauty and Fashion Academy, ${SITE_LOCATION}`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="transition-colors hover:text-rose-light"
               >
-                Find Us on Google Maps
+                {SITE_LOCATION} — Find Us on Google Maps
               </a>
               <a
                 href="https://instagram.com"

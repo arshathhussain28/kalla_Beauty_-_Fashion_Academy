@@ -3,7 +3,8 @@ import { PageStub } from "@/components/ui/PageStub";
 
 export const metadata = buildMetadata({
   title: "The Work",
-  description: "Made at KALA — student work across makeup, hair, fashion and tailoring.",
+  description:
+    "Made at KALA — student work across makeup, beauty, mehendi, saree draping and fashion.",
   path: "/the-work",
 });
 

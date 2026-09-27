@@ -6,7 +6,7 @@ const STATS = [
   { value: "120+", label: "Practice Hours" },
   { value: "14", label: "Students Per Cohort" },
   { value: "6", label: "Week Minimum Programme" },
-  { value: "2", label: "Disciplines, One Standard" },
+  { value: "5", label: "Craft Disciplines, One Standard" },
 ] as const;
 
 export function Statistics() {

@@ -8,10 +8,10 @@ import { Button } from "@/components/ui/Button";
 
 const INTERESTS = [
   { value: "makeup", label: "Makeup" },
-  { value: "hair", label: "Hair" },
   { value: "beauty", label: "Beauty" },
-  { value: "tailoring", label: "Tailoring" },
-  { value: "fashion-design", label: "Fashion" },
+  { value: "mehendi", label: "Mehendi" },
+  { value: "saree", label: "Saree Draping" },
+  { value: "fashion", label: "Fashion" },
 ] as const;
 
 const GOALS = [

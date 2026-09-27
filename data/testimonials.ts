@@ -18,7 +18,7 @@ export const testimonials: Testimonial[] = [
   {
     slug: "placeholder-testimonial-1",
     studentName: "Placeholder Student Name",
-    courseSlug: "professional-makeup",
+    courseSlug: "advanced-makeup-artist",
     before: "Placeholder — what the student wanted before joining KALA.",
     experience: "Placeholder — what the student learned and practiced at KALA.",
     after: "Placeholder — what changed for the student after completing the course.",
@@ -28,7 +28,7 @@ export const testimonials: Testimonial[] = [
   {
     slug: "placeholder-testimonial-2",
     studentName: "Placeholder Student Name",
-    courseSlug: "professional-tailoring",
+    courseSlug: "advanced-tailoring-fashion-design",
     before: "Placeholder — what the student wanted before joining KALA.",
     experience: "Placeholder — what the student learned and practiced at KALA.",
     after: "Placeholder — what changed for the student after completing the course.",

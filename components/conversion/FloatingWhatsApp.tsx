@@ -3,6 +3,7 @@
 import { MessageCircle, Phone } from "lucide-react";
 import { generalEnquiryWhatsAppLink } from "@/lib/whatsapp";
 import { trackEvent } from "@/lib/analytics";
+import { SITE_PHONE_TEL } from "@/data/site";
 
 // Master prompt §18/§19: floating WhatsApp on desktop, fixed bottom WhatsApp+Call bar
 // on mobile. Kept off the brand doc's motif budget deliberately — this is a functional
@@ -24,7 +25,7 @@ export function FloatingWhatsApp() {
           WhatsApp
         </a>
         <a
-          href="tel:+910000000000"
+          href={`tel:${SITE_PHONE_TEL}`}
           onClick={() => trackEvent("call_click", { source: "mobile_bar" })}
           className="flex h-14 items-center justify-center gap-2 border-l border-border text-small font-medium uppercase tracking-[0.12em] text-ink"
         >

@@ -1,19 +1,24 @@
 import Link from "next/link";
-import { Layers, Scissors, Shirt, Sparkles } from "lucide-react";
-import type { Course, CourseDiscipline } from "@/data/courses";
+import { Droplet, Flower2, Layers, Shirt, Sparkles } from "lucide-react";
+import type { Course, CourseCategory } from "@/data/courses";
 
 // §16 Website System, Course card spec: white, shadow-md, arched image top, eyebrow
 // (duration) → H3 name → 2-line summary → text link. No course photography exists yet,
-// so the image area is a tinted placeholder with a discipline icon, not a stock photo.
-const DISCIPLINE_ICON: Record<CourseDiscipline, typeof Sparkles> = {
+// so the image area is a tinted placeholder with a category icon, not a stock photo.
+const CATEGORY_ICON: Record<CourseCategory, typeof Sparkles> = {
   makeup: Sparkles,
-  hair: Scissors,
-  tailoring: Layers,
-  "fashion-design": Shirt,
+  beauty: Droplet,
+  mehendi: Flower2,
+  saree: Layers,
+  fashion: Shirt,
 };
 
 export function CourseCard({ course }: { course: Course }) {
-  const Icon = DISCIPLINE_ICON[course.discipline];
+  const Icon = CATEGORY_ICON[course.category];
+  const durationLabel =
+    course.duration.status === "confirmed" && course.duration.value
+      ? course.duration.value
+      : "Contact for Details";
 
   return (
     <div className="flex h-full flex-col bg-white shadow-md">
@@ -22,7 +27,7 @@ export function CourseCard({ course }: { course: Course }) {
       </div>
       <div className="flex flex-1 flex-col p-6">
         <p className="text-eyebrow font-medium uppercase tracking-[0.24em] text-rose-deep">
-          {course.duration}
+          {durationLabel}
         </p>
         <h3 className="mt-2 text-h3 font-sans font-medium uppercase tracking-[0.06em] text-ink">
           {course.name}

@@ -5,7 +5,7 @@ import { z } from "zod";
  * The server route re-validates with this same schema — never trust client-side validation alone.
  */
 export const leadFormSchema = z.object({
-  interest: z.enum(["makeup", "hair", "beauty", "tailoring", "fashion-design"], {
+  interest: z.enum(["makeup", "beauty", "mehendi", "saree", "fashion"], {
     message: "Select what you're interested in.",
   }),
   goal: z.enum(["career", "business", "personal-skill", "upskilling"], {

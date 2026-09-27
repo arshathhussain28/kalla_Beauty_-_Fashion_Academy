@@ -3,19 +3,10 @@
  * clicked), so it's read from NEXT_PUBLIC_WHATSAPP_NUMBER rather than treated as a secret.
  * No WhatsApp Business API tokens or credentials belong in this file or the client bundle.
  */
-
-const FALLBACK_NUMBER_PLACEHOLDER = "0000000000";
+import { SITE_PHONE_TEL } from "@/data/site";
 
 function getWhatsAppNumber(): string {
-  const configured = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER;
-  if (!configured) {
-    if (process.env.NODE_ENV !== "production") {
-      console.warn(
-        "NEXT_PUBLIC_WHATSAPP_NUMBER is not set — WhatsApp links will use a placeholder number."
-      );
-    }
-    return FALLBACK_NUMBER_PLACEHOLDER;
-  }
+  const configured = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || SITE_PHONE_TEL;
   return configured.replace(/[^\d]/g, "");
 }
 

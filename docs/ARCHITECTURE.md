@@ -7,9 +7,13 @@ specs and homepage below are transcribed from the client's own brand documents �
 supplied 2026-09-22, not invented or guessed. Where those two documents disagreed (see
 §1), a judgment call is flagged explicitly so it can be corrected in one place.
 
-Course/trainer/testimonial *content* is still placeholder (clearly marked in
-`data/*.ts`); the *system* — colour, type, spacing, components, motifs, copy voice —
-is real.
+Trainer/testimonial *content* is still placeholder (clearly marked in `data/*.ts`);
+the *system* — colour, type, spacing, components, motifs, copy voice — is real, and
+as of 2026-09-27 the **course catalogue is real too** — curriculum content is
+transcribed from the client's own "course details overview.txt," not invented (see
+§5). Course *fee and duration* are the one exception: they stay unpublished pending
+client confirmation because the supplied sources disagree — see §5's commercial-data
+policy before touching `data/courses.ts`.
 
 ---
 
@@ -110,8 +114,8 @@ relied on as implicit token behaviour).
 | Route | Status |
 |---|---|
 | `/` | **Real homepage**, 9 sections per the brand doc's own hierarchy (§4) |
-| `/courses` | Real, `CourseCard` grid |
-| `/courses/[slug]` | Real, full content model + `LeadForm` + WhatsApp CTA |
+| `/courses` | Real, `CourseCard` grid — all 5 real courses (§5) |
+| `/courses/[slug]` | Real, full content model + module accordion + `LeadForm` + WhatsApp CTA |
 | `/why-kala`, `/the-work`, `/about` | Stub (`PageStub`) — pending photography/content |
 | `/contact` | Real, `LeadForm` + WhatsApp CTA |
 | `/privacy`, `/terms` | Stub — placeholder routes so footer links resolve |
@@ -136,6 +140,8 @@ components/
     FloatingWhatsApp.tsx   mobile bottom bar + desktop floating button
   courses/
     CourseCard.tsx          white/shadow-md/arched image/eyebrow→H3→summary→link
+    CourseModules.tsx       expandable numbered modules — progressive disclosure for
+                            curriculum, not a flat 15-20 item bullet wall
   forms/
     LeadForm.tsx            shared by /contact and /courses/[slug]
   sections/                (homepage only, in page order)
@@ -181,15 +187,77 @@ interruption, per the brand doc's explicit rule.
 
 ## 5. Data Architecture
 
-Unchanged in shape from Stage 1 (`data/courses.ts`, `trainers.ts`, `testimonials.ts`,
-`faqs.ts` — see git history for the original notes); course/trainer/testimonial
-*content* is still placeholder. Course duration/category copy was left as originally
-placeholders rather than swapped to the brand doc's example course lines ("Professional
-Beauty · 12 weeks · 120 practice hours" etc.) — those examples illustrate voice, not a
-confirmed catalogue, and mixing "voice example" numbers into structured data risked
-them being read as real. Statistics section numerals (`components/sections/Statistics.tsx`)
-do use the brand doc's own example figures (120 practice hours, 14 students, 6 weeks),
-clearly commented as illustrative pending real confirmation.
+### The real course catalogue
+
+`data/courses.ts` holds five real courses, transcribed from the client's own
+"course details overview.txt" (curriculum, module grouping, category names) —
+**not** the earlier four-course placeholder set (`professional-makeup`,
+`hair-styling`, `professional-tailoring`, `fashion-design`), which never matched
+what KALA actually teaches:
+
+| Slug | Category | Curriculum source |
+|---|---|---|
+| `advanced-makeup-artist` | `makeup` | 16 topics → 7 modules |
+| `advanced-beautician` | `beauty` | 12 topics → 4 modules |
+| `advanced-mehendi-artist` | `mehendi` | 12 topics → 4 modules |
+| `advanced-saree-pleating-draping` | `saree` | 11 topics → 4 modules |
+| `advanced-tailoring-fashion-design` | `fashion` | 16 topics → 5 modules |
+
+Curriculum topics are grouped into named modules (e.g. Makeup's "Bridal & Occasion"
+groups Bridal/Engagement/Party makeup) so `CourseModules` can render them as
+progressive-disclosure accordions instead of a 15-item bullet wall — the grouping is
+editorial packaging of the client's real content, not new content.
+
+### Commercial-data policy — read this before touching fee or duration
+
+The supplied course document's own pricing notes conflict with a supplied
+promotional poster:
+
+- The document prices Makeup and Beautician as **separate** courses — ₹15,000/20
+  days and ₹25,000/1 month respectively (with Mehendi ₹5,000/1 month, Saree
+  pre-pleating ₹1,000/1 day, and Tailoring ₹6,000/3 months noted alongside).
+- A poster instead sells a **combined** "Professional Beautician & Makeup Artist"
+  package at ₹35,000/45 days — a different product structure, not just a different
+  number for the same course.
+
+Rather than guess which is current (or silently pick one), every course's `duration`
+and `fee` field uses:
+
+```ts
+export interface ConfirmableValue<T> {
+  value: T | null;
+  status: "confirmed" | "pending_confirmation";
+}
+```
+
+All five courses currently ship `{ value: null, status: "pending_confirmation" }` for
+both fields — not just the two that visibly conflict, since an academy showing two
+different prices for overlapping offerings in its own current marketing casts doubt
+on whether *any* of the informal notes reflect final, current pricing. **Never
+render `.value` without checking `.status === "confirmed"` first** — `CourseCard` and
+the course-detail snapshot both fall back to "Contact for Details" /
+"Contact us for current fees/duration" when pending. Once the client confirms actual
+current figures (and clarifies whether Makeup + Beautician are now sold bundled, or
+the bundle is a separate/additional offer), flip the relevant fields to
+`{ value: "20 Days", status: "confirmed" }` and the UI will start displaying them
+automatically — no template changes needed.
+
+### Other data files
+
+`trainers.ts` and `testimonials.ts` are unchanged in shape but their
+`disciplines`/`courseSlug` references were updated to the real category names and
+slugs above. Content itself (names, bios, quotes) is still placeholder.
+
+`data/site.ts` holds the one piece of real, non-commercial business data available:
+phone `9942893601` and location "Thiyagadurugam," both confirmed by appearing
+identically on two independently supplied posters — used in the Footer, the mobile
+sticky call button, and as the default WhatsApp number in `lib/whatsapp.ts`.
+
+Statistics section numerals (`components/sections/Statistics.tsx`) still use the
+brand doc's own example figures (120 practice hours, 14 students, 6 weeks) plus a
+now-corrected "5 Craft Disciplines" (was "2," left over from the old 2-category
+placeholder structure) — all clearly commented as illustrative pending real
+confirmation, same policy as course fees.
 
 ---
 
@@ -235,7 +303,11 @@ Unchanged from Stage 1 — see git history. Nothing in this pass touched
 - Real photography (the brand doc is explicit: authentic over stock is "the single
   biggest differentiator available" — every image slot in this build is a tinted
   placeholder, deliberately not a stock photo, ready to swap).
-- Real course catalogue, trainer bios, testimonials, admissions statistics.
+- **Client confirmation of one authoritative fee + duration per course** (§5) —
+  the single biggest blocker to launch; nothing commercial can go live until this
+  is resolved.
+- Real trainer bios, testimonials, and admissions statistics (course *curriculum*
+  is now real — see §5 — only these remain placeholder).
 - L2/L3/L4 logo lockup files and a vector master (flagged as the brand audit's own
   blocking gap).
 - `/why-kala`, `/the-work`, `/about` full compositions (currently stubs).

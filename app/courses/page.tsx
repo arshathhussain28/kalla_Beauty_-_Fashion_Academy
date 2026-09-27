@@ -6,7 +6,7 @@ import { CourseCard } from "@/components/courses/CourseCard";
 export const metadata = buildMetadata({
   title: "Courses",
   description:
-    "Explore beauty and fashion courses at KALA — makeup, hair, tailoring and fashion design.",
+    "Explore beauty and fashion courses at KALA — makeup, beautician, mehendi, saree draping and tailoring & fashion design.",
   path: "/courses",
 });
 

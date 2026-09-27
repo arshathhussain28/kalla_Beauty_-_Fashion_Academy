@@ -1,4 +1,4 @@
-import { Scissors, Shirt, Sparkles, Layers } from "lucide-react";
+import { Droplet, Flower2, Layers, Shirt, Sparkles } from "lucide-react";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Button } from "@/components/ui/Button";
 
@@ -7,9 +7,10 @@ import { Button } from "@/components/ui/Button";
 // tinted placeholder grid, ready to swap for real work the moment it's shot.
 const PLACEHOLDER_TILES = [
   { icon: Sparkles, label: "Makeup" },
-  { icon: Scissors, label: "Hair" },
+  { icon: Droplet, label: "Beauty" },
+  { icon: Flower2, label: "Mehendi" },
+  { icon: Layers, label: "Saree Draping" },
   { icon: Shirt, label: "Fashion" },
-  { icon: Layers, label: "Tailoring" },
 ] as const;
 
 export function StudentWorkTeaser() {
@@ -18,7 +19,7 @@ export function StudentWorkTeaser() {
       <div className="mx-auto max-w-[1200px]">
         <SectionHeading eyebrow="Made at KALA" title="The Work" />
 
-        <div className="mt-12 grid grid-cols-2 gap-1 sm:grid-cols-4">
+        <div className="mt-12 grid grid-cols-2 gap-1 sm:grid-cols-5">
           {PLACEHOLDER_TILES.map(({ icon: Icon, label }) => (
             <div
               key={label}

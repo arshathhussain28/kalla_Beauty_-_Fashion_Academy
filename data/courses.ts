@@ -1,11 +1,28 @@
 /**
- * PLACEHOLDER DATA
- * Names, durations, curricula and outcomes below are illustrative structure only —
- * not verified facts about KALA. Replace with real program details before launch.
+ * Course catalogue — curriculum content is transcribed from the client's own
+ * "course details overview.txt" and is treated as authoritative for module/topic
+ * content. Commercial fields (fee, duration) are NOT authoritative: the same
+ * document's own pricing notes conflict with a supplied promotional poster —
+ * the notes price Makeup and Beautician as separate courses (₹15,000/20 days and
+ * ₹25,000/1 month), while the poster sells a combined "Professional Beautician &
+ * Makeup Artist" package at ₹35,000/45 days. Rather than guess which is current,
+ * every commercial field stays `pending_confirmation` with `value: null` — see
+ * ConfirmableValue below — until the client confirms one authoritative figure per
+ * course. Never render a commercial field without checking its `status` first.
  */
 
-export type CourseCategory = "beauty" | "fashion";
-export type CourseDiscipline = "makeup" | "hair" | "tailoring" | "fashion-design";
+export type ConfirmableStatus = "confirmed" | "pending_confirmation";
+
+export interface ConfirmableValue<T> {
+  value: T | null;
+  status: ConfirmableStatus;
+}
+
+function pending<T>(): ConfirmableValue<T> {
+  return { value: null, status: "pending_confirmation" };
+}
+
+export type CourseCategory = "makeup" | "beauty" | "mehendi" | "saree" | "fashion";
 export type CourseLevel = "Beginner" | "Intermediate" | "Advanced" | "All Levels";
 
 export interface CourseFaq {
@@ -15,7 +32,6 @@ export interface CourseFaq {
 
 export interface CurriculumModule {
   title: string;
-  summary: string;
   topics: string[];
 }
 
@@ -23,18 +39,13 @@ export interface Course {
   slug: string;
   name: string;
   category: CourseCategory;
-  discipline: CourseDiscipline;
   tagline: string;
-  duration: string;
   level: CourseLevel;
+  duration: ConfirmableValue<string>;
+  fee: ConfirmableValue<number>;
   description: string;
-  highlights: string[];
-  curriculum: CurriculumModule[];
-  practicalTraining: string[];
-  toolsAndTechniques: string[];
-  studentProjects: string[];
-  whoItsFor: string[];
-  careerPaths: string[];
+  modules: CurriculumModule[];
+  careerDirections: string[];
   trainerSlug: string;
   faqs: CourseFaq[];
   heroImage: string;
@@ -42,140 +53,261 @@ export interface Course {
   active: boolean;
 }
 
+// Shared value proposition — "Why Choose KALA" from the course document (§ Why
+// Choose KALA). This is KALA's general training philosophy, not a per-course claim,
+// so it's stored once and reused rather than duplicated across every course record.
+export const KALA_TRAINING_STANDARDS = [
+  "Advanced-Level Training",
+  "Theory + Practical Learning",
+  "Hands-on Practice",
+  "Professional Product & Tool Knowledge",
+  "Client Handling Skills",
+  "Business & Freelancing Guidance",
+  "Final Practical Assessment",
+  "Course Completion Certificate",
+];
+
 export const courses: Course[] = [
   {
-    slug: "professional-makeup",
-    name: "Professional Makeup",
-    category: "beauty",
-    discipline: "makeup",
-    tagline: "Bridal, editorial and HD makeup artistry from first brush to finished look.",
-    duration: "Placeholder — e.g. 3 months",
-    level: "All Levels",
+    slug: "advanced-makeup-artist",
+    name: "Advanced Makeup Artist",
+    category: "makeup",
+    tagline: "Transform your passion for makeup into a professional skill.",
+    level: "Advanced",
+    duration: pending(),
+    fee: pending(),
     description:
-      "A placeholder overview of the Professional Makeup programme — replace with the real curriculum narrative, positioning and outcomes before publishing.",
-    highlights: [
-      "Placeholder highlight — e.g. bridal & HD makeup",
-      "Placeholder highlight — e.g. portfolio shoot included",
-      "Placeholder highlight — e.g. kit guidance provided",
-    ],
-    curriculum: [
+      "A complete, hands-on path through professional makeup artistry — from skin preparation and colour theory through HD, airbrush and bridal work, finishing with real client-facing practice.",
+    modules: [
       {
-        title: "Placeholder module — Foundations",
-        summary: "Placeholder summary of skin prep, colour theory and base work.",
-        topics: ["Placeholder topic", "Placeholder topic", "Placeholder topic"],
+        title: "Skin & Preparation",
+        topics: ["Skin Preparation & Skin Analysis", "Colour Correction"],
       },
       {
-        title: "Placeholder module — Bridal & Editorial",
-        summary: "Placeholder summary of bridal looks and editorial styling.",
-        topics: ["Placeholder topic", "Placeholder topic", "Placeholder topic"],
+        title: "Base & Complexion",
+        topics: ["Base & Foundation Techniques", "Contouring & Highlighting"],
+      },
+      {
+        title: "Eyes",
+        topics: ["Advanced Eye Makeup", "Eyelash Application"],
+      },
+      {
+        title: "HD & Airbrush",
+        topics: ["HD Makeup", "Airbrush Makeup"],
+      },
+      {
+        title: "Bridal & Occasion",
+        topics: ["Bridal Makeup", "Engagement & Reception Makeup", "Party & Photoshoot Makeup"],
+      },
+      {
+        title: "Hair & Draping",
+        topics: ["Bridal Hairstyling & Hairdos", "Saree Draping"],
+      },
+      {
+        title: "Professional Practice",
+        topics: [
+          "Product & Professional Kit Knowledge",
+          "Client Consultation & Hygiene",
+          "Hands-on Practical Training",
+        ],
       },
     ],
-    practicalTraining: [
-      "Placeholder — live model practice",
-      "Placeholder — studio lighting sessions",
+    careerDirections: [
+      "Bridal Makeup Artist",
+      "Freelance Makeup Artist",
+      "Photoshoot & Editorial Makeup",
+      "Beauty Services Professional",
     ],
-    toolsAndTechniques: ["Placeholder tool/technique", "Placeholder tool/technique"],
-    studentProjects: ["Placeholder project — final portfolio shoot"],
-    whoItsFor: [
-      "Placeholder audience — aspiring makeup artists",
-      "Placeholder audience — career changers",
-    ],
-    careerPaths: ["Placeholder path — freelance artist", "Placeholder path — studio artist"],
     trainerSlug: "placeholder-trainer-1",
-    faqs: [
-      {
-        question: "Placeholder question — is this course practical?",
-        answer: "Placeholder answer to be replaced with real course policy.",
-      },
-    ],
+    faqs: [],
     heroImage: "/images/courses/placeholder-makeup.jpg",
     gallery: [],
     active: true,
   },
   {
-    slug: "hair-styling",
-    name: "Hair Styling & Design",
+    slug: "advanced-beautician",
+    name: "Advanced Beautician",
     category: "beauty",
-    discipline: "hair",
-    tagline: "Cutting, colour and styling technique for real client work.",
-    duration: "Placeholder — e.g. 2.5 months",
-    level: "All Levels",
+    tagline: "Professional beauty and salon skills, start to finish.",
+    level: "Advanced",
+    duration: pending(),
+    fee: pending(),
     description:
-      "A placeholder overview of the Hair Styling & Design programme — replace with real curriculum narrative before publishing.",
-    highlights: ["Placeholder highlight — e.g. cutting fundamentals", "Placeholder highlight — e.g. live client sessions"],
-    curriculum: [
+      "A professional beautician programme covering skin, hair and salon fundamentals — built for real client work, not just technique demonstrations.",
+    modules: [
       {
-        title: "Placeholder module — Cutting Fundamentals",
-        summary: "Placeholder summary.",
-        topics: ["Placeholder topic", "Placeholder topic"],
+        title: "Skin & Facial Care",
+        topics: ["Skin Analysis", "Advanced Facial Techniques", "Cleanup & De-tan"],
+      },
+      {
+        title: "Hair Removal & Grooming",
+        topics: ["Threading & Eyebrow Shaping", "Waxing Techniques"],
+      },
+      {
+        title: "Hands, Feet & Hair",
+        topics: ["Manicure & Pedicure", "Hair Spa & Hair Care", "Hair Colour Techniques"],
+      },
+      {
+        title: "Professional Practice",
+        topics: [
+          "Beauty Product Knowledge",
+          "Salon Hygiene",
+          "Client Consultation & Handling",
+          "Practical Training",
+        ],
       },
     ],
-    practicalTraining: ["Placeholder — live client practice"],
-    toolsAndTechniques: ["Placeholder tool/technique"],
-    studentProjects: ["Placeholder project"],
-    whoItsFor: ["Placeholder audience"],
-    careerPaths: ["Placeholder path — salon stylist"],
+    careerDirections: [
+      "Salon Beauty Professional",
+      "Freelance Beautician",
+      "Bridal Beauty Specialist",
+      "Beauty Business Owner",
+    ],
     trainerSlug: "placeholder-trainer-2",
     faqs: [],
-    heroImage: "/images/courses/placeholder-hair.jpg",
+    heroImage: "/images/courses/placeholder-beautician.jpg",
     gallery: [],
     active: true,
   },
   {
-    slug: "professional-tailoring",
-    name: "Professional Tailoring",
-    category: "fashion",
-    discipline: "tailoring",
-    tagline: "Pattern making, garment construction and fit from the ground up.",
-    duration: "Placeholder — e.g. 4 months",
-    level: "Beginner",
+    slug: "advanced-mehendi-artist",
+    name: "Advanced Mehendi Artist",
+    category: "mehendi",
+    tagline: "From basic strokes to professional bridal designs.",
+    level: "Advanced",
+    duration: pending(),
+    fee: pending(),
     description:
-      "A placeholder overview of the Professional Tailoring programme — replace with real curriculum narrative before publishing.",
-    highlights: ["Placeholder highlight — e.g. pattern drafting", "Placeholder highlight — e.g. finished garment"],
-    curriculum: [
+      "Turn intricate design into a professional craft — from foundational strokes through bridal-scale mehendi work, at a professional pace.",
+    modules: [
       {
-        title: "Placeholder module — Pattern Making",
-        summary: "Placeholder summary.",
-        topics: ["Placeholder topic", "Placeholder topic"],
+        title: "Foundations",
+        topics: ["Arabic Mehendi", "Indian & Traditional Mehendi"],
+      },
+      {
+        title: "Design Styles",
+        topics: [
+          "Floral & Mandala Designs",
+          "Jewellery Mehendi",
+          "Portrait & Figure Designs",
+          "Customized Mehendi",
+        ],
+      },
+      {
+        title: "Bridal Specialisation",
+        topics: ["Bridal Mehendi", "Full-Hand Bridal Designs"],
+      },
+      {
+        title: "Professional Practice",
+        topics: [
+          "Cone Handling Techniques",
+          "Detailing & Finishing",
+          "Speed & Professional Design Flow",
+          "Bridal Mehendi Practical Training",
+        ],
       },
     ],
-    practicalTraining: ["Placeholder — garment construction practice"],
-    toolsAndTechniques: ["Placeholder tool/technique"],
-    studentProjects: ["Placeholder project — finished garment"],
-    whoItsFor: ["Placeholder audience"],
-    careerPaths: ["Placeholder path — boutique tailor"],
-    trainerSlug: "placeholder-trainer-3",
+    careerDirections: [
+      "Bridal Mehendi Artist",
+      "Freelance Mehendi Artist",
+      "Custom Design Specialist",
+    ],
+    trainerSlug: "placeholder-trainer-1",
     faqs: [],
-    heroImage: "/images/courses/placeholder-tailoring.jpg",
+    heroImage: "/images/courses/placeholder-mehendi.jpg",
     gallery: [],
     active: true,
   },
   {
-    slug: "fashion-design",
-    name: "Fashion Design",
-    category: "fashion",
-    discipline: "fashion-design",
-    tagline: "From concept sketch to finished collection.",
-    duration: "Placeholder — e.g. 6 months",
-    level: "Intermediate",
+    slug: "advanced-saree-pleating-draping",
+    name: "Advanced Saree Pleating & Draping",
+    category: "saree",
+    tagline: "Master the art of professional saree styling.",
+    level: "Advanced",
+    duration: pending(),
+    fee: pending(),
     description:
-      "A placeholder overview of the Fashion Design programme — replace with real curriculum narrative before publishing.",
-    highlights: ["Placeholder highlight — e.g. concept to collection", "Placeholder highlight — e.g. capsule presentation"],
-    curriculum: [
+      "A dedicated programme in professional saree pleating and draping — self-draping, client draping, and the finishing details that separate a professional from a quick wrap.",
+    modules: [
       {
-        title: "Placeholder module — Design Fundamentals",
-        summary: "Placeholder summary.",
-        topics: ["Placeholder topic", "Placeholder topic"],
+        title: "Foundations",
+        topics: [
+          "Saree Product Knowledge",
+          "Perfect Saree Pre-Pleating",
+          "Professional Pleating Techniques",
+        ],
+      },
+      {
+        title: "Draping Practice",
+        topics: ["Self & Client Draping", "Body-Type Based Draping"],
+      },
+      {
+        title: "Occasion Draping",
+        topics: ["Bridal Saree Draping", "Reception & Party Draping", "Designer Draping Styles"],
+      },
+      {
+        title: "Finishing & Practice",
+        topics: ["Pinning & Finishing", "Ironing & Saree Handling", "Professional Draping Practice"],
       },
     ],
-    practicalTraining: ["Placeholder — collection development"],
-    toolsAndTechniques: ["Placeholder tool/technique"],
-    studentProjects: ["Placeholder project — capsule collection"],
-    whoItsFor: ["Placeholder audience"],
-    careerPaths: ["Placeholder path — designer", "Placeholder path — entrepreneur"],
+    careerDirections: [
+      "Bridal Draping Specialist",
+      "Event Draping Professional",
+      "Professional Styling Services",
+    ],
+    trainerSlug: "placeholder-trainer-2",
+    faqs: [],
+    heroImage: "/images/courses/placeholder-saree.jpg",
+    gallery: [],
+    active: true,
+  },
+  {
+    slug: "advanced-tailoring-fashion-design",
+    name: "Advanced Tailoring & Fashion Designing",
+    category: "fashion",
+    tagline: "Turn your creativity into a profession.",
+    level: "Advanced",
+    duration: pending(),
+    fee: pending(),
+    description:
+      "From measurement and pattern making through a full range of blouse and garment construction, finishing in professional stitching and fit correction.",
+    modules: [
+      {
+        title: "Foundations",
+        topics: ["Measurement & Perfect Fitting", "Pattern Making", "Advanced Cutting Techniques"],
+      },
+      {
+        title: "Blouse Construction",
+        topics: [
+          "Normal Blouse",
+          "Cross-Cut Blouse",
+          "Lining Blouse",
+          "Princess-Cut Blouse",
+          "Boat Neck Blouse",
+          "Designer Blouse",
+        ],
+      },
+      {
+        title: "Design Details",
+        topics: ["Advanced Neck Designs", "Sleeve Designs"],
+      },
+      {
+        title: "Garments",
+        topics: ["Churidar", "Maxi", "Skirt & Blouse"],
+      },
+      {
+        title: "Professional Finishing",
+        topics: ["Fitting Correction", "Professional Stitching & Finishing"],
+      },
+    ],
+    careerDirections: [
+      "Custom Tailoring Professional",
+      "Boutique Designer",
+      "Freelance Fashion Designer",
+    ],
     trainerSlug: "placeholder-trainer-3",
     faqs: [],
-    heroImage: "/images/courses/placeholder-fashion-design.jpg",
+    heroImage: "/images/courses/placeholder-fashion.jpg",
     gallery: [],
     active: true,
   },
