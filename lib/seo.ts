@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 
 export const SITE_NAME = "KALA Beauty & Fashion Academy";
 export const SITE_TAGLINE = "Craft Your Confidence";
-// Positioning statement, adapted from the KALA Brand System (§01 Brand Strategy) to
-// name the real catalogue (data/courses.ts) rather than the brand doc's shorter list.
+// Built only from claims the client's own course document and posters make: the real
+// catalogue (data/courses.ts), hands-on training, small batches, a practical
+// assessment and a completion certificate. No cohort sizes, tutor credentials or outcomes.
 export const DEFAULT_DESCRIPTION =
-  "A premium beauty and fashion academy training women in makeup, beauty, mehendi, saree draping and tailoring & fashion design to a professional standard — small cohorts, working tutors, a real portfolio.";
+  "KALA Beauty & Fashion Academy offers advanced, practical courses in makeup, beauty, mehendi, saree draping and tailoring & fashion design — hands-on training in small batches, with a practical assessment and a course completion certificate.";
 
 export function getSiteUrl(): string {
   return process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";

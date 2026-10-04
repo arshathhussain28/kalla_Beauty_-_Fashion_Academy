@@ -1,6 +1,8 @@
 /**
  * PLACEHOLDER DATA — replace with real trainer bios, photography and credentials.
+ * Photography is wired through the registry in data/images.ts (`photoSlot`).
  */
+import type { ImageSlotKey } from "@/data/images";
 
 export interface Trainer {
   slug: string;
@@ -9,7 +11,7 @@ export interface Trainer {
   disciplines: string[];
   bio: string;
   credentials: string[];
-  photo: string;
+  photoSlot: ImageSlotKey;
 }
 
 export const trainers: Trainer[] = [
@@ -20,7 +22,7 @@ export const trainers: Trainer[] = [
     disciplines: ["makeup", "mehendi"],
     bio: "Placeholder biography — replace with the real trainer's background, experience and teaching philosophy.",
     credentials: ["Placeholder credential", "Placeholder credential"],
-    photo: "/images/trainers/placeholder-1.jpg",
+    photoSlot: "trainer-1",
   },
   {
     slug: "placeholder-trainer-2",
@@ -29,7 +31,7 @@ export const trainers: Trainer[] = [
     disciplines: ["beauty", "saree"],
     bio: "Placeholder biography — replace with the real trainer's background, experience and teaching philosophy.",
     credentials: ["Placeholder credential"],
-    photo: "/images/trainers/placeholder-2.jpg",
+    photoSlot: "trainer-2",
   },
   {
     slug: "placeholder-trainer-3",
@@ -38,7 +40,7 @@ export const trainers: Trainer[] = [
     disciplines: ["fashion"],
     bio: "Placeholder biography — replace with the real trainer's background, experience and teaching philosophy.",
     credentials: ["Placeholder credential"],
-    photo: "/images/trainers/placeholder-3.jpg",
+    photoSlot: "trainer-3",
   },
 ];
 

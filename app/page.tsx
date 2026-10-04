@@ -1,11 +1,13 @@
 import { buildMetadata, SITE_NAME } from "@/lib/seo";
 import { Hero } from "@/components/sections/Hero";
-import { FeaturedCourses } from "@/components/sections/FeaturedCourses";
-import { WhyKala } from "@/components/sections/WhyKala";
-import { StudentWorkTeaser } from "@/components/sections/StudentWorkTeaser";
+import { KalaJourney } from "@/components/sections/KalaJourney";
+import { CraftDiscovery } from "@/components/sections/CraftDiscovery";
+import { LearningMethod } from "@/components/sections/LearningMethod";
+import { EditorialStory } from "@/components/sections/EditorialStory";
+import { MadeAtKala } from "@/components/sections/MadeAtKala";
 import { Faculty } from "@/components/sections/Faculty";
-import { Testimonials } from "@/components/sections/Testimonials";
-import { Statistics } from "@/components/sections/Statistics";
+import { CareerDirections } from "@/components/sections/CareerDirections";
+import { FinalCTA } from "@/components/sections/FinalCTA";
 import { EnquirySection } from "@/components/sections/EnquirySection";
 
 export const metadata = buildMetadata({
@@ -14,21 +16,22 @@ export const metadata = buildMetadata({
   absoluteTitle: true,
 });
 
-// Page hierarchy per the KALA Brand System §16: Hero → Courses → Why KALA →
-// Student work → Faculty → Testimonials → Statistics (the one wine band) → Enquiry →
-// Footer. This is the brand doc's own disciplined 9-beat structure, not the longer
-// 14-section version from the generic planning prompt — "one dominant element per
-// layout" argues for fewer, stronger sections over a maximalist scroll.
+// A visual narrative rather than a brochure: arrive (hero) → believe (statement) →
+// choose a craft → understand how it's taught → see the people and the work → see where
+// it leads → act. Backgrounds alternate cream / white with exactly one wine band (the
+// closing CTA), and no two consecutive sections share a layout.
 export default function Home() {
   return (
     <main className="flex-1">
       <Hero />
-      <FeaturedCourses />
-      <WhyKala />
-      <StudentWorkTeaser />
+      <KalaJourney />
+      <CraftDiscovery />
+      <LearningMethod />
+      <EditorialStory />
+      <MadeAtKala />
       <Faculty />
-      <Testimonials />
-      <Statistics />
+      <CareerDirections />
+      <FinalCTA />
       <EnquirySection />
     </main>
   );

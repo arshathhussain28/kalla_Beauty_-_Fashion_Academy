@@ -1,31 +1,35 @@
-import { SectionHeading } from "@/components/ui/SectionHeading";
 import { trainers } from "@/data/trainers";
+import { ImageSlot } from "@/components/ui/ImageSlot";
+import { CurtainReveal, Reveal } from "@/components/ui/Reveal";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 
-// Page hierarchy §16, item 5: "Faculty — the credibility." Tutors are shown beside
-// students, not above them (§03 Brand Personality — Encouraging). No trainer
-// photography exists yet, so portraits are a placeholder monogram circle.
+// The people behind the craft. Portraits are environmental (in the academy, not
+// against a seamless backdrop) per the brand's photography direction; trainers stand
+// beside their students, never behind a desk. Names/bios are placeholders until real
+// trainer details are supplied.
 export function Faculty() {
   return (
-    <section className="bg-white px-6 py-16 lg:px-12 lg:py-24">
+    <section className="bg-white px-6 py-20 lg:px-12 lg:py-32">
       <div className="mx-auto max-w-[1200px]">
-        <SectionHeading eyebrow="The People" title="Faculty" />
+        <Reveal>
+          <SectionHeading eyebrow="The People" title="The people behind the craft." />
+        </Reveal>
 
-        <div className="mt-12 grid gap-8 sm:grid-cols-3">
-          {trainers.map((trainer) => (
-            <div key={trainer.slug} className="flex flex-col items-center text-center">
-              <div className="flex h-24 w-24 items-center justify-center rounded-full bg-rose-light/50">
-                <span className="font-display text-2xl text-wine">
-                  {trainer.name
-                    .split(" ")
-                    .map((part) => part[0])
-                    .join("")}
-                </span>
-              </div>
-              <h3 className="mt-4 text-h3 font-sans font-medium uppercase tracking-[0.06em] text-ink">
+        <div className="mt-12 grid gap-10 sm:grid-cols-3 lg:mt-16">
+          {trainers.map((trainer, index) => (
+            <div key={trainer.slug} className={index === 1 ? "sm:mt-16" : undefined}>
+              <CurtainReveal delay={0.12 * index}>
+                <ImageSlot
+                  slot={trainer.photoSlot}
+                  sizes="(min-width: 1024px) 380px, (min-width: 640px) 30vw, 100vw"
+                  className="aspect-[4/5] w-full"
+                />
+              </CurtainReveal>
+              <h3 className="mt-5 text-h3 font-sans font-medium uppercase tracking-[0.06em] text-ink">
                 {trainer.name}
               </h3>
               <p className="mt-1 text-small text-rose-deep">{trainer.role}</p>
-              <p className="mt-3 max-w-xs text-body text-ink-muted">{trainer.bio}</p>
+              <p className="mt-3 text-body text-ink-muted">{trainer.bio}</p>
             </div>
           ))}
         </div>

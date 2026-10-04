@@ -113,7 +113,7 @@ relied on as implicit token behaviour).
 
 | Route | Status |
 |---|---|
-| `/` | **Real homepage**, 9 sections per the brand doc's own hierarchy (§4) |
+| `/` | **Real homepage**, 10 sections as a visual narrative (§4) |
 | `/courses` | Real, `CourseCard` grid — all 5 real courses (§5) |
 | `/courses/[slug]` | Real, full content model + module accordion + `LeadForm` + WhatsApp CTA |
 | `/why-kala`, `/the-work`, `/about` | Stub (`PageStub`) — pending photography/content |
@@ -129,59 +129,111 @@ relied on as implicit token behaviour).
 ```
 components/
   ui/
-    Button.tsx            primary/secondary, 2px radius, never a pill
+    Button.tsx            primary / secondary / inverse (for wine + photographic fields)
+    ArrowLink.tsx          editorial text link: underline draws in, arrow drifts
     SectionHeading.tsx     eyebrow → headline → body, enforced order
-    ThreadRule.tsx           the signature motif divider
-    PageStub.tsx               placeholder for un-designed routes
+    ImageSlot.tsx          the photography system — see "Image system" below
+    Reveal.tsx             Reveal (fade + rise) and CurtainReveal (wine curtain lifts)
+    ThreadRule.tsx         the signature motif divider
+    PageStub.tsx           placeholder for un-designed routes
   navigation/
     Navbar.tsx             cream, 72px, sticky, scroll border, mobile menu
-  Footer.tsx                deep wine, 3 columns, monogram bottom-left
+  Footer.tsx               deep wine, 3 columns, monogram bottom-left
   conversion/
     FloatingWhatsApp.tsx   mobile bottom bar + desktop floating button
   courses/
-    CourseCard.tsx          white/shadow-md/arched image/eyebrow→H3→summary→link
-    CourseModules.tsx       expandable numbered modules — progressive disclosure for
-                            curriculum, not a flat 15-20 item bullet wall
+    CourseCard.tsx         brand "image card": arched photo, type beneath, no box
+    CourseModules.tsx      expandable numbered modules — progressive disclosure
   forms/
-    LeadForm.tsx            shared by /contact and /courses/[slug]
-  sections/                (homepage only, in page order)
-    Hero.tsx
-    FeaturedCourses.tsx
-    WhyKala.tsx
-    StudentWorkTeaser.tsx
-    Faculty.tsx
-    Testimonials.tsx
-    Statistics.tsx
-    EnquirySection.tsx
+    LeadForm.tsx           shared by /contact, /courses/[slug] and the homepage
+  sections/                homepage, in page order (see §4)
+    Hero · KalaJourney (+ KalaJourneyPinned) · CraftDiscovery (+ CraftPinned) · LearningMethod ·
+    EditorialStory · MadeAtKala · Faculty · CareerDirections · FinalCTA · EnquirySection
+    Testimonials.tsx       built but not rendered — see "Open items"
 ```
 
-Not yet built: `TrainerCard`/`TestimonialCard` as standalone reusable components
-(currently inlined in their one section each — genuine premature abstraction to
-extract before a second use case exists); a real masonry+lightbox gallery for
-`/the-work` (the homepage teaser is a simple 4-tile grid, not the full gallery); GSAP
-(not yet needed — Framer Motion is installed but also not yet used, since no page
-uses scroll-triggered motion yet).
+### Image system (`data/images.ts` + `ImageSlot`)
+
+There is no real KALA photography yet, and the brand system forbids stock. Rather than
+scatter placeholders through components, every photograph is a **named slot** in one
+registry. A slot with `src: null` renders a clearly labelled "Photography pending"
+placeholder whose `label` is also the shot brief for the photographer; a slot with a
+`src` renders `next/image` (`fill` + `object-cover`, so any aspect ratio works).
+**To go live with a photo: drop the file in `/public/images/`, set `src` and a real
+`alt` on that slot — nothing else changes.** Posters/promotional artwork were
+deliberately *not* cropped into slots: they have text and graphics baked in.
+
+### Motion system
+
+Six signature moments, deliberately not "animate everything":
+
+| Moment | Where | How |
+|---|---|---|
+| Hero reveal | `Hero` | **Pure CSS** (`.kala-rise`, `.kala-settle`) — plays on first paint, no JS, no LCP penalty |
+| The KALA Journey | `KalaJourneyPinned` | Pinned stage (270svh tablet / 340svh desktop), one scroll progress drives five states: intro → 01 Craft → 02 Confidence → 03 Career → closing "Craft Your Confidence." Image frame is one arch that never leaves — each stage's photo is revealed over the last by an animated `clip-path` + scale, so the scenes feel continuous. A 01/02/03 rail fills as you go. <768px and reduced motion get `KalaJourneyStatic`, a dedicated vertical story |
+| Pinned craft scroll | `CraftPinned` | Framer `useScroll` drives a translateX track inside a `sticky` stage (section is n × 100svh). Desktop only |
+| Curtain reveal | `CurtainReveal` | wine panel `scaleY 1→0` + image `scale 1.12→1`; transform-only |
+| Learning journey | `LearningMethod` | scroll-drawn connecting line; stages light up at viewport centre and stay lit |
+| Final CTA | `FinalCTA` | calm staggered `Reveal` — no parallax |
+
+Rules that keep it safe: transform/opacity only (GPU, no layout shift — measured CLS
+0.012); one easing curve (`lib/motion.ts`); the pinned section is `sticky`, not
+scroll-jacking. **Reduced motion** is handled in CSS (`globals.css`): `data-reveal` /
+`data-curtain` hooks force the final state, and the pinned section is swapped for the
+static swipe carousel. CSS rather than a `useReducedMotion` branch so server and client
+markup match (no hydration mismatch, and no way to strand content at `opacity: 0`).
+On mobile the pinned section is replaced by a CSS scroll-snap carousel of `CourseCard`s.
+
+**Scroll-linked values must go through `useScrub` (`lib/scrub.ts`), never a bare
+`useTransform` with a short range.** Framer accelerates scroll-linked opacity / clip-path /
+filter / transform with native scroll timelines and hands the input range to the browser
+as animation offsets. If the range stops short of 0→1, the browser animates from the last
+stop *back to the element's base style*, so a layer that should stay hidden after its
+window fades back in (seen: a grid meant to be gone read 0.41 opacity at 0.9 progress).
+`useScrub` pads the first and last stop out to 0 and 1, which makes every mapping hold
+its end values.
+
+The journey's two renderings are switched in CSS (`.journey-pinned` /
+`.journey-static-wrap` — hidden/shown by breakpoint, and swapped under
+`prefers-reduced-motion`), not by a JS media query, so there is no hydration mismatch.
+Keyboard: the stage uses `overflow-clip` (not `hidden`) so focus can't scroll it
+internally, and focus reaching the closing CTAs early scrolls the page to that state.
+
+Not yet built: `TrainerCard`/`TestimonialCard` as standalone components (inlined in
+their one section each — premature to extract); a real masonry+lightbox gallery for
+`/the-work`; GSAP (not needed — Framer Motion covers every moment above).
 
 ---
 
 ## 4. Homepage Section Architecture
 
-The brand doc's own page hierarchy (§16 Website System), not the longer 13–14 section
-version from the generic planning prompt — "one dominant element per layout" and the
-brand's overall restraint principle argue for the tighter structure:
+A visual narrative, per the "visual transformation" directive, rather than a brochure.
+No two consecutive sections share a layout:
 
-1. **Hero** — promise + one CTA (wine photo-band, 70vh, never 100vh)
-2. **Courses** — the reason they came (cream)
-3. **Why KALA** — three proof points: Craft / Confidence / Career (white)
-4. **Student work** — the evidence (cream)
-5. **Faculty** — the credibility (white)
-6. **Testimonials** — the reassurance (cream)
-7. **Statistics** — **the one wine band per page** (never doubled with the CTA)
-8. **Enquiry** — the form (white)
-9. **Footer** — deep wine
+1. **Hero** — cinematic reveal, one primary action + one quiet text link (wine, 70vh)
+2. **The KALA Journey** — the Craft → Confidence → Career idea as a pinned, scroll-driven
+   story with an arch image that changes scene by scene (cream). Replaces the earlier
+   three-equal-columns statement, which read as a feature grid and carried no motion
+3. **Find your craft** — pinned horizontal scroll / swipe carousel (white)
+4. **The KALA Method** — Learn → Practice → Create → Refine → Present (cream)
+5. **Editorial story** — 7/12 photo with an overlapping type panel (white)
+6. **Made at KALA** — asymmetric image composition, curtain reveals (cream)
+7. **People** — environmental trainer portraits (white)
+8. **Career direction** — ruled index of *possible* directions per craft (cream)
+9. **Final CTA** — **the one wine band** (brand rule: one per page)
+10. **Enquiry** — the lead form (white)
 
-Section background rhythm alternates cream/white down the page with exactly one wine
-interruption, per the brand doc's explicit rule.
+**Removed from the homepage on purpose:** the *Statistics* band (its figures — "120+
+practice hours", "14 students per cohort", "6 weeks" — were the brand doc's voice
+*examples*, not confirmed facts, and the brief forbids invented numbers; the file is
+deleted) and *Testimonials* (only placeholder quotes exist). `Testimonials.tsx` is kept
+for when real student stories arrive.
+
+**Where the pasted directive was overridden by client-supplied brand documents:** it
+specifies Warm Charcoal `#2A2326`, Cormorant Garamond/Manrope and a two-CTA hero. The
+client's own Brand System PDF specifies Wine `#7E1F3D`, Playfair Display + Jost and one
+CTA per layout, so those stay (§1). The hero keeps a second action but as a quiet
+`ArrowLink`, not a second button.
 
 ---
 
@@ -253,11 +305,9 @@ phone `9942893601` and location "Thiyagadurugam," both confirmed by appearing
 identically on two independently supplied posters — used in the Footer, the mobile
 sticky call button, and as the default WhatsApp number in `lib/whatsapp.ts`.
 
-Statistics section numerals (`components/sections/Statistics.tsx`) still use the
-brand doc's own example figures (120 practice hours, 14 students, 6 weeks) plus a
-now-corrected "5 Craft Disciplines" (was "2," left over from the old 2-category
-placeholder structure) — all clearly commented as illustrative pending real
-confirmation, same policy as course fees.
+The former homepage Statistics band was **deleted** (see §4): its figures were the
+brand doc's example numbers, not confirmed facts. If real cohort/placement figures are
+ever supplied, treat them under the same confirmed/pending policy as course fees.
 
 ---
 
@@ -300,14 +350,16 @@ Unchanged from Stage 1 — see git history. Nothing in this pass touched
 
 ## What's still open
 
-- Real photography (the brand doc is explicit: authentic over stock is "the single
-  biggest differentiator available" — every image slot in this build is a tinted
-  placeholder, deliberately not a stock photo, ready to swap).
+- **Real photography** — the largest remaining gap between this build and the intended
+  result. Every slot in `data/images.ts` (23 of them) is a labelled placeholder; each
+  `label` is the shot brief. The brand doc is explicit that authentic beats stock.
+  Until photos land, the signature moments (curtain reveals, hover movement, the
+  pinned scroll) are animating *placeholders* and can't be fully judged.
 - **Client confirmation of one authoritative fee + duration per course** (§5) —
   the single biggest blocker to launch; nothing commercial can go live until this
   is resolved.
-- Real trainer bios, testimonials, and admissions statistics (course *curriculum*
-  is now real — see §5 — only these remain placeholder).
+- Real trainer bios and testimonials (course *curriculum* is now real — see §5 —
+  only these remain placeholder; `Testimonials.tsx` waits unrendered for real quotes).
 - L2/L3/L4 logo lockup files and a vector master (flagged as the brand audit's own
   blocking gap).
 - `/why-kala`, `/the-work`, `/about` full compositions (currently stubs).

@@ -25,6 +25,15 @@ function pending<T>(): ConfirmableValue<T> {
 export type CourseCategory = "makeup" | "beauty" | "mehendi" | "saree" | "fashion";
 export type CourseLevel = "Beginner" | "Intermediate" | "Advanced" | "All Levels";
 
+// Short, display-friendly names for the five crafts (course names are the long form).
+export const CATEGORY_LABELS: Record<CourseCategory, string> = {
+  makeup: "Makeup",
+  beauty: "Beauty",
+  mehendi: "Mehendi",
+  saree: "Saree Styling",
+  fashion: "Fashion",
+};
+
 export interface CourseFaq {
   question: string;
   answer: string;

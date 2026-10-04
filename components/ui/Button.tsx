@@ -13,6 +13,8 @@ const base =
 const variants = {
   primary: "bg-wine text-cream hover:bg-wine-deep",
   secondary: "border border-wine text-wine bg-transparent hover:bg-wine/8",
+  // For wine/photographic fields, where a wine fill would disappear into the ground.
+  inverse: "bg-cream text-wine hover:bg-white",
 } as const;
 
 type Variant = keyof typeof variants;

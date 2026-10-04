@@ -106,6 +106,45 @@ body {
   outline-offset: 2px;
 }
 
+/* Hero entrance — pure CSS so it runs on first paint, independent of JS hydration. */
+@keyframes kala-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes kala-settle {
+  from {
+    transform: scale(1.08);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.kala-rise {
+  opacity: 0;
+  animation: kala-rise 1100ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: var(--kala-delay, 0ms);
+}
+
+.kala-settle {
+  animation: kala-settle 2600ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Craft discovery: pinned horizontal scroll on desktop, swipe carousel otherwise. */
+.craft-carousel {
+  scrollbar-width: none;
+}
+.craft-carousel::-webkit-scrollbar {
+  display: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -114,5 +153,35 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  /* Delayed keyframes would otherwise hold their `from` state through the delay. */
+  .kala-rise {
+    animation: none;
+    opacity: 1;
+  }
+  .kala-settle {
+    animation: none;
+  }
+
+  /* Framer Motion sets inline initial styles; these win over them. See Reveal.tsx. */
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+    filter: none !important;
+  }
+  [data-curtain] {
+    display: none !important;
+  }
+
+  /* No pinned scroll-driven motion: show the static versions everywhere. */
+  .craft-pinned,
+  .journey-pinned {
+    display: none !important;
+  }
+  .craft-carousel-wrap,
+  .journey-static-wrap {
+    display: block !important;
   }
 }

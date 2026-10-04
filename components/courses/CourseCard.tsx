@@ -1,45 +1,46 @@
 import Link from "next/link";
-import { Droplet, Flower2, Layers, Shirt, Sparkles } from "lucide-react";
-import type { Course, CourseCategory } from "@/data/courses";
+import { CATEGORY_LABELS, type Course } from "@/data/courses";
+import { craftSlot } from "@/data/images";
+import { ArrowLink } from "@/components/ui/ArrowLink";
+import { ImageSlot } from "@/components/ui/ImageSlot";
 
-// §16 Website System, Course card spec: white, shadow-md, arched image top, eyebrow
-// (duration) → H3 name → 2-line summary → text link. No course photography exists yet,
-// so the image area is a tinted placeholder with a category icon, not a stock photo.
-const CATEGORY_ICON: Record<CourseCategory, typeof Sparkles> = {
-  makeup: Sparkles,
-  beauty: Droplet,
-  mehendi: Flower2,
-  saree: Layers,
-  fashion: Shirt,
-};
-
+// Brand doc §09 "Image card": photograph on top with the arched corners, type
+// left-aligned beneath, no box, no shadow. The whole image is a link (hidden from
+// keyboard/AT — the text link below is the real control) and the photograph drifts
+// slightly on hover.
 export function CourseCard({ course }: { course: Course }) {
-  const Icon = CATEGORY_ICON[course.category];
-  const durationLabel =
+  const href = `/courses/${course.slug}`;
+  const duration =
     course.duration.status === "confirmed" && course.duration.value
-      ? course.duration.value
-      : "Contact for Details";
+      ? ` · ${course.duration.value}`
+      : "";
 
   return (
-    <div className="flex h-full flex-col bg-white shadow-md">
-      <div className="flex aspect-[4/5] items-center justify-center rounded-t-[200px] bg-gradient-to-b from-rose-light/60 to-cream-deep">
-        <Icon className="h-12 w-12 text-wine/40" strokeWidth={1.5} />
-      </div>
-      <div className="flex flex-1 flex-col p-6">
+    <article className="group flex h-full flex-col">
+      <Link href={href} tabIndex={-1} aria-hidden="true" className="block">
+        <ImageSlot
+          slot={craftSlot(course.category)}
+          sizes="(min-width: 1024px) 360px, (min-width: 640px) 45vw, 78vw"
+          className="aspect-[4/5] rounded-t-[200px]"
+          imageClassName="transition-transform duration-[900ms] ease-out group-hover:scale-[1.04]"
+        />
+      </Link>
+      <div className="mt-5 flex flex-1 flex-col">
         <p className="text-eyebrow font-medium uppercase tracking-[0.24em] text-rose-deep">
-          {durationLabel}
+          {CATEGORY_LABELS[course.category]}
         </p>
         <h3 className="mt-2 text-h3 font-sans font-medium uppercase tracking-[0.06em] text-ink">
           {course.name}
         </h3>
-        <p className="mt-3 line-clamp-2 flex-1 text-body text-ink-muted">{course.tagline}</p>
-        <Link
-          href={`/courses/${course.slug}`}
-          className="mt-4 text-button font-sans font-medium uppercase tracking-[0.12em] text-wine transition-colors hover:text-wine-deep"
-        >
-          Explore →
-        </Link>
+        <p className="mt-3 line-clamp-2 text-body text-ink-muted">{course.tagline}</p>
+        <p className="mt-3 text-small text-ink-muted/80">
+          {course.level} · {course.modules.length} modules
+          {duration}
+        </p>
+        <ArrowLink href={href} className="mt-auto pt-5">
+          Explore Course
+        </ArrowLink>
       </div>
-    </div>
+    </article>
   );
 }

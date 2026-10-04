@@ -19,7 +19,7 @@ export default function CoursesPage() {
         <SectionHeading
           eyebrow="Find Your Craft"
           title="Courses"
-          description="Beauty and fashion, taught as trades — not hobbies. Every programme runs in small cohorts with tutors who still work in the industry."
+          description="Five advanced programmes in beauty and fashion — theory and hands-on practice, taught in small batches, finished with a practical assessment and a completion certificate."
         />
 
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
