@@ -9,10 +9,12 @@ import {
   getCourseBySlug,
 } from "@/data/courses";
 import { craftSlot } from "@/data/images";
+import { siteFaqs } from "@/data/faqs";
 import { getTrainerBySlug } from "@/data/trainers";
 import { buildMetadata } from "@/lib/seo";
 import { LeadForm } from "@/components/forms/LeadForm";
 import { Button } from "@/components/ui/Button";
+import { Faq } from "@/components/ui/Faq";
 import { ImageSlot } from "@/components/ui/ImageSlot";
 import { CurtainReveal, Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -243,6 +245,21 @@ export default async function CoursePage({
               </CurtainReveal>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="bg-white px-6 py-20 lg:px-12 lg:py-28">
+        <div className="mx-auto grid max-w-[1200px] gap-12 lg:grid-cols-12 lg:gap-8">
+          <div className="lg:col-span-4">
+            <Reveal>
+              <SectionHeading
+                eyebrow="Questions"
+                title="Before you enquire."
+                description="The short answers. A course advisor can take you through the rest."
+              />
+            </Reveal>
+          </div>
+          <Faq items={[...course.faqs, ...siteFaqs]} className="lg:col-span-7 lg:col-start-6" />
         </div>
       </section>
 

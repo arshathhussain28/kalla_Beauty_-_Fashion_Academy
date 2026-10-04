@@ -65,8 +65,9 @@ are the way they are.
   numbers and reviews are never made up. Commercial fields use `ConfirmableValue`
   (`pending_confirmation` / `confirmed`) in `data/courses.ts` and render only once confirmed.
 - **Photography goes through the slot registry.** Every photo is a named slot in `data/images.ts`.
-  A slot with `src: null` renders a labelled "Photography pending" placeholder (the label is the shot
-  brief). To go live, add the file under `public/images/` and set `src` and a real `alt` on that slot.
+  A slot with `src: null` renders a clean blush frame (the slot's `label` is the shot brief, shown in
+  development and when `NEXT_PUBLIC_SHOW_PHOTO_BRIEFS=true`; production never prints placeholder text).
+  To go live, add the file under `public/images/` and set `src` and a real `alt` on that slot.
   No stock imagery.
 - **Brand tokens are fixed.** Wine `#7E1F3D`, Cream `#FBF1EF`, Rose Gold `#D2938C` (accent only),
   Deep Wine `#5C1428`, Ink `#2A1D21`; Playfair Display + Jost; square corners, one wine band per page,

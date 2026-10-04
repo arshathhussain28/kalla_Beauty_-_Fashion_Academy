@@ -1,10 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowLink } from "@/components/ui/ArrowLink";
 import { generalEnquiryWhatsAppLink } from "@/lib/whatsapp";
-import { SITE_LOCATION, SITE_PHONE_DISPLAY, SITE_PHONE_TEL } from "@/data/site";
+import {
+  SITE_INSTAGRAM_URL,
+  SITE_LOCATION,
+  SITE_PHONE_DISPLAY,
+  SITE_PHONE_TEL,
+} from "@/data/site";
 
 // §16 Website System: Deep Wine ground, cream type, rose-gold hairline above, three
-// columns, monogram bottom-left.
+// columns, monogram bottom-left. The closing statement and CTA sit above the columns, so
+// the last thing a reader meets on any page is the idea and a way to act on it.
 const EXPLORE_LINKS = [
   { href: "/courses", label: "Courses" },
   { href: "/why-kala", label: "Why KALA" },
@@ -16,8 +23,33 @@ const EXPLORE_LINKS = [
 export function Footer() {
   return (
     <footer className="border-t border-rose bg-wine-deep text-cream">
-      <div className="mx-auto max-w-[1200px] px-6 py-16 lg:px-12">
-        <div className="grid gap-12 sm:grid-cols-3">
+      <div className="mx-auto max-w-[1200px] px-6 py-16 lg:px-12 lg:py-20">
+        <div className="grid gap-10 border-b border-cream/15 pb-14 lg:grid-cols-12 lg:items-end lg:gap-8 lg:pb-16">
+          <p className="font-display text-[40px] font-semibold leading-[1.05] tracking-[0.01em] lg:col-span-7 lg:text-display">
+            Craft. Confidence. Career.
+          </p>
+          <div className="lg:col-span-5 lg:justify-self-end">
+            <p className="text-eyebrow font-medium uppercase tracking-[0.24em] text-rose-light">
+              Ready to craft your future?
+            </p>
+            {/* Two quiet links, not a button: several pages end on a wine CTA band right
+                above this, and a second filled button would just repeat it. */}
+            <div className="mt-5 flex flex-wrap items-center gap-x-8 gap-y-4">
+              <ArrowLink
+                href={generalEnquiryWhatsAppLink({ source: "footer" })}
+                tone="cream"
+                external
+              >
+                Talk to KALA
+              </ArrowLink>
+              <ArrowLink href="/courses" tone="cream">
+                Explore Courses
+              </ArrowLink>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-14 grid gap-12 sm:grid-cols-3">
           <div className="flex flex-col items-start gap-4">
             {/* items-start matters here: a flex-col container defaults to
                 align-items: stretch, which was forcing this image to the column's
@@ -68,7 +100,7 @@ export function Footer() {
             </p>
             <div className="flex flex-col gap-3 text-small text-cream/85">
               <a
-                href={generalEnquiryWhatsAppLink()}
+                href={generalEnquiryWhatsAppLink({ source: "footer-link" })}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="transition-colors hover:text-rose-light"
@@ -89,14 +121,16 @@ export function Footer() {
               >
                 {SITE_LOCATION} — Find Us on Google Maps
               </a>
-              <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="transition-colors hover:text-rose-light"
-              >
-                Instagram
-              </a>
+              {SITE_INSTAGRAM_URL && (
+                <a
+                  href={SITE_INSTAGRAM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="transition-colors hover:text-rose-light"
+                >
+                  Instagram
+                </a>
+              )}
             </div>
           </div>
         </div>

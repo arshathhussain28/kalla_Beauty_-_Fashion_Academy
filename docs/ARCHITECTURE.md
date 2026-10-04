@@ -116,7 +116,9 @@ relied on as implicit token behaviour).
 | `/` | **Real homepage**, 10 sections as a visual narrative (§4) |
 | `/courses` | Real, `CourseCard` grid — all 5 real courses (§5) |
 | `/courses/[slug]` | Real, full content model + module accordion + `LeadForm` + WhatsApp CTA |
-| `/why-kala`, `/the-work`, `/about` | Stub (`PageStub`) — pending photography/content |
+| `/why-kala` | **Real** — 11-section belief page: the wine "Confidence" journey, `LeadForm` at the close (§3b) |
+| `/the-work` | **Real** — editorial gallery: five chapters, five compositions, one full-bleed pause (§3b) |
+| `/about` | **Real** — story → beliefs → method → experience → directions → people, `LeadForm` at the close (§3b) |
 | `/contact` | Real, `LeadForm` + WhatsApp CTA |
 | `/privacy`, `/terms` | Stub — placeholder routes so footer links resolve |
 | `/api/leads` (POST) | Real — Zod validation, honeypot, rate limit |
@@ -152,16 +154,92 @@ components/
     Testimonials.tsx       built but not rendered — see "Open items"
 ```
 
+### 3b. Editorial pages — Why KALA, The Work, About
+
+These three were stubs; they are now full pages built **without touching any existing
+section or page** (the homepage, courses and contact are unchanged). New code only:
+
+```
+components/
+  editorial/
+    ClipReveal.tsx      photograph reveal: clip-path opens + image settles from 1.1 → 1
+    Parallax.tsx        gentle vertical drift of a photo inside its frame (≤ 8%)
+    PageEnquiry.tsx     the closing conversion block: Talk to KALA (WhatsApp), course link,
+                        phone + location, and the real LeadForm (validated, rate-limited)
+  why/                  WhyHero · IdeaPillars · CraftSection · ConfidenceJourney (the one
+                        wine band) · CareerSection · LearnByMaking · MentorshipSection ·
+                        KalaDifference · AudienceSection · ClosingStatement
+  work/                 WorkHero · WorkChapter (5 layouts) · WorkWide
+  about/                AboutHero · AboutStory · AboutBeliefs · AboutMethod (the one wine
+                        band) · AboutExperience · AboutDirections · AboutPeople
+data/
+  why-kala.ts · work.ts · about.ts     all copy and structure, one file per page
+```
+
+Rules these pages follow, so the next person doesn't have to rediscover them:
+
+- **Copy is bounded.** Every claim is KALA's own brand language or sits in the client's
+  course document (`KALA_TRAINING_STANDARDS`, the module lists, `careerDirections`).
+  No founder biography, trainer credentials, dates, numbers or outcomes exist anywhere in
+  these pages; `data/about.ts` (`PEOPLE`, `ABOUT_STORY`) is where real ones go. Audience and
+  career copy is worded as possibility, never placement.
+- **One wine band per page** — `ConfidenceJourney` on Why KALA, `AboutMethod` on About,
+  `FinalCTA` on The Work. Everything else alternates cream / white around it.
+- **Scroll-linked values** use full 0 → 1 ranges (`Parallax`, the progress lines) or are
+  time-based `whileInView` — the `useScrub` rule in §3 applies.
+- **Utility border colours need `!`.** `globals.css` sets `* { border-color }` unlayered,
+  which outranks Tailwind's layered `border-wine` / `border-white`. On these pages a
+  coloured border is written `border-wine!`, or avoided (hairlines are `h-px bg-*`). The
+  rule itself was left alone because changing it would alter existing pages.
+- **Type scale:** headlines stay on the brand scale (`text-display` 64px max), with one
+  deliberate exception — The Work's title is 96px on desktop, as a typographic cover.
+- **Mobile is its own layout** — frames go full-bleed → inset right → inset left, the sticky
+  journey panel is dropped for per-stage inline images, and the `IdeaPillars` names use
+  `clamp()` so "CONFIDENCE" fits at 320px. Checked at 320/360/390/414/768/820 with no
+  horizontal overflow.
+
 ### Image system (`data/images.ts` + `ImageSlot`)
 
 There is no real KALA photography yet, and the brand system forbids stock. Rather than
 scatter placeholders through components, every photograph is a **named slot** in one
-registry. A slot with `src: null` renders a clearly labelled "Photography pending"
-placeholder whose `label` is also the shot brief for the photographer; a slot with a
-`src` renders `next/image` (`fill` + `object-cover`, so any aspect ratio works).
+registry. A slot with `src: null` renders a calm blush frame with a faint KALA monogram —
+**nothing a visitor could read as unfinished; production never prints "Photography
+pending"**. The slot's `label` is the shot brief for the photographer, and it shows only in
+development (or on a review deploy that sets `NEXT_PUBLIC_SHOW_PHOTO_BRIEFS=true`). A slot
+with a `src` renders `next/image` (`fill` + `object-cover`, so any aspect ratio works).
 **To go live with a photo: drop the file in `/public/images/`, set `src` and a real
-`alt` on that slot — nothing else changes.** Posters/promotional artwork were
-deliberately *not* cropped into slots: they have text and graphics baked in.
+`alt` on that slot — nothing else changes.** (`next.config.ts` allows `/images/**` for
+`next/image`; before that pattern existed, the first real photo would have thrown.)
+Posters/promotional artwork were deliberately *not* cropped into slots: they have text and
+graphics baked in. The Work's lightbox only opens for frames that have a `src`.
+
+### 3c. Navigation, conversion and shell
+
+- **Navbar** — cream, 72px (fixed: pinned sections are positioned against it). On scroll it
+  turns 85% cream with a soft blur and a border; links draw an underline on hover and keep
+  it on the current page (`aria-current`); "Enquire Now" is wrapped in `Magnetic` (fine
+  pointers only). Below `lg` it opens a **full-screen menu** — large display links that
+  stagger in, WhatsApp CTA, phone + location; Escape closes, focus moves in and returns,
+  the page behind is frozen. The menu renders *outside* `<header>` because the header's
+  `backdrop-filter` would otherwise become the containing block for its `fixed` child.
+- **Mobile action bar** — WhatsApp · Call · Enquire, 56px targets, padded by
+  `env(safe-area-inset-bottom)` (`viewport-fit=cover` is set in `layout.tsx`; body reserves
+  matching room). Desktop keeps the floating "Talk to KALA".
+- **WhatsApp context** — `wa.me` ignores everything but `text`, so UTM-style parameters
+  would be dropped. `lib/whatsapp.ts` instead appends a visible `Ref: website · <source> ·
+  <course>` line to the pre-filled message so the advisor sees where a chat began.
+- **Page transition** — `app/template.tsx` re-mounts per route, replaying a 520ms CSS
+  fade/rise (`.kala-page`). CSS only, so nothing waits on JavaScript.
+- **Scroll progress** — a 2px wine hairline (`ScrollProgress`), bound straight to scroll.
+- **Courses** — an editorial index (`CourseIndex`): one course per row, photo and text
+  swapping sides; the title link is stretched over the row (one tab stop), hover zooms the
+  photo, draws a rule, lengthens the number hairline and nudges the arrow. Facts shown are
+  level + the programme-wide "hands-on practice" and "completion certificate"; duration
+  appears only once confirmed. `CourseCard` remains for the homepage carousel.
+- **FAQ** — `Faq` (accessible accordion, CSS grid-row open/close) fed by `data/faqs.ts`,
+  whose answers are limited to confirmed facts. Rendered on every course page.
+- **Instagram** — `SITE_INSTAGRAM_URL` in `data/site.ts` is `null` until the real profile
+  URL is supplied; the footer previously linked to instagram.com itself.
 
 ### Motion system
 
@@ -200,8 +278,8 @@ Keyboard: the stage uses `overflow-clip` (not `hidden`) so focus can't scroll it
 internally, and focus reaching the closing CTAs early scrolls the page to that state.
 
 Not yet built: `TrainerCard`/`TestimonialCard` as standalone components (inlined in
-their one section each — premature to extract); a real masonry+lightbox gallery for
-`/the-work`; GSAP (not needed — Framer Motion covers every moment above).
+their one section each — premature to extract); a lightbox for `/the-work`; GSAP (not
+needed — Framer Motion covers every moment above).
 
 ---
 
@@ -351,7 +429,7 @@ Unchanged from Stage 1 — see git history. Nothing in this pass touched
 ## What's still open
 
 - **Real photography** — the largest remaining gap between this build and the intended
-  result. Every slot in `data/images.ts` (23 of them) is a labelled placeholder; each
+  result. Every slot in `data/images.ts` (56 of them) is an empty frame; each
   `label` is the shot brief. The brand doc is explicit that authentic beats stock.
   Until photos land, the signature moments (curtain reveals, hover movement, the
   pinned scroll) are animating *placeholders* and can't be fully judged.
@@ -362,7 +440,13 @@ Unchanged from Stage 1 — see git history. Nothing in this pass touched
   only these remain placeholder; `Testimonials.tsx` waits unrendered for real quotes).
 - L2/L3/L4 logo lockup files and a vector master (flagged as the brand audit's own
   blocking gap).
-- `/why-kala`, `/the-work`, `/about` full compositions (currently stubs).
-- A real masonry+lightbox gallery for `/the-work`.
+- Real content for the editorial pages: the founder's story and name, real trainer
+  names/roles (`data/about.ts` `PEOPLE` / `ABOUT_STORY`), and real captions for The Work
+  once its photographs exist (`data/work.ts`). Optional: a lightbox for `/the-work`.
+- **Visible placeholder copy on pages outside this pass:** `/privacy` and `/terms` still
+  say "pending legal review — placeholder route", and the homepage `Faculty` section shows
+  "Placeholder Trainer Name" / placeholder bios from `data/trainers.ts`. These need real
+  text (legal text and trainer details have to come from the client) before launch.
+- FAQ: `data/faqs.ts` is still placeholder and is not rendered anywhere yet.
 - CSP hardening, once real third-party scripts (analytics, maps) exist to tune it
   against.

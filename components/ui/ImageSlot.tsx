@@ -9,16 +9,23 @@ interface ImageSlotProps {
   priority?: boolean;
   /** "dark" for placeholders that sit on wine fields. */
   tone?: "light" | "dark";
-  /** "corner" tucks the placeholder label top-right, clear of overlaid headlines. */
+  /** "corner" tucks the shot-brief label top-right, clear of overlaid headlines. */
   labelPosition?: "center" | "corner";
   className?: string;
   /** Applied to the photograph (or placeholder) itself — e.g. hover scale. */
   imageClassName?: string;
 }
 
-// Renders the registered photograph, or — until one exists — a clearly labelled
-// placeholder. Callers size the slot via className (aspect ratio / height); the image
-// always fills it with object-cover, so any photographed ratio works.
+// While a slot has no photograph, a visitor sees a calm blush frame with a faint KALA
+// monogram — nothing that reads as unfinished. The shot brief (the slot's `label`) is for
+// the team, so it only renders in development, or on a review deployment that sets
+// NEXT_PUBLIC_SHOW_PHOTO_BRIEFS=true. Production never shows it.
+const SHOW_BRIEFS =
+  process.env.NODE_ENV !== "production" || process.env.NEXT_PUBLIC_SHOW_PHOTO_BRIEFS === "true";
+
+// Renders the registered photograph, or — until one exists — the placeholder above.
+// Callers size the slot via className (aspect ratio / height); the image always fills it
+// with object-cover, so any photographed ratio works.
 export function ImageSlot({
   slot,
   sizes,
@@ -43,11 +50,12 @@ export function ImageSlot({
         />
       ) : (
         <div
-          role="img"
-          aria-label={`Photograph pending: ${def.label}`}
+          {...(SHOW_BRIEFS
+            ? { role: "img", "aria-label": `Photograph pending: ${def.label}` }
+            : { "aria-hidden": true })}
           className={cn(
             "absolute inset-0 flex flex-col gap-2 px-6",
-            labelPosition === "corner"
+            SHOW_BRIEFS && labelPosition === "corner"
               ? "items-end justify-start pt-24 text-right"
               : "items-center justify-center text-center",
             tone === "dark"
@@ -56,22 +64,37 @@ export function ImageSlot({
             imageClassName
           )}
         >
-          <span
-            className={cn(
-              "text-descriptor uppercase tracking-[0.3em]",
-              tone === "dark" ? "text-rose-light/80" : "text-rose-deep"
-            )}
-          >
-            Photography pending
-          </span>
-          <span
-            className={cn(
-              "max-w-[28ch] text-small",
-              tone === "dark" ? "text-cream/60" : "text-wine/60"
-            )}
-          >
-            {def.label}
-          </span>
+          {SHOW_BRIEFS ? (
+            <>
+              <span
+                className={cn(
+                  "text-descriptor uppercase tracking-[0.3em]",
+                  tone === "dark" ? "text-rose-light/80" : "text-rose-deep"
+                )}
+              >
+                Photography pending
+              </span>
+              <span
+                className={cn(
+                  "max-w-[28ch] text-small",
+                  tone === "dark" ? "text-cream/60" : "text-wine/60"
+                )}
+              >
+                {def.label}
+              </span>
+            </>
+          ) : (
+            tone === "light" && (
+              <Image
+                src="/brand/kala-icon.jpg?v=3"
+                alt=""
+                width={944}
+                height={944}
+                sizes="72px"
+                className="h-16 w-auto opacity-[0.13] mix-blend-multiply"
+              />
+            )
+          )}
         </div>
       )}
     </div>

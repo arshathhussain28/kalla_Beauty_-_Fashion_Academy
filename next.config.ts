@@ -24,7 +24,14 @@ const nextConfig: NextConfig = {
     // serving a stale cached render after the underlying file is replaced (the file
     // itself, e.g. the logo, gets edited/re-cropped in place rather than renamed).
     // Next.js 16 requires local `next/image` query strings to be explicitly allowed.
-    localPatterns: [{ pathname: "/brand/**", search: "?v=3" }],
+    //
+    // Photography goes in /public/images/ (see data/images.ts). Without this second
+    // pattern, next/image rejects every local photograph with "does not match
+    // images.localPatterns" the moment a slot's `src` is set.
+    localPatterns: [
+      { pathname: "/brand/**", search: "?v=3" },
+      { pathname: "/images/**" },
+    ],
   },
   async headers() {
     return [

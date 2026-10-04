@@ -1,5 +1,7 @@
 import { buildMetadata } from "@/lib/seo";
-import { PageStub } from "@/components/ui/PageStub";
+import { FinalCTA } from "@/components/sections/FinalCTA";
+import { WorkGallery } from "@/components/work/WorkGallery";
+import { WorkHero } from "@/components/work/WorkHero";
 
 export const metadata = buildMetadata({
   title: "The Work",
@@ -8,12 +10,16 @@ export const metadata = buildMetadata({
   path: "/the-work",
 });
 
+// An editorial gallery, not a grid: five craft chapters, each composed differently, with
+// one full-bleed pause in the middle, a craft filter and a lightbox. Every frame is a named
+// slot in data/images.ts, so real photographs drop in without touching this file. Closes
+// on the site's one wine band.
 export default function TheWorkPage() {
   return (
-    <PageStub
-      eyebrow="Made at KALA"
-      title="The Work"
-      description="The editorial student-work grid is scoped for the next build stage, once real photography is available."
-    />
+    <main className="flex-1">
+      <WorkHero />
+      <WorkGallery />
+      <FinalCTA />
+    </main>
   );
 }

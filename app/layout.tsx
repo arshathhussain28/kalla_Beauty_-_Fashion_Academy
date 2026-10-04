@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { DEFAULT_DESCRIPTION, SITE_NAME, getSiteUrl, isIndexingAllowed } from "@/lib/seo";
 import { Navbar } from "@/components/navigation/Navbar";
+import { ScrollProgress } from "@/components/navigation/ScrollProgress";
 import { Footer } from "@/components/Footer";
 import { FloatingWhatsApp } from "@/components/conversion/FloatingWhatsApp";
 import "./globals.css";
@@ -43,13 +44,20 @@ export const metadata: Metadata = {
   robots: isIndexingAllowed() ? undefined : { index: false, follow: false },
 };
 
+// viewport-fit=cover lets the mobile action bar read the iPhone home-indicator inset via
+// env(safe-area-inset-bottom); without it the inset is always 0.
+export const viewport: Viewport = {
+  viewportFit: "cover",
+};
+
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
       className={`${playfairDisplay.variable} ${jost.variable} h-full`}
     >
-      <body className="flex min-h-full flex-col bg-cream pb-14 font-sans text-ink antialiased lg:pb-0">
+      <body className="flex min-h-full flex-col bg-cream pb-[calc(3.5rem+env(safe-area-inset-bottom))] font-sans text-ink antialiased lg:pb-0">
+        <ScrollProgress />
         <Navbar />
         {children}
         <Footer />

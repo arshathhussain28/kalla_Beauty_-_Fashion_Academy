@@ -137,6 +137,24 @@ body {
   animation: kala-settle 2600ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* Route change: the new page arrives with a short fade and a small rise (see app/template.tsx). */
+@keyframes kala-page-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* No fill-mode on purpose: once it ends the element returns to its plain style, so the
+   wrapper never leaves a transform or stacking context behind for sticky/fixed children. */
+.kala-page {
+  animation: kala-page-in 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 /* Craft discovery: pinned horizontal scroll on desktop, swipe carousel otherwise. */
 .craft-carousel {
   scrollbar-width: none;
