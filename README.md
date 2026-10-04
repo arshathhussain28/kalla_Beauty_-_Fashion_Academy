@@ -88,6 +88,9 @@ are the way they are.
 
 ## Deployment
 
+**Live review site:** https://kala-beauty-fashion-academy.vercel.app (Vercel project
+`kala-beauty-fashion-academy`, not indexed by search engines).
+
 Hosted on Vercel, deployed from this repository: every push to `main` redeploys production and every
 pull request gets its own preview URL. The build is a standard Next.js app and runs on any Node-capable
 host. Set the variables from `.env.example` in the host's environment, with `NEXT_PUBLIC_SITE_URL` set
