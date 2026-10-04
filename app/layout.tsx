@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { DEFAULT_DESCRIPTION, SITE_NAME, getSiteUrl } from "@/lib/seo";
+import { DEFAULT_DESCRIPTION, SITE_NAME, getSiteUrl, isIndexingAllowed } from "@/lib/seo";
 import { Navbar } from "@/components/navigation/Navbar";
 import { Footer } from "@/components/Footer";
 import { FloatingWhatsApp } from "@/components/conversion/FloatingWhatsApp";
@@ -40,6 +40,7 @@ export const metadata: Metadata = {
   icons: {
     icon: "/icon",
   },
+  robots: isIndexingAllowed() ? undefined : { index: false, follow: false },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

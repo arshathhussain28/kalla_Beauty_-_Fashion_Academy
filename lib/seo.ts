@@ -12,6 +12,15 @@ export function getSiteUrl(): string {
   return process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 }
 
+/**
+ * Search indexing is off unless NEXT_PUBLIC_ALLOW_INDEXING=true. Review and staging
+ * deployments (placeholder photography, unconfirmed fees) must not end up in search
+ * results; set the variable on the production launch deployment only.
+ */
+export function isIndexingAllowed(): boolean {
+  return process.env.NEXT_PUBLIC_ALLOW_INDEXING === "true";
+}
+
 interface PageMetadataInput {
   title: string;
   description?: string;
@@ -53,8 +62,9 @@ export function buildMetadata({
       description,
       images: [ogImage],
     },
-    robots: noIndex
-      ? { index: false, follow: false }
-      : { index: true, follow: true },
+    robots:
+      noIndex || !isIndexingAllowed()
+        ? { index: false, follow: false }
+        : { index: true, follow: true },
   };
 }

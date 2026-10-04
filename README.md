@@ -88,9 +88,14 @@ are the way they are.
 
 ## Deployment
 
-Not deployed yet. The build is a standard Next.js app and runs on any Node-capable host. Set the
-variables from `.env.example` in the host's environment, with `NEXT_PUBLIC_SITE_URL` set to the real
-domain so canonical URLs and the sitemap are correct.
+Hosted on Vercel, deployed from this repository: every push to `main` redeploys production and every
+pull request gets its own preview URL. The build is a standard Next.js app and runs on any Node-capable
+host. Set the variables from `.env.example` in the host's environment, with `NEXT_PUBLIC_SITE_URL` set
+to the real domain so canonical URLs and the sitemap are correct.
+
+**Search indexing is off by default** (`robots.txt` disallows everything and pages are `noindex`) so
+review deployments with placeholder photography and unconfirmed fees can't appear in search. At launch,
+set `NEXT_PUBLIC_ALLOW_INDEXING=true` on the production environment and redeploy.
 
 ## Licence
 
