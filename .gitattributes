@@ -1,0 +1,10 @@
+# Normalise line endings so Windows and CI checkouts agree.
+* text=auto eol=lf
+
+# Binary assets — never touch.
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.webp binary
+*.ico binary
+*.woff2 binary
