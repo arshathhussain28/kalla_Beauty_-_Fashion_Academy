@@ -11,9 +11,13 @@ import { cn } from "@/lib/utils";
 //   plain middle is just wider or narrower. A single `object-cover` image would crop to the empty
 //   centre on narrow screens and show no objects at all.
 //
-// • "banner" (stacked phone layout) — a phone is too narrow to put objects either side of a
-//   two-line headline without the type landing on top of them, so there the whole photograph is
-//   shown as a 16:9 band ABOVE the text and fades into the cream beneath it.
+// • "band" (stacked phone / small-tablet layout) — a phone is too narrow to put objects either side
+//   of the words, so the frame is turned a quarter-turn: one slice of the photograph (its upper half)
+//   runs across the TOP of the block and the other (its lower half) across the BOTTOM, with the
+//   words in the plain middle. The block's own background is the photograph's background colour,
+//   so the middle and the photograph read as one surface and the words sit "on" the picture, just
+//   as they do between the two sides on desktop. Each slice shows different objects (palette,
+//   brushes, silk above; henna, scissors, tape below), so nothing repeats.
 //
 // Each piece fades to transparent toward the text (a mask), so the photograph melts into the
 // page's cream, the join between halves can't show, and the text always sits on clean cream.
@@ -22,9 +26,11 @@ const FADE_LEFT =
   "[mask-image:linear-gradient(to_right,#000_46%,transparent)] [-webkit-mask-image:linear-gradient(to_right,#000_46%,transparent)]";
 const FADE_RIGHT =
   "[mask-image:linear-gradient(to_left,#000_46%,transparent)] [-webkit-mask-image:linear-gradient(to_left,#000_46%,transparent)]";
-// Bottom fade only: the band starts crisp under the section's hairline and melts into the cream below.
-const FADE_BOTTOM =
-  "[mask-image:linear-gradient(to_bottom,#000_62%,transparent)] [-webkit-mask-image:linear-gradient(to_bottom,#000_62%,transparent)]";
+// Each band is crisp at the block's outer edge and melts into the plain middle at its inner edge.
+const FADE_DOWN =
+  "[mask-image:linear-gradient(to_bottom,#000_52%,transparent)] [-webkit-mask-image:linear-gradient(to_bottom,#000_52%,transparent)]";
+const FADE_UP =
+  "[mask-image:linear-gradient(to_top,#000_52%,transparent)] [-webkit-mask-image:linear-gradient(to_top,#000_52%,transparent)]";
 
 // A tablet held sideways (viewport between 1:1 and 3:2, e.g. iPad 4:3) is much taller for its width
 // than a laptop, so the photograph is scaled up and its objects would crowd the headline. There each
@@ -40,20 +46,25 @@ const FRAME_SIZES = "(min-width: 1536px) 960px, 800px";
 
 export function ClosingBackdrop({
   variant = "frame",
+  edge = "top",
   className,
 }: {
-  variant?: "frame" | "banner";
+  variant?: "frame" | "band";
+  /** For the band variant: which end of the block it fills. */
+  edge?: "top" | "bottom";
   className?: string;
 }) {
-  if (variant === "banner") {
+  if (variant === "band") {
+    const top = edge === "top";
     return (
       <div aria-hidden="true" className={cn("pointer-events-none", className)}>
         <ImageSlot
           slot="journey-closing"
           sizes="100vw"
-          // 16:9 shows the whole photograph; from 480 px a 2:1 crop keeps the band from towering over the
-          // words on a tablet while trimming only 11 % off the top and bottom
-          className={cn("aspect-video w-full min-[480px]:aspect-[2/1]", FADE_BOTTOM)}
+          // 3.5:1 across the full width = the photograph's upper (or lower) half exactly, with no
+          // sideways crop; the height follows the width, so the bands scale with the screen
+          className={cn("aspect-[3.5/1] w-full", top ? FADE_DOWN : FADE_UP)}
+          imageClassName={top ? "object-top" : "object-bottom"}
         />
       </div>
     );

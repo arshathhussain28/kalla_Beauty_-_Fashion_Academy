@@ -75,16 +75,18 @@ function KalaJourneyStatic() {
 }
 
 // The close of the stacked story, for phones and small tablets. A sibling of the story column — not
-// inside it — so the photograph runs truly edge to edge at every width (inside the centred
-// 672 px column it floated between cream margins on a small tablet). The flat lay is shown whole,
-// as a band ABOVE the words rather than behind them: a phone is too narrow to set a two-line
-// headline between two clusters of objects without the type landing on top of them. The band
-// fades out at the bottom into the cream the words sit on.
+// inside it — so it runs truly edge to edge at every width. The words sit ON the picture, as on
+// desktop: the block's background is the photograph's own background colour, the flat lay's upper
+// half runs across the top and its lower half across the bottom (ClosingBackdrop "band"), and the
+// words are in the plain middle where no objects are. (Side clusters, as on desktop, would sit
+// behind a two-line headline on a phone.)
 function KalaJourneyClosing() {
   return (
-    <div className="mt-4 border-t border-border text-center">
-      <ClosingBackdrop variant="banner" />
-      <div className="mx-auto max-w-2xl px-6 pb-24 pt-5 sm:pt-8">
+    // #f5e6df is the photograph's background colour (median of its quiet centre) — an image
+    // colour, not a brand token, so that the plain middle and the photograph are one surface
+    <div className="mt-4 border-t border-border bg-[#f5e6df] text-center">
+      <ClosingBackdrop variant="band" edge="top" />
+      <div className="mx-auto max-w-2xl px-6 pb-3 pt-1 sm:py-8">
         <Reveal>
           {/* tighter tracking on the narrowest phones so the line stays on one row at 320 px */}
           <p className="text-eyebrow font-medium uppercase tracking-[0.18em] text-wine min-[400px]:tracking-[0.3em]">
@@ -103,6 +105,7 @@ function KalaJourneyClosing() {
           </div>
         </Reveal>
       </div>
+      <ClosingBackdrop variant="band" edge="bottom" />
     </div>
   );
 }
