@@ -74,29 +74,45 @@ function KalaJourneyStatic() {
   );
 }
 
-// The close of the stacked story, for phones and small tablets. A sibling of the story column — not
-// inside it — so it runs truly edge to edge at every width. The words sit ON the picture, as on
-// desktop: the block's background is the photograph's own background colour, the flat lay's upper
-// half runs across the top and its lower half across the bottom (ClosingBackdrop "band"), and the
-// words are in the plain middle where no objects are. (Side clusters, as on desktop, would sit
-// behind a two-line headline on a phone.)
+// The close of the stacked story, for phones and small tablets: the same picture and the same
+// composition as desktop. The WHOLE photograph (ClosingBackdrop "whole") runs edge to edge at its
+// natural 16:9 shape — both clusters of objects in full, left and right — and the words sit on top,
+// in the middle of the picture, in a column scaled to that middle (about 58 % of the width, never
+// more than 22rem) with the type sized down to match, exactly as the desktop words sit between the
+// two sides. The block is a one-cell grid holding the picture and the words, so it is always at
+// least as tall as the picture and as tall as the words need; when the words are taller than the
+// picture the picture is centred, and the surface above and below it is the photograph's own
+// background colour, which is also the block's background. A soft veil behind the words keeps them
+// legible where they reach the clusters' faded inner edges.
 function KalaJourneyClosing() {
   return (
     // #f5e6df is the photograph's background colour (median of its quiet centre) — an image
-    // colour, not a brand token, so that the plain middle and the photograph are one surface
-    <div className="mt-4 border-t border-border bg-[#f5e6df] text-center">
-      <ClosingBackdrop variant="band" edge="top" />
-      <div className="mx-auto max-w-2xl px-6 pb-3 pt-1 sm:py-8">
+    // colour, not a brand token, so that the plain surface and the photograph are one
+    <div className="mt-4 grid border-t border-border bg-[#f5e6df] text-center">
+      <ClosingBackdrop variant="whole" className="self-center [grid-area:1/1]" />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none self-stretch [grid-area:1/1] bg-[radial-gradient(ellipse_54%_74%_at_center,rgba(245,230,223,0.94),rgba(245,230,223,0.7)_55%,rgba(245,230,223,0)_100%)]"
+      />
+      <div className="relative z-10 mx-auto w-[58%] min-w-[12.5rem] max-w-[22rem] self-center py-8 [grid-area:1/1] sm:py-10">
         <Reveal>
-          {/* tighter tracking on the narrowest phones so the line stays on one row at 320 px */}
-          <p className="text-eyebrow font-medium uppercase tracking-[0.18em] text-wine min-[400px]:tracking-[0.3em]">
+          {/* sized to the middle of the picture: 10px type on the narrowest phones, the brand eyebrow
+              size from 480px */}
+          <p className="whitespace-nowrap text-[10px] font-medium uppercase tracking-[0.14em] text-wine min-[480px]:text-eyebrow min-[480px]:tracking-[0.24em]">
             Craft · Confidence · Career
           </p>
-          <h3 className="mt-5 text-[40px] font-display font-semibold leading-[1.05] tracking-[0.01em] text-ink sm:mt-6 sm:text-[48px]">
-            Craft Your Confidence.
+          <h3 className="mt-3 text-[32px] font-display font-semibold leading-[1.08] tracking-[0.01em] text-ink min-[480px]:mt-4 sm:text-[40px]">
+            {/* always two lines: one line would run wider than the middle of the picture */}
+            Craft Your
+            <br />
+            Confidence.
           </h3>
-          <div className="mt-8 flex flex-col items-center gap-6 sm:mt-10 sm:flex-row sm:justify-center sm:gap-x-10">
-            <Button href="/courses" variant="primary">
+          <div className="mt-5 flex flex-col items-center gap-4 min-[480px]:mt-6">
+            <Button
+              href="/courses"
+              variant="primary"
+              className="px-5 text-[13px] min-[480px]:px-7 min-[480px]:text-button"
+            >
               Explore Courses
             </Button>
             <ArrowLink href={generalEnquiryWhatsAppLink()} external>
@@ -105,7 +121,6 @@ function KalaJourneyClosing() {
           </div>
         </Reveal>
       </div>
-      <ClosingBackdrop variant="band" edge="bottom" />
     </div>
   );
 }

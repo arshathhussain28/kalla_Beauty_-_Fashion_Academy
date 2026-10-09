@@ -57,7 +57,7 @@ cover every page's first impression. P2 can follow, or reuse a P1 photo (see "Re
 | `craft-mehendi.jpg` | C 1600×2000 ⌒ | Hands, cone work, an intricate bridal design. | same, Mehendi course | **P1** |
 | `craft-saree.jpg` | C 1600×2000 ⌒ | Hands arranging pleats; bridal draping. | same, Saree course | **P1** |
 | `craft-fashion.jpg` | C 1600×2000 ⌒ | Measuring, cutting or sewing a blouse. | same, Fashion course | **P1** |
-| `journey-closing.jpg` | A 16:9 **flat lay** (1672×941 supplied; 3200×1800 ideal): the five crafts' tools clustered in the left ~30% and right ~30%, the middle 40% plain cream. **Objects only — no people.** Guide: `docs/journey-closing-guide.png`. | Home journey close ("Craft Your Confidence.") — drawn as two edge-anchored halves on desktop, as top and bottom bands on phones | ✅ done |
+| `journey-closing.jpg` | A 16:9 **flat lay** (1672×941 supplied; 3200×1800 ideal): the five crafts' tools clustered in the left ~30% and right ~30%, the middle 40% plain cream. **Objects only — no people.** Guide: `docs/journey-closing-guide.png`. | Home journey close ("Craft Your Confidence.") — drawn as two edge-anchored halves on desktop and as the whole picture, edge to edge, on phones and tablets | ✅ done |
 | `story-classroom.jpg` | C 1600×2000 | Trainer correcting a student's technique, hands in frame. | Home "Learn professionally" · About "What students experience" | P2 |
 | `made-makeup.jpg` | H 1600×1200 | A finished makeup look (large tile). | Home "Made at KALA" | P2 |
 | `made-saree.jpg` | H 1600×1200 | A finished saree drape (large tile). | Home "Made at KALA" | P2 |

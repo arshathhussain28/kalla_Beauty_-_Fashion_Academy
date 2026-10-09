@@ -203,8 +203,7 @@ function ClosingLayer({
       data-reveal
       style={{ opacity: layer }}
       className={cn(
-        // portrait: the backdrop is a band across the top, so the words move down to sit beneath it
-        "absolute inset-0 isolate flex flex-col items-center justify-center px-8 text-center portrait:pt-[36%]",
+        "absolute inset-0 isolate flex flex-col items-center justify-center px-8 text-center",
         active ? "pointer-events-auto" : "pointer-events-none"
       )}
     >
@@ -212,8 +211,27 @@ function ClosingLayer({
           image here would otherwise download at page load for a picture that appears at the very
           end of the scroll. Starting at ~45 % leaves the rest of the scroll to fetch it. */}
       {showBackdrop && (
-        <m.div data-reveal style={{ scale: backdropScale }} className="absolute inset-0 -z-10">
-          <ClosingBackdrop />
+        // upright screens (`portrait:`): the whole stage is painted with the photograph's own
+        // background colour (#f5e6df — an image colour, not a brand token), so the picture covers it
+        // fully instead of floating as a band; it fades in with the rest of this layer
+        <m.div
+          data-reveal
+          style={{ scale: backdropScale }}
+          className="absolute inset-0 -z-10 portrait:bg-[#f5e6df]"
+        >
+          {/* wide and landscape screens: two edge-anchored halves; an upright screen (an iPad held
+              vertically, a rotated monitor): the whole picture, centred behind the words */}
+          <ClosingBackdrop className="portrait:hidden" />
+          <ClosingBackdrop
+            variant="whole"
+            className="absolute inset-0 hidden items-center portrait:flex"
+          />
+          {/* upright screens only: a soft veil under the words, as on the phone layout, because the
+              headline there wraps to two lines in a column narrower than the picture's middle */}
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 hidden portrait:block bg-[radial-gradient(ellipse_44%_26%_at_center,rgba(245,230,223,0.9),rgba(245,230,223,0)_100%)]"
+          />
         </m.div>
       )}
 
@@ -235,7 +253,7 @@ function ClosingLayer({
       <m.h3
         data-reveal
         style={{ opacity: headline, y: headlineY, clipPath: headlineClip }}
-        className="kala-closing-headline mt-8 max-w-3xl text-[40px] font-display font-semibold leading-[1.05] tracking-[0.01em] text-ink lg:text-display"
+        className="kala-closing-headline mt-8 max-w-3xl portrait:max-w-[6em] text-[40px] font-display font-semibold leading-[1.05] tracking-[0.01em] text-ink lg:text-display"
       >
         Craft Your Confidence.
       </m.h3>
