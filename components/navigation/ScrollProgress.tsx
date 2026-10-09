@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll } from "framer-motion";
+import { m, useScroll } from "framer-motion";
 
 // A hairline across the very top of the viewport that fills as the page is read. Wine on
 // cream at 2px — present if you look for it, invisible if you don't. `scaleX` is bound
@@ -9,7 +9,7 @@ export function ScrollProgress() {
   const { scrollYProgress } = useScroll();
 
   return (
-    <motion.div
+    <m.div
       data-reveal
       aria-hidden="true"
       style={{ scaleX: scrollYProgress }}

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
+import { m, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
 import { useRef, useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
@@ -42,7 +42,7 @@ export function CraftPinned({ slides }: CraftPinnedProps) {
       style={{ height: `${count * 100}svh` }}
     >
       <div className="sticky top-[72px] h-[calc(100svh-72px)] overflow-clip">
-        <motion.div
+        <m.div
           data-reveal
           style={{ x, width: `${count * 100}%` }}
           className="flex h-full will-change-transform"
@@ -57,7 +57,7 @@ export function CraftPinned({ slides }: CraftPinnedProps) {
               {slide.node}
             </div>
           ))}
-        </motion.div>
+        </m.div>
 
         <div
           className="absolute inset-x-12 bottom-6 flex items-center gap-6"
@@ -75,7 +75,7 @@ export function CraftPinned({ slides }: CraftPinnedProps) {
             </span>
           ))}
           <span className="relative ml-2 h-px flex-1 bg-border">
-            <motion.span
+            <m.span
               data-reveal
               style={{ scaleX: scrollYProgress }}
               className="absolute inset-0 origin-left bg-wine"

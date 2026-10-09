@@ -5,11 +5,15 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 
 // Ruled rows rather than cards, so this section reads as an index — and deliberately
 // worded as "possible directions": no placement, salary or employment promises.
-export function CareerDirections() {
+// `tone` lets the home page keep its cream / white alternation when the people section
+// above it has nothing confirmed to show yet.
+export function CareerDirections({ tone = "cream" }: { tone?: "cream" | "white" }) {
   const courses = getAllCourses();
 
   return (
-    <section className="bg-cream px-6 py-20 lg:px-12 lg:py-32">
+    <section
+      className={`px-6 py-20 lg:px-12 lg:py-32 ${tone === "white" ? "bg-white" : "bg-cream"}`}
+    >
       <div className="mx-auto max-w-[1200px]">
         <Reveal>
           <SectionHeading

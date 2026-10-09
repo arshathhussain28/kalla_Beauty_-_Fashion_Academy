@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import { m, useScroll, useTransform } from "framer-motion";
 import { useRef, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
@@ -27,9 +27,9 @@ export function Parallax({
 
   return (
     <div ref={ref} className={cn("relative overflow-hidden", className)}>
-      <motion.div data-reveal style={{ y }} className="absolute inset-x-0 -bottom-[10%] -top-[10%]">
+      <m.div data-reveal style={{ y }} className="absolute inset-x-0 -bottom-[10%] -top-[10%]">
         {children}
-      </motion.div>
+      </m.div>
     </div>
   );
 }

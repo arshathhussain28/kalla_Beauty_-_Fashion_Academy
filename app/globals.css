@@ -163,6 +163,17 @@ body {
   display: none;
 }
 
+/* The closing headline on a tablet held sideways (viewport between 1:1 and 3:2, e.g. iPad 4:3).
+   The tall screen scales the closing backdrop's objects up, so the headline steps down from the
+   64px display size to the 44px H1 size and stays clear of them. Unlayered on purpose: it must
+   win over the `lg:text-display` utility on the element. */
+@media (min-width: 768px) and (min-aspect-ratio: 1/1) and (max-aspect-ratio: 3/2) {
+  .kala-closing-headline {
+    font-size: 2.75rem;
+    line-height: 1.1;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

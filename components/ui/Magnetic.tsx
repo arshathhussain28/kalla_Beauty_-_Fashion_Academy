@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import { m, useMotionValue, useSpring } from "framer-motion";
 import { useRef, type PointerEvent, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
@@ -40,7 +40,7 @@ export function Magnetic({
   }
 
   return (
-    <motion.div
+    <m.div
       ref={ref}
       data-reveal
       style={{ x: springX, y: springY }}
@@ -49,6 +49,6 @@ export function Magnetic({
       className={cn("inline-block", className)}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }

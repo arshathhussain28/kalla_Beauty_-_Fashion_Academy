@@ -4,8 +4,9 @@ Every photograph on the site is a named slot in [`data/images.ts`](../data/image
 with one: save the file in `public/images/` using the **exact file name below**, then tell me the
 names (or set `src` and a real `alt` on that slot yourself). Nothing else changes.
 
-**53 slots + 1 share image = 54 files.** Start with the **P1** rows (20 files) — they cover every
-page's first impression. P2 can follow, or reuse a P1 photo (see "Reusing photos").
+**54 slots — 15 filled so far (with AI-generated concept photographs, see "About using ChatGPT"
+below), 39 still empty — plus the share image, which is done.** Start with the **P1** rows — they
+cover every page's first impression. P2 can follow, or reuse a P1 photo (see "Reusing photos").
 
 ---
 
@@ -56,6 +57,7 @@ page's first impression. P2 can follow, or reuse a P1 photo (see "Reusing photos
 | `craft-mehendi.jpg` | C 1600×2000 ⌒ | Hands, cone work, an intricate bridal design. | same, Mehendi course | **P1** |
 | `craft-saree.jpg` | C 1600×2000 ⌒ | Hands arranging pleats; bridal draping. | same, Saree course | **P1** |
 | `craft-fashion.jpg` | C 1600×2000 ⌒ | Measuring, cutting or sewing a blouse. | same, Fashion course | **P1** |
+| `journey-closing.jpg` | A 16:9 **flat lay** (1672×941 supplied; 3200×1800 ideal): the five crafts' tools clustered in the left ~30% and right ~30%, the middle 40% plain cream. **Objects only — no people.** Guide: `docs/journey-closing-guide.png`. | Home journey close ("Craft Your Confidence.") — drawn as two edge-anchored halves on desktop, a 16:9 banner on phones | ✅ done |
 | `story-classroom.jpg` | C 1600×2000 | Trainer correcting a student's technique, hands in frame. | Home "Learn professionally" · About "What students experience" | P2 |
 | `made-makeup.jpg` | H 1600×1200 | A finished makeup look (large tile). | Home "Made at KALA" | P2 |
 | `made-saree.jpg` | H 1600×1200 | A finished saree drape (large tile). | Home "Made at KALA" | P2 |
@@ -126,15 +128,16 @@ Also used on each course page's "Student work" strip, cropped to a square.
 
 | File name | Size | What it shows | Pri |
 |---|---|---|---|
-| `opengraph-image.jpg` | **1200 × 630** | The card shown when the site link is shared on WhatsApp, Facebook or Google. A simple branded card: wine `#7E1F3D` background, the KALA logo, "Craft Your Confidence". Put the logo and text **inside the centre 80%**. | **P1** |
+| `public/og-image.jpg` | **1200 × 630** | The card shown when the site link is shared on WhatsApp, Facebook or Google. **Done:** the approved KALA logo on the brand cream, 50 KB. | ✅ |
 
-> The site already points at `/opengraph-image`, but no file exists yet, so shared links currently show
-> **no picture**. This one matters because the link will be shared with the client. Save it as
-> `app/opengraph-image.jpg` (not in `public/`) — I can also build it for you in code.
+> Shared links used to show **no picture** (every page pointed at `/opengraph-image`, which didn't
+> exist). They now point at `/og-image.jpg`. Keep any replacement **under ~300 KB** — WhatsApp drops
+> heavier link-preview images. A real, approved photograph can replace it later (change the default in
+> `lib/seo.ts`).
 
 ---
 
-## Reusing photos (if you don't have all 53)
+## Reusing photos (if you don't have all of them)
 
 One photograph can fill several slots — I just point each slot's `src` at the same file, and each frame
 crops it differently. Sensible reuse:

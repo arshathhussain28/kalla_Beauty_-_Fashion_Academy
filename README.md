@@ -45,6 +45,12 @@ All are documented in [`.env.example`](.env.example). None are required for loca
 site falls back to `http://localhost:3000` and the number in `data/site.ts`. Server-only values
 (`LEADS_WEBHOOK_*`) must never be given a `NEXT_PUBLIC_` prefix.
 
+**Before launch, set `LEADS_WEBHOOK_URL`** (and ideally `LEADS_WEBHOOK_SECRET`) in the production
+environment. It is where every website enquiry is delivered. Until it is set, the enquiry form does
+not accept leads: it tells the visitor to use WhatsApp or the phone instead, rather than reporting a
+success nobody receives. The payload, signature and failure behaviour are documented in
+[`.env.example`](.env.example).
+
 ## Project layout
 
 ```

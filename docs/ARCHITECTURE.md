@@ -121,7 +121,7 @@ relied on as implicit token behaviour).
 | `/about` | **Real** — story → beliefs → method → experience → directions → people, `LeadForm` at the close (§3b) |
 | `/contact` | Real, `LeadForm` + WhatsApp CTA |
 | `/privacy`, `/terms` | Stub — placeholder routes so footer links resolve |
-| `/api/leads` (POST) | Real — Zod validation, honeypot, rate limit |
+| `/api/leads` (POST) | Real — origin + content-type checks, Zod validation, honeypot, rate limit, signed webhook delivery (503 until a destination is configured — see §7) |
 | `/sitemap.xml`, `/robots.txt`, `/icon` | Real |
 
 ---
@@ -250,7 +250,7 @@ Six signature moments, deliberately not "animate everything":
 | Moment | Where | How |
 |---|---|---|
 | Hero reveal | `Hero` | **Pure CSS** (`.kala-rise`, `.kala-settle`) — plays on first paint, no JS, no LCP penalty |
-| The KALA Journey | `KalaJourneyPinned` | Pinned stage (270svh tablet / 340svh desktop), one scroll progress drives five states: intro → 01 Craft → 02 Confidence → 03 Career → closing "Craft Your Confidence." Image frame is one arch that never leaves — each stage's photo is revealed over the last by an animated `clip-path` + scale, so the scenes feel continuous. A 01/02/03 rail fills as you go. <768px and reduced motion get `KalaJourneyStatic`, a dedicated vertical story |
+| The KALA Journey | `KalaJourneyPinned` | Pinned stage (270svh tablet / 340svh desktop), one scroll progress drives five states: intro → 01 Craft → 02 Confidence → 03 Career → closing "Craft Your Confidence." Image frame is one arch that never leaves — each stage's photo is revealed over the last by an animated `clip-path` + scale, so the scenes feel continuous. A 01/02/03 rail fills as you go. <768px and reduced motion get `KalaJourneyStatic`, a dedicated vertical story. The closing line sits on a flat-lay backdrop (`ClosingBackdrop`, slot `journey-closing`): two edge-anchored halves that fade toward the text on the pinned stage (narrower on landscape tablets, a top band when the screen is portrait), a full-bleed 16:9 / 2:1 banner above the words on phones, and it only mounts once the visitor is ~45 % through the scroll so it costs nothing at page load. The Craft / Confidence / Career frames share one shape on the stacked layout and on About |
 | Pinned craft scroll | `CraftPinned` | Framer `useScroll` drives a translateX track inside a `sticky` stage (section is n × 100svh). Desktop only |
 | Curtain reveal | `CurtainReveal` | wine panel `scaleY 1→0` + image `scale 1.12→1`; transform-only |
 | Learning journey | `LearningMethod` | scroll-drawn connecting line; stages light up at viewport centre and stay lit |
@@ -423,16 +423,38 @@ strict, Tailwind v4, Zod, `clsx`+`tailwind-merge`) plus:
 
 ## 7. Security Architecture
 
-Unchanged from Stage 1 — see git history. Nothing in this pass touched
-`/api/leads`, headers, or validation.
+**Lead delivery (`app/api/leads/route.ts`).** The only server endpoint. In order, a request is:
+rate-limited per client (5 / 60 s, in-memory, best-effort), rejected if its `Origin` is another
+site (403), rejected unless `Content-Type: application/json` (415) or if the body is over 4 KB
+(413), checked for the honeypot field (a bot gets a fake success and nothing is delivered),
+validated with the shared Zod schema (400), and then **delivered** to `LEADS_WEBHOOK_URL` as a
+signed JSON POST (HMAC-SHA256 in `X-KALA-Signature`, 8 s timeout, https only in production).
+The route never returns success for a lead it did not deliver: with no destination configured,
+or if the destination fails, it answers 503 and the form shows WhatsApp / phone links instead.
+`.env.example` documents the payload and signature format. Only the lead id is ever logged.
+
+**Headers (`next.config.ts`).** HSTS, `X-Content-Type-Options`, `X-Frame-Options: DENY`,
+`Referrer-Policy`, `Permissions-Policy`, and — in production builds — a Content-Security-Policy
+built from what the site really loads (self-hosted scripts/styles/fonts/images, one same-origin
+POST). `'unsafe-inline'` remains on `script-src` and `style-src` because Next.js and Framer
+Motion write inline scripts/styles; a nonce policy would end static rendering. `X-Powered-By`
+is off. When GA4 / Meta Pixel are added, extend `script-src` and `connect-src`.
+
+**Dependencies.** `npm audit` is part of the release gate. At the time of writing the only
+open advisories are in the dev-only lint toolchain (`braces` → `micromatch` → `fast-glob` →
+`@next/eslint-plugin-next`), which ships nothing to visitors and has no patched release.
+
+**Content gating.** `data/trainers.ts` carries `confirmed: boolean`; nothing renders a trainer
+(the home "people" section, a course page's Trainer line) until it is `true`, so placeholder
+names and invented titles cannot reach a visitor.
 
 ---
 
 ## What's still open
 
-- **Photography** — 12 of the 53 slots in `data/images.ts` now carry a photograph (hero,
-  founder, the three journey stages, the five course crafts and the "learn professionally"
-  story frame); the other 41 are still empty frames, each `label` being the shot brief. Exact
+- **Photography** — 15 of the 54 slots in `data/images.ts` now carry a photograph (hero,
+  founder, the three journey stages, the five course crafts, the "learn professionally"
+  story frame, the two Why KALA frames and the closing flat-lay backdrop); the other 39 are still empty frames, each `label` being the shot brief. Exact
   file names and pixel sizes are in [`IMAGE-BRIEF.md`](IMAGE-BRIEF.md). The photographs wired
   so far are AI-generated or AI-assisted concepts (the founder, a uniform and wall signage
   that are not the academy's real ones), so they are placeholders for review — authentic
@@ -448,10 +470,13 @@ Unchanged from Stage 1 — see git history. Nothing in this pass touched
 - Real content for the editorial pages: the founder's story and name, real trainer
   names/roles (`data/about.ts` `PEOPLE` / `ABOUT_STORY`), and real captions for The Work
   once its photographs exist (`data/work.ts`). Optional: a lightbox for `/the-work`.
-- **Visible placeholder copy on pages outside this pass:** `/privacy` and `/terms` still
-  say "pending legal review — placeholder route", and the homepage `Faculty` section shows
-  "Placeholder Trainer Name" / placeholder bios from `data/trainers.ts`. These need real
-  text (legal text and trainer details have to come from the client) before launch.
+- **Lead destination** — set `LEADS_WEBHOOK_URL` (and `LEADS_WEBHOOK_SECRET`) in the
+  production environment. Until then the enquiry form shows its WhatsApp / phone fallback
+  instead of accepting leads (§7). The single most important launch task.
+- **Visible placeholder copy:** `/privacy` and `/terms` still say "pending legal review —
+  placeholder route"; the legal text has to come from the client, and the privacy notice is
+  linked from the enquiry form, so it is a launch requirement. (The home "people" section and
+  course-page Trainer line are now hidden until `data/trainers.ts` has confirmed people.)
 - FAQ: `data/faqs.ts` is still placeholder and is not rendered anywhere yet.
 - CSP hardening, once real third-party scripts (analytics, maps) exist to tune it
   against.

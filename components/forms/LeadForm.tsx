@@ -1,8 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { useState, type FormEvent } from "react";
+import { SITE_PHONE_DISPLAY, SITE_PHONE_TEL } from "@/data/site";
 import { leadFormSchema } from "@/lib/validation";
 import { trackEvent } from "@/lib/analytics";
+import { generalEnquiryWhatsAppLink } from "@/lib/whatsapp";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/Button";
 
@@ -45,6 +48,9 @@ interface LeadFormProps {
 export function LeadForm({ courseSlug, className }: LeadFormProps) {
   const [status, setStatus] = useState<Status>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  // True when the server could not take the lead (no destination configured, or it was
+  // unreachable). The visitor is then offered WhatsApp / phone instead of a blind retry.
+  const [showFallback, setShowFallback] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
 
   function handleFocusOnce() {
@@ -57,6 +63,7 @@ export function LeadForm({ courseSlug, className }: LeadFormProps) {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setErrorMessage(null);
+    setShowFallback(false);
 
     // Captured synchronously: React nullifies event.currentTarget once the handler
     // yields at the first `await`, so it can't be read again after the fetch below.
@@ -68,6 +75,8 @@ export function LeadForm({ courseSlug, className }: LeadFormProps) {
       name: formData.get("name"),
       phone: formData.get("phone"),
       preferredContactTime: formData.get("preferredContactTime") || undefined,
+      // Which page the enquiry came from, so the advisor knows where the interest started.
+      source: window.location.pathname,
       courseSlug,
       company: formData.get("company") || undefined,
     };
@@ -89,6 +98,7 @@ export function LeadForm({ courseSlug, className }: LeadFormProps) {
 
       if (!response.ok) {
         const payload = await response.json().catch(() => null);
+        setShowFallback(response.status >= 500 || payload?.fallback === true);
         throw new Error(payload?.error ?? "Something went wrong. Please try again.");
       }
 
@@ -97,6 +107,12 @@ export function LeadForm({ courseSlug, className }: LeadFormProps) {
       form.reset();
     } catch (error) {
       setStatus("error");
+      if (error instanceof TypeError) {
+        // fetch() rejects with a TypeError when the request never reached the server.
+        setShowFallback(true);
+        setErrorMessage("We couldn't reach the server. Check your connection, or contact us directly.");
+        return;
+      }
       setErrorMessage(error instanceof Error ? error.message : "Something went wrong.");
     }
   }
@@ -162,14 +178,31 @@ export function LeadForm({ courseSlug, className }: LeadFormProps) {
         <label htmlFor="name" className={labelClasses}>
           Name
         </label>
-        <input id="name" name="name" type="text" required className={cn(inputClasses, "mt-2")} />
+        <input
+          id="name"
+          name="name"
+          type="text"
+          required
+          autoComplete="name"
+          maxLength={120}
+          className={cn(inputClasses, "mt-2")}
+        />
       </div>
 
       <div>
         <label htmlFor="phone" className={labelClasses}>
           Phone / WhatsApp
         </label>
-        <input id="phone" name="phone" type="tel" required className={cn(inputClasses, "mt-2")} />
+        <input
+          id="phone"
+          name="phone"
+          type="tel"
+          inputMode="tel"
+          required
+          autoComplete="tel"
+          maxLength={20}
+          className={cn(inputClasses, "mt-2")}
+        />
       </div>
 
       <div>
@@ -194,9 +227,24 @@ export function LeadForm({ courseSlug, className }: LeadFormProps) {
       </div>
 
       {status === "error" && errorMessage && (
-        <p role="alert" className="text-small text-red-700">
-          {errorMessage}
-        </p>
+        <div role="alert" className="space-y-3 border border-red-700/30 bg-white p-4">
+          <p className="text-small text-red-700">{errorMessage}</p>
+          {showFallback && (
+            <p className="flex flex-wrap items-center gap-x-6 gap-y-2 text-small font-medium uppercase tracking-[0.12em]">
+              <a
+                href={generalEnquiryWhatsAppLink({ source: "enquiry-form-fallback" })}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="py-1 text-wine underline underline-offset-4"
+              >
+                WhatsApp us
+              </a>
+              <a href={`tel:${SITE_PHONE_TEL}`} className="py-1 text-wine underline underline-offset-4">
+                Call {SITE_PHONE_DISPLAY}
+              </a>
+            </p>
+          )}
+        </div>
       )}
 
       <Button
@@ -207,6 +255,15 @@ export function LeadForm({ courseSlug, className }: LeadFormProps) {
       >
         {status === "submitting" ? "Sending…" : "Get Course Details"}
       </Button>
+
+      <p className="text-small text-ink-muted">
+        By sending this form you agree that KALA may contact you on this number about your
+        enquiry. See our{" "}
+        <Link href="/privacy" className="underline underline-offset-4 hover:text-wine">
+          Privacy Policy
+        </Link>
+        .
+      </p>
     </form>
   );
 }

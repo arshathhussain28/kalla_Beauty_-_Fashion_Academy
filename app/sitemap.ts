@@ -2,9 +2,10 @@ import type { MetadataRoute } from "next";
 import { getSiteUrl } from "@/lib/seo";
 import { getAllCourses } from "@/data/courses";
 
+// No `lastModified`: the pages have no tracked edit date, and stamping every URL with the
+// build time would tell crawlers everything changed on every deploy.
 export default function sitemap(): MetadataRoute.Sitemap {
   const siteUrl = getSiteUrl();
-  const now = new Date();
 
   const staticRoutes: MetadataRoute.Sitemap = [
     "",
@@ -13,14 +14,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/the-work",
     "/about",
     "/contact",
-  ].map((path) => ({
-    url: `${siteUrl}${path}`,
-    lastModified: now,
-  }));
+  ].map((path) => ({ url: `${siteUrl}${path}` }));
 
   const courseRoutes: MetadataRoute.Sitemap = getAllCourses().map((course) => ({
     url: `${siteUrl}/courses/${course.slug}`,
-    lastModified: now,
   }));
 
   return [...staticRoutes, ...courseRoutes];

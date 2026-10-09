@@ -62,6 +62,7 @@ export function Footer() {
               alt=""
               width={944}
               height={944}
+              sizes="48px"
               className="h-12 w-auto rounded-sm"
             />
             <span className="flex flex-col">
@@ -135,7 +136,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-16 flex flex-col gap-4 border-t border-cream/15 pt-8 text-descriptor uppercase tracking-[0.3em] text-cream/50 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-16 flex flex-col gap-4 border-t border-cream/15 pt-8 text-descriptor uppercase tracking-[0.3em] text-cream/60 sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} KALA Beauty and Fashion Academy</p>
           <div className="flex gap-6">
             <Link href="/privacy" className="hover:text-rose-light">

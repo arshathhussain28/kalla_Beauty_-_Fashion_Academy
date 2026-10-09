@@ -1,6 +1,14 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
-import { DEFAULT_DESCRIPTION, SITE_NAME, getSiteUrl, isIndexingAllowed } from "@/lib/seo";
+import {
+  DEFAULT_DESCRIPTION,
+  SITE_NAME,
+  getSiteUrl,
+  isIndexingAllowed,
+  organizationJsonLd,
+} from "@/lib/seo";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { MotionProvider } from "@/components/MotionProvider";
 import { Navbar } from "@/components/navigation/Navbar";
 import { ScrollProgress } from "@/components/navigation/ScrollProgress";
 import { Footer } from "@/components/Footer";
@@ -57,11 +65,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${playfairDisplay.variable} ${jost.variable} h-full`}
     >
       <body className="flex min-h-full flex-col bg-cream pb-[calc(3.5rem+env(safe-area-inset-bottom))] font-sans text-ink antialiased lg:pb-0">
-        <ScrollProgress />
-        <Navbar />
-        {children}
-        <Footer />
-        <FloatingWhatsApp />
+        <JsonLd data={organizationJsonLd()} />
+        <MotionProvider>
+          <ScrollProgress />
+          <Navbar />
+          {children}
+          <Footer />
+          <FloatingWhatsApp />
+        </MotionProvider>
       </body>
     </html>
   );

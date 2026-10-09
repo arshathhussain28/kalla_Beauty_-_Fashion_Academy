@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion, type Variants } from "framer-motion";
+import { AnimatePresence, m, type Variants } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -53,6 +53,9 @@ function Logo({ onClick }: { onClick?: () => void }) {
         alt=""
         width={944}
         height={944}
+        // Drawn 64px tall: without `sizes`, next/image offers the file's own 944px (x2) width and
+        // the header logo — the LCP element on the home page — was fetched at 1920px wide.
+        sizes="64px"
         className="h-16 w-auto rounded-sm"
         priority
       />
@@ -91,8 +94,29 @@ export function Navbar() {
     document.body.style.overflow = "hidden";
     closeButtonRef.current?.focus();
 
+    // Escape closes; Tab is kept inside the menu (it is aria-modal, so focus must not wander
+    // onto the page behind it).
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setMenuOpen(false);
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+        return;
+      }
+      if (event.key !== "Tab") return;
+
+      const menu = document.getElementById("mobile-menu");
+      const focusable = menu?.querySelectorAll<HTMLElement>("a[href], button:not([disabled])");
+      if (!menu || !focusable || focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const outside = !menu.contains(document.activeElement);
+      if (event.shiftKey && (document.activeElement === first || outside)) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (document.activeElement === last || outside)) {
+        event.preventDefault();
+        first.focus();
+      }
     };
     window.addEventListener("keydown", onKey);
 
@@ -175,7 +199,7 @@ export function Navbar() {
         72px instead of covering the viewport. */}
       <AnimatePresence>
         {menuOpen && (
-          <motion.div
+          <m.div
             id="mobile-menu"
             role="dialog"
             aria-modal="true"
@@ -203,7 +227,7 @@ export function Navbar() {
               </button>
             </div>
 
-            <motion.nav
+            <m.nav
               aria-label="Mobile"
               variants={listVariants}
               initial="hidden"
@@ -211,7 +235,7 @@ export function Navbar() {
               className="mt-8 flex flex-col"
             >
               {MENU_LINKS.map((link) => (
-                <motion.div key={link.href} variants={itemVariants}>
+                <m.div key={link.href} variants={itemVariants}>
                   <Link
                     href={link.href}
                     onClick={closeMenu}
@@ -226,11 +250,11 @@ export function Navbar() {
                       →
                     </span>
                   </Link>
-                </motion.div>
+                </m.div>
               ))}
-            </motion.nav>
+            </m.nav>
 
-            <motion.div
+            <m.div
               variants={footerVariants}
               initial="hidden"
               animate="show"
@@ -252,8 +276,8 @@ export function Navbar() {
                 </a>
                 <span>{SITE_LOCATION}</span>
               </p>
-            </motion.div>
-          </motion.div>
+            </m.div>
+          </m.div>
         )}
       </AnimatePresence>
     </>

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll } from "framer-motion";
+import { m, useScroll } from "framer-motion";
 import { useRef } from "react";
 import { ABOUT_BELIEFS } from "@/data/about";
 import { ClipReveal } from "@/components/editorial/ClipReveal";
@@ -33,7 +33,7 @@ export function AboutBeliefs() {
             aria-hidden="true"
             className="absolute bottom-0 left-[7px] top-0 w-px bg-border lg:left-1/2"
           />
-          <motion.span
+          <m.span
             data-reveal
             aria-hidden="true"
             style={{ scaleY: scrollYProgress }}
@@ -47,7 +47,7 @@ export function AboutBeliefs() {
                 key={belief.name}
                 className="relative lg:grid lg:grid-cols-2 lg:items-center lg:gap-x-24"
               >
-                <motion.span
+                <m.span
                   data-reveal
                   aria-hidden="true"
                   initial={{ scale: 0.4, opacity: 0.3 }}
@@ -71,15 +71,12 @@ export function AboutBeliefs() {
                 </div>
 
                 <div className={cn("mt-8 lg:mt-0", flip && "lg:order-1")}>
+                  {/* The same frame for all three beliefs — same shape, same arch — so they read as
+                      a set and only the photographs differ. Landscape (never taller than 5:4)
+                      so a trainer-and-student photograph can't lose one of its faces. */}
                   <ClipReveal
                     from={flip ? "right" : "up"}
-                    className={cn(
-                      "aspect-[4/3] w-full",
-                      // Craft 5:4, Confidence square, Career 5:4 arch — varied, but never
-                      // so tall that a trainer-and-student photograph loses one of its faces.
-                      index === 1 ? "lg:aspect-square" : "lg:aspect-[5/4]",
-                      index === 2 && "rounded-t-[120px] lg:rounded-t-[160px]"
-                    )}
+                    className="aspect-[4/3] w-full rounded-t-[96px] lg:aspect-[5/4] lg:rounded-t-[140px]"
                   >
                     <ImageSlot
                       slot={belief.slot}

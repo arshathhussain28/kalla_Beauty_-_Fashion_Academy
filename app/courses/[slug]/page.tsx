@@ -11,7 +11,8 @@ import {
 import { craftSlot } from "@/data/images";
 import { siteFaqs } from "@/data/faqs";
 import { getTrainerBySlug } from "@/data/trainers";
-import { buildMetadata } from "@/lib/seo";
+import { SITE_NAME, buildMetadata, getSiteUrl } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { LeadForm } from "@/components/forms/LeadForm";
 import { Button } from "@/components/ui/Button";
 import { Faq } from "@/components/ui/Faq";
@@ -68,6 +69,22 @@ export default async function CoursePage({
 
   return (
     <main className="flex-1">
+      {/* Name, description and provider only — no duration, fee or outcome, none of which are
+          confirmed (see data/courses.ts). */}
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Course",
+          name: course.name,
+          description: course.description,
+          url: `${getSiteUrl()}/courses/${course.slug}`,
+          provider: {
+            "@type": "EducationalOrganization",
+            name: SITE_NAME,
+            url: getSiteUrl(),
+          },
+        }}
+      />
       <div className="bg-wine-deep px-6 py-16 text-cream lg:px-12 lg:py-20">
         <div className="mx-auto grid max-w-[1200px] items-center gap-12 lg:grid-cols-[1.25fr_1fr]">
           <div>
@@ -91,21 +108,21 @@ export default async function CoursePage({
               style={delay(550)}
             >
               <div>
-                <p className="text-descriptor uppercase tracking-[0.3em] text-cream/50">
+                <p className="text-descriptor uppercase tracking-[0.3em] text-cream/60">
                   Duration
                 </p>
                 <p className="mt-1 text-small text-cream/90">{durationLabel}</p>
               </div>
               <div>
-                <p className="text-descriptor uppercase tracking-[0.3em] text-cream/50">Level</p>
+                <p className="text-descriptor uppercase tracking-[0.3em] text-cream/60">Level</p>
                 <p className="mt-1 text-small text-cream/90">{course.level}</p>
               </div>
               <div>
-                <p className="text-descriptor uppercase tracking-[0.3em] text-cream/50">Fees</p>
+                <p className="text-descriptor uppercase tracking-[0.3em] text-cream/60">Fees</p>
                 <p className="mt-1 text-small text-cream/90">{feeLabel}</p>
               </div>
               <div>
-                <p className="text-descriptor uppercase tracking-[0.3em] text-cream/50">
+                <p className="text-descriptor uppercase tracking-[0.3em] text-cream/60">
                   Certificate
                 </p>
                 <p className="mt-1 text-small text-cream/90">On Completion</p>

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import type { ReactNode } from "react";
 import { EASE_CINEMATIC, VIEWPORT_ONCE } from "@/lib/motion";
 import { cn } from "@/lib/utils";
@@ -23,7 +23,7 @@ export function Reveal({
   className?: string;
 }) {
   return (
-    <motion.div
+    <m.div
       data-reveal
       className={className}
       initial={{ opacity: 0, y }}
@@ -32,7 +32,7 @@ export function Reveal({
       transition={{ duration: 0.9, delay, ease: EASE_CINEMATIC }}
     >
       {children}
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -52,7 +52,7 @@ export function CurtainReveal({
 }) {
   return (
     <div className={cn("relative overflow-hidden", className)}>
-      <motion.div
+      <m.div
         data-reveal
         className="h-full w-full"
         initial={{ scale: 1.12 }}
@@ -61,8 +61,8 @@ export function CurtainReveal({
         transition={{ duration: 1.6, delay, ease: EASE_CINEMATIC }}
       >
         {children}
-      </motion.div>
-      <motion.div
+      </m.div>
+      <m.div
         data-curtain
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 origin-top bg-wine-deep"

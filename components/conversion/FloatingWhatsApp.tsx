@@ -18,7 +18,10 @@ export function FloatingWhatsApp() {
 
   return (
     <>
-      <div className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-3 border-t border-border bg-white pb-[env(safe-area-inset-bottom)] lg:hidden">
+      <nav
+        aria-label="Quick contact"
+        className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-3 border-t border-border bg-white pb-[env(safe-area-inset-bottom)] lg:hidden"
+      >
         <a
           href={barHref}
           target="_blank"
@@ -45,7 +48,7 @@ export function FloatingWhatsApp() {
           <Mail className="h-4 w-4" strokeWidth={1.5} />
           Enquire
         </Link>
-      </div>
+      </nav>
 
       <a
         href={floatHref}

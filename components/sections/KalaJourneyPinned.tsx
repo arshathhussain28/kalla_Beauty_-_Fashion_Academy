@@ -1,10 +1,11 @@
 "use client";
 
-import { motion, useMotionValueEvent, useScroll, type MotionValue } from "framer-motion";
+import { m, useMotionValueEvent, useScroll, type MotionValue } from "framer-motion";
 import { useRef, useState } from "react";
 import { JOURNEY_INTRO, JOURNEY_STAGES, type JourneyStage } from "@/data/journey";
 import type { ImageSlotKey } from "@/data/images";
 import { ArrowLink } from "@/components/ui/ArrowLink";
+import { ClosingBackdrop } from "@/components/sections/ClosingBackdrop";
 import { Button } from "@/components/ui/Button";
 import { ImageSlot } from "@/components/ui/ImageSlot";
 import { EASE_CINEMATIC } from "@/lib/motion";
@@ -45,8 +46,8 @@ function IntroLayer({ progress }: { progress: MotionValue<number> }) {
   const y = useScrub(progress, [[0, 0], [0.15, 0], [SEG, -28]]);
 
   return (
-    <motion.div data-reveal style={{ opacity, y }} className="[grid-area:1/1]">
-      <motion.div
+    <m.div data-reveal style={{ opacity, y }} className="[grid-area:1/1]">
+      <m.div
         data-reveal
         initial={{ opacity: 0, y: 24, filter: "blur(8px)", clipPath: "inset(0% 0% 100% 0%)" }}
         whileInView={{ opacity: 1, y: 0, filter: "blur(0px)", clipPath: "inset(0% 0% -10% 0%)" }}
@@ -60,8 +61,8 @@ function IntroLayer({ progress }: { progress: MotionValue<number> }) {
           {JOURNEY_INTRO.title}
         </h2>
         <p className="mt-6 max-w-md text-body text-ink-muted">{JOURNEY_INTRO.text}</p>
-      </motion.div>
-    </motion.div>
+      </m.div>
+    </m.div>
   );
 }
 
@@ -79,7 +80,7 @@ function StageLayer({
   const y = useScrub(progress, [[a, 28], [b, 0], [c, 0], [d, -28]]);
 
   return (
-    <motion.div data-reveal style={{ opacity, y }} className="[grid-area:1/1]">
+    <m.div data-reveal style={{ opacity, y }} className="[grid-area:1/1]">
       <p className="flex items-center gap-4 text-eyebrow font-medium uppercase tracking-[0.24em]">
         <span className="text-rose-deep">{stage.number} / 03</span>
         <span className="h-px w-10 bg-rose" aria-hidden="true" />
@@ -93,7 +94,7 @@ function StageLayer({
       <p className="mt-6 text-descriptor uppercase leading-[1.9] tracking-[0.3em] text-rose-deep">
         {stage.meta.join("  ·  ")}
       </p>
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -111,16 +112,16 @@ function StageImage({
   const scale = useScrub(progress, [[from, REVEAL_ZOOM_FROM], [to, 1]]);
 
   return (
-    <motion.div data-reveal style={{ clipPath }} className="absolute inset-0">
-      <motion.div data-reveal style={{ scale }} className="h-full w-full">
+    <m.div data-reveal style={{ clipPath }} className="absolute inset-0">
+      <m.div data-reveal style={{ scale }} className="h-full w-full">
         <ImageSlot
           slot={slot}
           sizes="(min-width: 1024px) 56vw, 100vw"
           className="h-full w-full"
           imageClassName="transition-transform duration-700 ease-out group-hover:scale-[1.03]"
         />
-      </motion.div>
-    </motion.div>
+      </m.div>
+    </m.div>
   );
 }
 
@@ -148,7 +149,7 @@ function RailItem({
         {number}
       </span>
       <span className="relative block h-px w-14 bg-border">
-        <motion.span
+        <m.span
           data-reveal
           style={{ scaleX: fill }}
           className="absolute inset-0 origin-left bg-wine"
@@ -163,7 +164,7 @@ function ConnectorLine({ progress }: { progress: MotionValue<number> }) {
 
   return (
     <li aria-hidden="true" className="relative block h-px w-8 bg-border sm:w-14">
-      <motion.span
+      <m.span
         data-reveal
         style={{ scaleX }}
         className="absolute inset-0 origin-left bg-wine"
@@ -173,7 +174,16 @@ function ConnectorLine({ progress }: { progress: MotionValue<number> }) {
 }
 
 /** Closing state: the three words connect, then "Craft Your Confidence." and the CTAs. */
-function ClosingLayer({ progress, active }: { progress: MotionValue<number>; active: boolean }) {
+function ClosingLayer({
+  progress,
+  active,
+  showBackdrop,
+}: {
+  progress: MotionValue<number>;
+  active: boolean;
+  /** Mount the backdrop photograph only once the visitor is part-way through the journey. */
+  showBackdrop: boolean;
+}) {
   const layer = useScrub(progress, [[0.8, 0], [0.84, 1]]);
   const words = useScrub(progress, [[0.8, 0], [0.85, 1], [0.9, 1], [0.94, 0.45]]);
   const headline = useScrub(progress, [[0.87, 0], [0.93, 1]]);
@@ -183,20 +193,36 @@ function ClosingLayer({ progress, active }: { progress: MotionValue<number>; act
     [0.93, "inset(0% 0% -10% 0%)"],
   ]);
   const actions = useScrub(progress, [[0.93, 0], [0.97, 1]]);
+  // The backdrop starts a touch zoomed in and settles as the headline lands.
+  const backdropScale = useScrub(progress, [[0.8, 1.06], [0.97, 1]]);
 
   return (
-    <motion.div
+    // `isolate` gives the layer its own stacking context so the backdrop (z -10) sits behind
+    // the text without slipping behind the stage itself.
+    <m.div
       data-reveal
       style={{ opacity: layer }}
       className={cn(
-        "absolute inset-0 flex flex-col items-center justify-center px-8 text-center",
+        // portrait: the backdrop is a band across the top, so the words move down to sit beneath it
+        "absolute inset-0 isolate flex flex-col items-center justify-center px-8 text-center portrait:pt-[36%]",
         active ? "pointer-events-auto" : "pointer-events-none"
       )}
     >
-      <motion.ul
+      {/* Mounted only from the journey's midpoint: the stage sits just below the hero, so a lazy
+          image here would otherwise download at page load for a picture that appears at the very
+          end of the scroll. Starting at ~45 % leaves the rest of the scroll to fetch it. */}
+      {showBackdrop && (
+        <m.div data-reveal style={{ scale: backdropScale }} className="absolute inset-0 -z-10">
+          <ClosingBackdrop />
+        </m.div>
+      )}
+
+      {/* wine, not rose-deep: this line now sits over a photographic backdrop, and wine holds
+          8.8 : 1 on cream where rose-deep manages 3.4 : 1 */}
+      <m.ul
         data-reveal
         style={{ opacity: words }}
-        className="flex items-center gap-4 text-eyebrow font-medium uppercase tracking-[0.3em] text-rose-deep sm:gap-6"
+        className="flex items-center gap-4 text-eyebrow font-medium uppercase tracking-[0.3em] text-wine sm:gap-6"
         aria-label="Craft, Confidence, Career"
       >
         <li>Craft</li>
@@ -204,17 +230,17 @@ function ClosingLayer({ progress, active }: { progress: MotionValue<number>; act
         <li>Confidence</li>
         <ConnectorLine progress={progress} />
         <li>Career</li>
-      </motion.ul>
+      </m.ul>
 
-      <motion.h3
+      <m.h3
         data-reveal
         style={{ opacity: headline, y: headlineY, clipPath: headlineClip }}
-        className="mt-8 max-w-3xl text-[40px] font-display font-semibold leading-[1.05] tracking-[0.01em] text-ink lg:text-display"
+        className="kala-closing-headline mt-8 max-w-3xl text-[40px] font-display font-semibold leading-[1.05] tracking-[0.01em] text-ink lg:text-display"
       >
         Craft Your Confidence.
-      </motion.h3>
+      </m.h3>
 
-      <motion.div
+      <m.div
         data-reveal
         style={{ opacity: actions }}
         className="mt-10 flex flex-wrap items-center justify-center gap-x-8 gap-y-4"
@@ -225,8 +251,8 @@ function ClosingLayer({ progress, active }: { progress: MotionValue<number>; act
         <ArrowLink href={generalEnquiryWhatsAppLink()} external>
           Talk to KALA
         </ArrowLink>
-      </motion.div>
-    </motion.div>
+      </m.div>
+    </m.div>
   );
 }
 
@@ -237,10 +263,12 @@ function ClosingLayer({ progress, active }: { progress: MotionValue<number>; act
 export function KalaJourneyPinned() {
   const ref = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
+  const [backdropReady, setBackdropReady] = useState(false);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
 
   useMotionValueEvent(scrollYProgress, "change", (value) => {
     setActive(Math.min(STATE_COUNT - 1, Math.max(0, Math.floor(value * STATE_COUNT))));
+    if (value > 0.45) setBackdropReady(true);
   });
 
   const gridOpacity = useScrub(scrollYProgress, [[0.76, 1], [0.83, 0]]);
@@ -261,7 +289,7 @@ export function KalaJourneyPinned() {
       className="journey-pinned relative hidden h-[270svh] md:block lg:h-[340svh]"
     >
       <div className="sticky top-[72px] h-[calc(100svh-72px)] overflow-clip">
-        <motion.div data-reveal style={{ opacity: gridOpacity }} className="absolute inset-0">
+        <m.div data-reveal style={{ opacity: gridOpacity }} className="absolute inset-0">
           <div className="mx-auto flex h-full max-w-[1200px] flex-col gap-8 px-8 pb-16 pt-6 lg:justify-center lg:px-12 lg:py-0">
             <div className="grid lg:w-[40%] lg:pr-6">
               <IntroLayer progress={scrollYProgress} />
@@ -271,7 +299,7 @@ export function KalaJourneyPinned() {
             </div>
 
             <div className="group relative order-first h-[50%] w-[84%] self-end overflow-hidden rounded-t-[160px] lg:absolute lg:right-0 lg:top-[7%] lg:order-none lg:h-[86%] lg:w-[56%] lg:rounded-none lg:rounded-tl-[200px]">
-              <motion.div
+              <m.div
                 data-reveal
                 className="absolute inset-0"
                 initial={{ clipPath: CLIP_HIDDEN }}
@@ -285,7 +313,7 @@ export function KalaJourneyPinned() {
                   className="h-full w-full"
                   imageClassName="transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                 />
-              </motion.div>
+              </m.div>
               {JOURNEY_STAGES.map((stage, index) => (
                 <StageImage
                   key={stage.key}
@@ -311,10 +339,14 @@ export function KalaJourneyPinned() {
               />
             ))}
           </ol>
-        </motion.div>
+        </m.div>
 
         <div onFocusCapture={() => active < STATE_COUNT - 1 && revealClosing()}>
-          <ClosingLayer progress={scrollYProgress} active={active === STATE_COUNT - 1} />
+          <ClosingLayer
+            progress={scrollYProgress}
+            active={active === STATE_COUNT - 1}
+            showBackdrop={backdropReady}
+          />
         </div>
       </div>
     </div>

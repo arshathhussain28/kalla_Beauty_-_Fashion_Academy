@@ -1,5 +1,11 @@
 import { z } from "zod";
 
+// Zod 4 probes `new Function("")` to decide whether it may JIT-compile schemas. The site's
+// Content-Security-Policy forbids eval, so every page load logged a blocked-eval violation in
+// the browser. This schema is four small fields — JIT buys nothing — so switch it off and the
+// probe never runs.
+z.config({ jitless: true });
+
 /**
  * Shared client + server schema for the "Find Your Course" lead form (master spec section 17).
  * The server route re-validates with this same schema — never trust client-side validation alone.

@@ -19,6 +19,7 @@ export type ImageSlotKey =
   | "journey-craft"
   | "journey-confidence"
   | "journey-career"
+  | "journey-closing"
   | `craft-${CourseCategory}`
   | "story-classroom"
   | "made-makeup"
@@ -112,6 +113,16 @@ export const imageSlots: Record<ImageSlotKey, ImageSlotDef> = {
     // 96% frames the pair with the bride's necklace and saree intact, whatever shape the frame
     // takes (checked at 0.9, 1.0, 1.12 and 1.25).
     focus: "96% 40%",
+  },
+  "journey-closing": {
+    src: "/images/journey-closing.jpg",
+    // Decorative backdrop for the "Craft Your Confidence." close — objects only, no people.
+    alt: "",
+    label: "Journey · Closing — flat lay of the five crafts' tools, objects at the edges, calm centre",
+    // 16:9 flat lay: makeup brushes, towel, comb and henna cones fill the left ~31%, silk, thread
+    // and a tape measure the right ~33%, and the middle 31–67% is plain. ClosingBackdrop draws it
+    // as two halves (the left half pinned to the image's left edge, the right half to its right)
+    // so those clusters stay in view whatever shape the frame has — no `focus` here on purpose.
   },
   "craft-makeup": {
     src: "/images/craft-makeup.jpg",
@@ -224,14 +235,21 @@ export const imageSlots: Record<ImageSlotKey, ImageSlotDef> = {
 
   // ── Why KALA ───────────────────────────────────────────────────────────────
   "why-hero": {
-    src: null,
-    alt: "A KALA student absorbed in her technique",
+    src: "/images/why-hero.jpg",
+    alt: "A student in a KALA apron sketches a fashion design while her trainer points out a detail",
     label: "Why KALA — a student mid-technique, natural light, editorial crop (4:5)",
+    // The source is 4:5 — the same shape as the arch frame — so nothing is cropped and no focus
+    // point is needed. The arch (a full semicircle on top) clears the trainer's hair and both
+    // faces; the student's face sits at ~36% down and the trainer's at ~21%.
   },
   "why-craft": {
-    src: null,
-    alt: "Hands at work on a craft",
+    src: "/images/why-craft.jpg",
+    alt: "A student in a KALA apron stitches a pleat while her trainer guides her hands",
     label: "Craft — close-up of hands working: brush, needle, cone or pleats (4:5)",
+    // 4:5 source. The frame sits inside a Parallax, which draws the photograph 20% taller than
+    // the frame shows, so the visible window is ~17% narrower than the source: centred, it holds
+    // both faces, the needle and the trainer's guiding hand (the student's face at ~32% across,
+    // the trainer's at ~75%). No focus point needed.
   },
   "why-watch": {
     src: null,

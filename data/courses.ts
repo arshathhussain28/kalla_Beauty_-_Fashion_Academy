@@ -57,8 +57,6 @@ export interface Course {
   careerDirections: string[];
   trainerSlug: string;
   faqs: CourseFaq[];
-  heroImage: string;
-  gallery: string[];
   active: boolean;
 }
 
@@ -129,8 +127,6 @@ export const courses: Course[] = [
     ],
     trainerSlug: "placeholder-trainer-1",
     faqs: [],
-    heroImage: "/images/courses/placeholder-makeup.jpg",
-    gallery: [],
     active: true,
   },
   {
@@ -174,8 +170,6 @@ export const courses: Course[] = [
     ],
     trainerSlug: "placeholder-trainer-2",
     faqs: [],
-    heroImage: "/images/courses/placeholder-beautician.jpg",
-    gallery: [],
     active: true,
   },
   {
@@ -223,8 +217,6 @@ export const courses: Course[] = [
     ],
     trainerSlug: "placeholder-trainer-1",
     faqs: [],
-    heroImage: "/images/courses/placeholder-mehendi.jpg",
-    gallery: [],
     active: true,
   },
   {
@@ -266,8 +258,6 @@ export const courses: Course[] = [
     ],
     trainerSlug: "placeholder-trainer-2",
     faqs: [],
-    heroImage: "/images/courses/placeholder-saree.jpg",
-    gallery: [],
     active: true,
   },
   {
@@ -316,8 +306,6 @@ export const courses: Course[] = [
     ],
     trainerSlug: "placeholder-trainer-3",
     faqs: [],
-    heroImage: "/images/courses/placeholder-fashion.jpg",
-    gallery: [],
     active: true,
   },
 ];

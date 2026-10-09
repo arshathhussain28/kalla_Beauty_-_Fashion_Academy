@@ -1,3 +1,4 @@
+import { getConfirmedTrainers } from "@/data/trainers";
 import { buildMetadata, SITE_NAME } from "@/lib/seo";
 import { Hero } from "@/components/sections/Hero";
 import { KalaJourney } from "@/components/sections/KalaJourney";
@@ -30,7 +31,7 @@ export default function Home() {
       <EditorialStory />
       <MadeAtKala />
       <Faculty />
-      <CareerDirections />
+      <CareerDirections tone={getConfirmedTrainers().length > 0 ? "cream" : "white"} />
       <FinalCTA />
       <EnquirySection />
     </main>

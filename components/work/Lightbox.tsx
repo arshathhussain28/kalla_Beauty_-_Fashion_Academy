@@ -1,6 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, m } from "framer-motion";
 import Image from "next/image";
 import { useCallback, useEffect, useRef } from "react";
 import { imageSlots, type ImageSlotKey } from "@/data/images";
@@ -66,7 +66,7 @@ export function Lightbox({ items, index, onClose, onIndexChange }: LightboxProps
   return (
     <AnimatePresence>
       {item && def?.src && (
-        <motion.div
+        <m.div
           role="dialog"
           aria-modal="true"
           aria-label={`${item.label}: ${item.caption}`}
@@ -97,7 +97,7 @@ export function Lightbox({ items, index, onClose, onIndexChange }: LightboxProps
           </div>
 
           <div className="relative min-h-0 flex-1 px-6 lg:px-24">
-            <motion.div
+            <m.div
               key={item.slot}
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -113,7 +113,7 @@ export function Lightbox({ items, index, onClose, onIndexChange }: LightboxProps
                 className="object-contain"
                 priority
               />
-            </motion.div>
+            </m.div>
 
             {items.length > 1 && (
               <>
@@ -149,7 +149,7 @@ export function Lightbox({ items, index, onClose, onIndexChange }: LightboxProps
             </p>
             <p className="mt-1 font-display text-h3">{item.caption}</p>
           </div>
-        </motion.div>
+        </m.div>
       )}
     </AnimatePresence>
   );

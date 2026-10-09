@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { WHY_IDEA } from "@/data/why-kala";
 import { EASE_CINEMATIC } from "@/lib/motion";
 
@@ -37,7 +37,7 @@ export function IdeaPillars() {
 
         <ol className="mt-16 lg:mt-24">
           {WHY_IDEA.pillars.map((pillar, index) => (
-            <motion.li
+            <m.li
               key={pillar.name}
               data-reveal
               initial="off"
@@ -47,7 +47,7 @@ export function IdeaPillars() {
               transition={{ duration: 1, ease: EASE_CINEMATIC }}
               className="relative grid items-baseline gap-x-8 gap-y-3 py-10 lg:grid-cols-[88px_1fr_auto] lg:py-14"
             >
-              <motion.span
+              <m.span
                 data-reveal
                 aria-hidden="true"
                 variants={ruleVariants}
@@ -61,7 +61,7 @@ export function IdeaPillars() {
                 {pillar.name}
               </h3>
               <p className="text-h3 text-ink-muted lg:text-right">{pillar.line}</p>
-            </motion.li>
+            </m.li>
           ))}
           <li aria-hidden="true" className="h-px bg-border" />
         </ol>

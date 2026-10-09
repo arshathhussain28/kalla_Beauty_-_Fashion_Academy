@@ -1,13 +1,17 @@
-import { trainers } from "@/data/trainers";
+import { getConfirmedTrainers } from "@/data/trainers";
 import { ImageSlot } from "@/components/ui/ImageSlot";
 import { CurtainReveal, Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
 // The people behind the craft. Portraits are environmental (in the academy, not
 // against a seamless backdrop) per the brand's photography direction; trainers stand
-// beside their students, never behind a desk. Names/bios are placeholders until real
-// trainer details are supplied.
+// beside their students, never behind a desk. Renders nothing until at least one real,
+// client-confirmed trainer exists (see `confirmed` in data/trainers.ts) — an empty-frame
+// section of placeholder names would be worse than no section.
 export function Faculty() {
+  const trainers = getConfirmedTrainers();
+  if (trainers.length === 0) return null;
+
   return (
     <section className="bg-white px-6 py-20 lg:px-12 lg:py-32">
       <div className="mx-auto max-w-[1200px]">

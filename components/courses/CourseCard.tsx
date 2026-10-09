@@ -33,7 +33,7 @@ export function CourseCard({ course }: { course: Course }) {
           {course.name}
         </h3>
         <p className="mt-3 line-clamp-2 text-body text-ink-muted">{course.tagline}</p>
-        <p className="mt-3 text-small text-ink-muted/80">
+        <p className="mt-3 text-small text-ink-muted">
           {course.level} · {course.modules.length} modules
           {duration}
         </p>

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import type { ReactNode } from "react";
 import { EASE_CINEMATIC, VIEWPORT_ONCE } from "@/lib/motion";
 import { cn } from "@/lib/utils";
@@ -30,7 +30,7 @@ export function ClipReveal({
   className?: string;
 }) {
   return (
-    <motion.div
+    <m.div
       data-reveal
       className={cn("overflow-hidden", className)}
       initial={{ clipPath: CLIP_HIDDEN[from] }}
@@ -38,7 +38,7 @@ export function ClipReveal({
       viewport={VIEWPORT_ONCE}
       transition={{ duration: 1.3, delay, ease: EASE_CINEMATIC }}
     >
-      <motion.div
+      <m.div
         data-reveal
         className="h-full w-full"
         initial={{ scale: 1.1 }}
@@ -47,7 +47,7 @@ export function ClipReveal({
         transition={{ duration: 1.8, delay, ease: EASE_CINEMATIC }}
       >
         {children}
-      </motion.div>
-    </motion.div>
+      </m.div>
+    </m.div>
   );
 }

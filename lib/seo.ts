@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SITE_LOCATION, SITE_PHONE_TEL } from "@/data/site";
 
 export const SITE_NAME = "KALA Beauty & Fashion Academy";
 export const SITE_TAGLINE = "Craft Your Confidence";
@@ -10,6 +11,29 @@ export const DEFAULT_DESCRIPTION =
 
 export function getSiteUrl(): string {
   return process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+}
+
+/**
+ * schema.org description of the academy. Only facts the client confirmed on both posters:
+ * the name, tagline, phone number and town. No street address, hours, ratings, reviews or
+ * accreditations — add them here only once they are verified.
+ */
+export function organizationJsonLd(): Record<string, unknown> {
+  const siteUrl = getSiteUrl();
+  return {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    name: SITE_NAME,
+    slogan: SITE_TAGLINE,
+    url: siteUrl,
+    logo: `${siteUrl}/brand/kala-logo-primary.jpg`,
+    telephone: SITE_PHONE_TEL,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: SITE_LOCATION,
+      addressCountry: "IN",
+    },
+  };
 }
 
 /**
@@ -35,7 +59,10 @@ export function buildMetadata({
   title,
   description = DEFAULT_DESCRIPTION,
   path,
-  ogImage = "/opengraph-image",
+  // The approved KALA logo on the brand cream, 1200×630, ~50 KB (public/og-image.jpg). Kept
+  // small on purpose: WhatsApp drops link-preview images that are too heavy. Replace it with a
+  // real photograph once one is approved for sharing.
+  ogImage = "/og-image.jpg",
   noIndex = false,
   absoluteTitle = false,
 }: PageMetadataInput): Metadata {
@@ -52,7 +79,7 @@ export function buildMetadata({
       description,
       url,
       siteName: SITE_NAME,
-      images: [{ url: ogImage }],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: `${SITE_NAME} — ${SITE_TAGLINE}` }],
       locale: "en_IN",
       type: "website",
     },

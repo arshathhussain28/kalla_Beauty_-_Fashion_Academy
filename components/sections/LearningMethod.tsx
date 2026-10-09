@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll } from "framer-motion";
+import { m, useScroll } from "framer-motion";
 import { useRef } from "react";
 import { EASE_CINEMATIC } from "@/lib/motion";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -66,7 +66,7 @@ export function LearningMethod({ tone = "cream" }: { tone?: "cream" | "white" })
             aria-hidden="true"
             className="absolute bottom-2 left-[7px] top-2 w-px bg-border"
           />
-          <motion.span
+          <m.span
             data-reveal
             aria-hidden="true"
             style={{ scaleY: scrollYProgress }}
@@ -74,7 +74,7 @@ export function LearningMethod({ tone = "cream" }: { tone?: "cream" | "white" })
           />
 
           {STAGES.map((stage, index) => (
-            <motion.li
+            <m.li
               key={stage.title}
               data-reveal
               initial="off"
@@ -84,7 +84,7 @@ export function LearningMethod({ tone = "cream" }: { tone?: "cream" | "white" })
               transition={{ duration: 0.9, ease: EASE_CINEMATIC }}
               className="relative pb-16 last:pb-0"
             >
-              <motion.span
+              <m.span
                 data-reveal
                 aria-hidden="true"
                 variants={dotVariants}
@@ -98,7 +98,7 @@ export function LearningMethod({ tone = "cream" }: { tone?: "cream" | "white" })
                 {stage.title}
               </h3>
               <p className="mt-3 max-w-md text-body text-ink-muted">{stage.text}</p>
-            </motion.li>
+            </m.li>
           ))}
         </ol>
       </div>

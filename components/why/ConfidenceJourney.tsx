@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll } from "framer-motion";
+import { m, useScroll } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { WHY_JOURNEY } from "@/data/why-kala";
 import { CurtainReveal, Reveal } from "@/components/ui/Reveal";
@@ -88,7 +88,7 @@ export function ConfidenceJourney() {
               aria-hidden="true"
               className="absolute bottom-2 left-[7px] top-2 w-px bg-cream/20 lg:left-[9px]"
             />
-            <motion.span
+            <m.span
               data-reveal
               aria-hidden="true"
               style={{ scaleY: scrollYProgress }}

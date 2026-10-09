@@ -23,14 +23,18 @@ export function CraftSection() {
           </Reveal>
 
           <dl className="mt-10 border-t border-border">
+            {/* The Reveal's own <div> is the grouping element a <dl> allows around a dt/dd pair
+                (a second wrapper inside it made the list invalid for screen readers). */}
             {WHY_CRAFT.statements.map((item, index) => (
-              <Reveal key={item.label} delay={0.08 * index}>
-                <div className="grid grid-cols-[140px_1fr] items-baseline gap-4 border-b border-border py-5">
-                  <dt className="text-descriptor uppercase tracking-[0.3em] text-rose-deep">
-                    {item.label}
-                  </dt>
-                  <dd className="text-body text-ink">{item.text}</dd>
-                </div>
+              <Reveal
+                key={item.label}
+                delay={0.08 * index}
+                className="grid grid-cols-[140px_1fr] items-baseline gap-4 border-b border-border py-5"
+              >
+                <dt className="text-descriptor uppercase tracking-[0.3em] text-rose-deep">
+                  {item.label}
+                </dt>
+                <dd className="text-body text-ink">{item.text}</dd>
               </Reveal>
             ))}
           </dl>
