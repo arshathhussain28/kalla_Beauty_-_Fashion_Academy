@@ -172,6 +172,11 @@ body {
     font-size: 2.75rem;
     line-height: 1.1;
   }
+  /* and the three-word line tightens so it, too, stays clear of the objects */
+  .kala-closing-eyebrow {
+    letter-spacing: 0.2em;
+    gap: 1rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

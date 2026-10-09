@@ -222,7 +222,7 @@ function ClosingLayer({
       <m.ul
         data-reveal
         style={{ opacity: words }}
-        className="flex items-center gap-4 text-eyebrow font-medium uppercase tracking-[0.3em] text-wine sm:gap-6"
+        className="kala-closing-eyebrow flex items-center gap-4 text-eyebrow font-medium uppercase tracking-[0.3em] text-wine sm:gap-6"
         aria-label="Craft, Confidence, Career"
       >
         <li>Craft</li>
