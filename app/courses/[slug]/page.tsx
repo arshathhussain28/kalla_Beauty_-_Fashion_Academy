@@ -23,8 +23,6 @@ import { CourseModules } from "@/components/courses/CourseModules";
 import { LearningMethod } from "@/components/sections/LearningMethod";
 import { courseEnquiryWhatsAppLink } from "@/lib/whatsapp";
 
-const WORK_SLOTS = ["work-1", "work-2", "work-3"] as const;
-
 function delay(ms: number) {
   return { "--kala-delay": `${ms}ms` } as CSSProperties;
 }
@@ -235,12 +233,15 @@ export default async function CoursePage({
             <SectionHeading eyebrow="Student Work" title={`${categoryLabel}, made at KALA.`} />
           </Reveal>
           <div className="mt-10 grid grid-cols-3 gap-1">
-            {WORK_SLOTS.map((slot, index) => (
-              <CurtainReveal key={slot} delay={0.15 * index}>
+            {/* The same three frames The Work page uses for this craft, so a course page
+                can never show another craft's photographs. Square: it has to hold a
+                portrait lead, a square detail and a landscape process shot. */}
+            {([1, 2, 3] as const).map((n, index) => (
+              <CurtainReveal key={n} delay={0.15 * index}>
                 <ImageSlot
-                  slot={slot}
+                  slot={`work-${course.category}-${n}`}
                   sizes="(min-width: 1024px) 400px, 33vw"
-                  className="aspect-[4/5] w-full"
+                  className="aspect-square w-full"
                 />
               </CurtainReveal>
             ))}

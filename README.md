@@ -68,7 +68,8 @@ are the way they are.
   A slot with `src: null` renders a clean blush frame (the slot's `label` is the shot brief, shown in
   development and when `NEXT_PUBLIC_SHOW_PHOTO_BRIEFS=true`; production never prints placeholder text).
   To go live, add the file under `public/images/` and set `src` and a real `alt` on that slot.
-  No stock imagery.
+  No stock imagery. The exact file names and pixel sizes for every slot are in
+  [`docs/IMAGE-BRIEF.md`](docs/IMAGE-BRIEF.md).
 - **Brand tokens are fixed.** Wine `#7E1F3D`, Cream `#FBF1EF`, Rose Gold `#D2938C` (accent only),
   Deep Wine `#5C1428`, Ink `#2A1D21`; Playfair Display + Jost; square corners, one wine band per page,
   one primary CTA per layout. Change them only via a design review, not inline.

@@ -211,7 +211,9 @@ with a `src` renders `next/image` (`fill` + `object-cover`, so any aspect ratio 
 `alt` on that slot — nothing else changes.** (`next.config.ts` allows `/images/**` for
 `next/image`; before that pattern existed, the first real photo would have thrown.)
 Posters/promotional artwork were deliberately *not* cropped into slots: they have text and
-graphics baked in. The Work's lightbox only opens for frames that have a `src`.
+graphics baked in. The Work's lightbox only opens for frames that have a `src`. A slot can
+also carry a `focus` (CSS `object-position`, e.g. `"74% 10%"`) so a narrow phone crop of a wide
+photograph stays on the subject — the home hero uses it to keep the founder in frame.
 
 ### 3c. Navigation, conversion and shell
 
@@ -428,11 +430,14 @@ Unchanged from Stage 1 — see git history. Nothing in this pass touched
 
 ## What's still open
 
-- **Real photography** — the largest remaining gap between this build and the intended
-  result. Every slot in `data/images.ts` (56 of them) is an empty frame; each
-  `label` is the shot brief. The brand doc is explicit that authentic beats stock.
-  Until photos land, the signature moments (curtain reveals, hover movement, the
-  pinned scroll) are animating *placeholders* and can't be fully judged.
+- **Photography** — 12 of the 53 slots in `data/images.ts` now carry a photograph (hero,
+  founder, the three journey stages, the five course crafts and the "learn professionally"
+  story frame); the other 41 are still empty frames, each `label` being the shot brief. Exact
+  file names and pixel sizes are in [`IMAGE-BRIEF.md`](IMAGE-BRIEF.md). The photographs wired
+  so far are AI-generated or AI-assisted concepts (the founder, a uniform and wall signage
+  that are not the academy's real ones), so they are placeholders for review — authentic
+  photography of the real academy is still the goal, and the brand doc is explicit that
+  authentic beats stock.
 - **Client confirmation of one authoritative fee + duration per course** (§5) —
   the single biggest blocker to launch; nothing commercial can go live until this
   is resolved.

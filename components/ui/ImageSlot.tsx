@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 interface ImageSlotProps {
   slot: ImageSlotKey;
-  /** Passed straight to next/image — describe the rendered width at each breakpoint. */
+  /** Describe the *frame's* rendered width at each breakpoint (scaled up internally for cover crops). */
   sizes: string;
   priority?: boolean;
   /** "dark" for placeholders that sit on wine fields. */
@@ -22,6 +22,28 @@ interface ImageSlotProps {
 // NEXT_PUBLIC_SHOW_PHOTO_BRIEFS=true. Production never shows it.
 const SHOW_BRIEFS =
   process.env.NODE_ENV !== "production" || process.env.NEXT_PUBLIC_SHOW_PHOTO_BRIEFS === "true";
+
+// With object-cover the browser sizes the <img> to its frame but paints the photograph larger
+// than that — a 16:9 photo in a 4:5 frame is drawn about 2.2× the frame's width, and the part
+// that shows is a crop of it. Asking next/image for "the frame's width" therefore returns an
+// image too small for what is painted, and it comes out soft (measured: a 798 px frame was
+// being served an 806 px-wide file for a ~1265 px-wide painting). The caller's `sizes` hint is
+// scaled up so the optimizer serves enough pixels; vw values are capped at 100vw, so
+// full-bleed images are unchanged. Only each entry's trailing size is scaled, never its media
+// condition.
+const COVER_FACTOR = 2;
+
+function coverSizes(sizes: string): string {
+  return sizes
+    .split(",")
+    .map((entry) =>
+      entry.trim().replace(/(\d+(?:\.\d+)?)(px|vw)$/, (_, value: string, unit: string) => {
+        const scaled = Number(value) * COVER_FACTOR;
+        return unit === "vw" ? `${Math.min(100, Math.round(scaled))}vw` : `${Math.round(scaled)}px`;
+      })
+    )
+    .join(", ");
+}
 
 // Renders the registered photograph, or — until one exists — the placeholder above.
 // Callers size the slot via className (aspect ratio / height); the image always fills it
@@ -44,8 +66,9 @@ export function ImageSlot({
           src={def.src}
           alt={def.alt}
           fill
-          sizes={sizes}
+          sizes={coverSizes(sizes)}
           priority={priority}
+          style={def.focus ? { objectPosition: def.focus } : undefined}
           className={cn("object-cover", imageClassName)}
         />
       ) : (

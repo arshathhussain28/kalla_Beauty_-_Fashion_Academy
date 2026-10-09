@@ -7,10 +7,12 @@ import { KalaJourneyPinned } from "@/components/sections/KalaJourneyPinned";
 import { generalEnquiryWhatsAppLink } from "@/lib/whatsapp";
 
 // Per-stage crop and position for the mobile layout, so the three photographs differ in
-// shape and alignment instead of repeating one card: full-bleed → inset right → inset left.
+// shape and alignment instead of repeating one card: full-bleed 4:3 → inset right 5:4 →
+// inset left square arch. The middle frame is landscape (5:4) because its photograph —
+// a trainer and a student with the work between them — needs both faces in view.
 const MOBILE_IMAGE_STYLE = [
   "-mx-6 aspect-[4/3]",
-  "mr-10 aspect-[4/5]",
+  "mr-10 aspect-[5/4]",
   "ml-10 aspect-square rounded-t-[140px]",
 ] as const;
 

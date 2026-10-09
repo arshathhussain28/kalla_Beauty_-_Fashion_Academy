@@ -27,9 +27,6 @@ export type ImageSlotKey =
   | "made-saree"
   | "made-fashion"
   | "made-student"
-  | "work-1"
-  | "work-2"
-  | "work-3"
   | "trainer-1"
   | "trainer-2"
   | "trainer-3"
@@ -60,63 +57,124 @@ export interface ImageSlotDef {
   src: string | null;
   alt: string;
   label: string;
+  /**
+   * CSS object-position for the photograph (e.g. "74% 10%"): where the subject sits, so a
+   * narrow crop on a phone keeps her in frame instead of cutting to the centre of the file.
+   * Omit for centred.
+   */
+  focus?: string;
 }
 
 export const imageSlots: Record<ImageSlotKey, ImageSlotDef> = {
   "hero-founder": {
-    src: null,
-    alt: "The KALA founder in the academy",
+    src: "/images/hero-founder.jpg",
+    alt: "The founder of KALA Beauty & Fashion Academy seated at her makeup vanity",
     label: "Hero — founder portrait, dark neutral background, negative space left",
+    // She sits at ~76% across this 2.4:1 image. On a phone the frame is a narrow slice of it,
+    // so anchor there (87% puts her face about 60% across the slice, clear of the edge); the
+    // small y keeps the top of her hair in frame on desktop.
+    focus: "87% 10%",
   },
   "journey-intro": {
-    src: null,
-    alt: "A KALA student absorbed in her work",
+    src: "/images/journey-intro.jpg",
+    alt: "The founder applying eye makeup to a client while students watch and learn",
     label: "Journey · intro — a student practising, natural light, cinematic and unposed",
+    // Square crop of a wide frame: the founder is left of centre, the client at the right
+    // edge. This keeps both in view when the arch frame is narrower than square.
+    focus: "45% 35%",
   },
   "journey-craft": {
-    src: null,
-    alt: "A student's hands at work",
+    src: "/images/journey-craft.jpg",
+    alt: "A trainer looks on as a student in a KALA apron applies eyeshadow to a client",
     label: "Journey · Craft — hands at work: brush, needle, cone or pleats, tight crop",
+    // 3:2 source shown in frames from ~1.1 to 4:3. The student's face sits at ~40%, the
+    // trainer's at ~61% and the client's eye at ~83%; anchoring at 72% keeps the student, the
+    // trainer, the brush and the client's eye in view in every frame shape (checked at 1.0,
+    // 1.12, 1.25 and 1.33).
+    focus: "72% 40%",
   },
   "journey-confidence": {
-    src: null,
-    alt: "A KALA trainer guiding a student",
+    src: "/images/journey-confidence.jpg",
+    alt: "A trainer pointing out technique as her student, in a KALA apron, applies eye makeup to a model",
     label: "Journey · Confidence — trainer and student together, guidance in progress",
+    // A 16:9 frame shown in near-square to 4:3 windows. The trainer's face sits at ~47%, the
+    // student's at ~72% and the model's eye at ~89%; anchoring at 87% keeps all three faces and
+    // the brush in view whatever shape the frame takes (checked at 1.0, 1.12, 1.25 and 1.33 —
+    // the frames are widened to suit, see KalaJourney.tsx and AboutBeliefs.tsx).
+    focus: "87% 35%",
   },
   "journey-career": {
-    src: null,
-    alt: "A student presenting her finished work",
+    src: "/images/journey-career.jpg",
+    alt: "A makeup artist in a KALA apron putting the finishing touches to a bride's look, adjusting her earring",
     label: "Journey · Career — a finished look, garment or drape, presented with pride",
+    // 16:9 source shown in near-square to 5:4 arch frames. The artist sits at ~58% across and
+    // the bride at ~80% (jasmine and jewellery out to ~90%, the observer at ~92%); anchoring at
+    // 96% frames the pair with the bride's necklace and saree intact, whatever shape the frame
+    // takes (checked at 0.9, 1.0, 1.12 and 1.25).
+    focus: "96% 40%",
   },
   "craft-makeup": {
-    src: null,
-    alt: "A KALA student applying makeup",
+    src: "/images/craft-makeup.jpg",
+    alt: "A makeup artist in a KALA apron applying eyeshadow with a fine brush to a bride-to-be",
     label: "Makeup — trainer or student at work, close and natural",
+    // 3:2 source shown in tall 4:5 arch frames (home craft section, courses index, the
+    // Makeup course page). The artist's face sits at ~49%, her hand and brush at ~68% and the
+    // bride's closed eye at ~76%; anchoring at 74% keeps all three, and most of the bride's
+    // face, in the 4:5 window (checked at 0.8, 1.0 and 1.25 too).
+    focus: "74% 40%",
   },
   "craft-beauty": {
-    src: null,
-    alt: "A KALA student giving a facial",
+    src: "/images/craft-beauty.jpg",
+    alt: "A trainer pointing out technique as a beautician in a KALA apron gives a client a facial",
     label: "Beauty — facial, threading or hair care in progress",
+    // A very wide (~2:1) photograph: the trainer's face sits at ~41%, the beautician's at ~71%
+    // and the client's face and hands at ~64%. In 4:5 frames the window is only ~40% of the
+    // width, so anchoring at 67% centres the facial and the beautician's face with the trainer's
+    // smile and pointing hand entering at the left; in the landscape frames (1.0 to ~1.33) the
+    // window is wide enough that the same anchor brings the trainer's whole face into view too.
+    focus: "67% 40%",
   },
   "craft-mehendi": {
-    src: null,
-    alt: "A KALA student applying bridal mehendi",
+    src: "/images/craft-mehendi.jpg",
+    alt: "A trainer guides a student in a KALA apron as she draws a bridal mehendi design with a cone",
     label: "Mehendi — hands, cone work, an intricate bridal design",
+    // 16:9 source shown in 4:5 arch frames up to ~1.33 landscape. The student's face sits at
+    // ~44%, the trainer's at ~68% and the cone and henna hand at ~45–66%; anchoring at 60% keeps
+    // both faces and the design in view in every frame (checked at 0.8, 1.0, 1.18 and 1.33).
+    focus: "60% 40%",
   },
   "craft-saree": {
-    src: null,
-    alt: "A KALA student pleating and draping a saree",
+    src: "/images/craft-saree.jpg",
+    alt: "A trainer guides a student in a KALA apron as she pleats and drapes a bridal silk saree",
     label: "Saree — hands arranging pleats, bridal draping",
+    // 16:9 source shown in 4:5 arch frames up to ~1.33 landscape. The trainer's face sits at
+    // ~36%, the student's at ~54%, the pleating hands at ~65% and the model's face at ~74%.
+    // Anchoring at 62% keeps the student, the pleating and the model's face in the tall 4:5
+    // window with the trainer's face just entering at the left; from 1.0 up the whole group fits
+    // (checked at 0.8, 1.0, 1.18 and 1.33).
+    focus: "62% 40%",
   },
   "craft-fashion": {
-    src: null,
-    alt: "A KALA student cutting and stitching fabric",
+    src: "/images/craft-fashion.jpg",
+    alt: "A trainer shows a student in a KALA apron how to mark a pattern on fabric",
     label: "Fashion — measuring, cutting, sewing a blouse",
+    // 3:2 source shown in 4:5 arch frames up to ~1.33 landscape. The student's face sits at ~47%
+    // and the trainer's at ~70%, with the chalk hand at ~45% and the trainer's pointing hand at
+    // ~62%. Anchoring at 70% keeps both faces, the pattern and both hands in the tall 4:5
+    // window, and keeps the wall logo out of it (checked at 0.8, 1.0, 1.18 and 1.33).
+    focus: "70% 40%",
   },
   "story-classroom": {
-    src: null,
-    alt: "A KALA trainer correcting a student's technique",
+    src: "/images/story-classroom.jpg",
+    alt: "A trainer guides a student in a KALA apron as she brushes blush onto a client's cheek",
     label: "Method — trainer correcting a student, hands in frame",
+    // 3:2 source shown in 4:5 frames only (home story section, About experience). The About
+    // frame is drawn ~20% taller than it shows (its parallax drift), so its window is narrower
+    // (~45% of the width) than the home one (~53%). The trainer's face sits at ~38%, the
+    // student's at ~58% and the brush at ~74%; anchoring at 52% keeps both faces, the
+    // trainer's guiding hand and the brush nib in view in both, with the wall logo partly
+    // visible behind them.
+    focus: "52% 40%",
   },
   "made-makeup": {
     src: null,
@@ -147,21 +205,6 @@ export const imageSlots: Record<ImageSlotKey, ImageSlotDef> = {
     src: null,
     alt: "A KALA student with her finished work",
     label: "Made at KALA — a student with her work (detail)",
-  },
-  "work-1": {
-    src: null,
-    alt: "Student work from this course",
-    label: "Student work — a finished piece from this course",
-  },
-  "work-2": {
-    src: null,
-    alt: "Student work in progress",
-    label: "Student work — the process, mid-task",
-  },
-  "work-3": {
-    src: null,
-    alt: "A close detail of student work",
-    label: "Student work — a close detail shot",
   },
   "trainer-1": {
     src: null,
@@ -243,9 +286,10 @@ export const imageSlots: Record<ImageSlotKey, ImageSlotDef> = {
 
   // ── People (Why KALA + About) ──────────────────────────────────────────────
   "people-founder": {
-    src: null,
-    alt: "The KALA founder",
+    src: "/images/people-founder.jpg",
+    alt: "Portrait of the founder of KALA Beauty & Fashion Academy",
     label: "The founder — environmental portrait in the academy (3:4)",
+    focus: "50% 25%",
   },
   "people-trainer": {
     src: null,

@@ -75,7 +75,9 @@ export function AboutBeliefs() {
                     from={flip ? "right" : "up"}
                     className={cn(
                       "aspect-[4/3] w-full",
-                      index === 1 ? "lg:aspect-[4/5]" : "lg:aspect-[5/4]",
+                      // Craft 5:4, Confidence square, Career 5:4 arch — varied, but never
+                      // so tall that a trainer-and-student photograph loses one of its faces.
+                      index === 1 ? "lg:aspect-square" : "lg:aspect-[5/4]",
                       index === 2 && "rounded-t-[120px] lg:rounded-t-[160px]"
                     )}
                   >

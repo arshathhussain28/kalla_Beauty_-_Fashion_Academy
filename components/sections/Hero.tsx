@@ -15,7 +15,11 @@ function delay(ms: number) {
 export function Hero() {
   return (
     <section className="relative flex h-[70vh] min-h-[560px] items-end overflow-hidden bg-wine-deep">
-      <div className="kala-settle absolute inset-0">
+      {/* Below lg the headline block sits low over a narrow slice of a very wide photograph.
+          To keep the founder's whole face above the text, the image is held to the top 65% of
+          the section and faded into the wine ground beneath it (the bottom scrim below takes
+          over from there). From lg up it fills the section. */}
+      <div className="kala-settle absolute inset-x-0 top-0 h-[65%] [mask-image:linear-gradient(to_bottom,#000_70%,transparent)] lg:inset-0 lg:h-auto lg:[mask-image:none]">
         <ImageSlot
           slot="hero-founder"
           tone="dark"
