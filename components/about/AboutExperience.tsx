@@ -1,5 +1,6 @@
 import { ABOUT_EXPERIENCE } from "@/data/about";
 import { KALA_TRAINING_STANDARDS } from "@/data/courses";
+import { hasPhotos } from "@/data/images";
 import { ClipReveal } from "@/components/editorial/ClipReveal";
 import { Parallax } from "@/components/editorial/Parallax";
 import { ImageSlot } from "@/components/ui/ImageSlot";
@@ -8,11 +9,14 @@ import { Reveal } from "@/components/ui/Reveal";
 // Two overlapping photographs on the left, the standards on the right. The list is the
 // client's own "Why Choose KALA" set (single source of truth in data/courses.ts) rather
 // than anything restated here, so it can never drift from the course pages.
+// The small second photograph overlaps the first; until it exists the first stands alone.
 export function AboutExperience() {
+  const hasSecond = hasPhotos("made-student");
+
   return (
     <section className="bg-white px-6 py-20 lg:px-12 lg:py-32">
       <div className="mx-auto grid max-w-[1200px] gap-14 lg:grid-cols-12 lg:items-center lg:gap-8">
-        <div className="relative lg:col-span-6 lg:pb-24">
+        <div className={`relative lg:col-span-6 ${hasSecond ? "lg:pb-24" : ""}`}>
           <ClipReveal className="aspect-[4/5] w-full lg:w-[78%]">
             <Parallax className="h-full w-full" amount={4}>
               <ImageSlot
@@ -22,16 +26,18 @@ export function AboutExperience() {
               />
             </Parallax>
           </ClipReveal>
-          <ClipReveal
-            delay={0.2}
-            className="-mt-24 ml-auto aspect-square w-[58%] border-[10px] border-white! bg-white lg:absolute lg:bottom-0 lg:right-0 lg:mt-0 lg:w-[46%]"
-          >
-            <ImageSlot
-              slot="made-student"
-              sizes="(min-width: 1024px) 280px, 60vw"
-              className="h-full w-full"
-            />
-          </ClipReveal>
+          {hasSecond && (
+            <ClipReveal
+              delay={0.2}
+              className="-mt-24 ml-auto aspect-square w-[58%] border-[10px] border-white! bg-white lg:absolute lg:bottom-0 lg:right-0 lg:mt-0 lg:w-[46%]"
+            >
+              <ImageSlot
+                slot="made-student"
+                sizes="(min-width: 1024px) 280px, 60vw"
+                className="h-full w-full"
+              />
+            </ClipReveal>
+          )}
         </div>
 
         <div className="lg:col-span-6">

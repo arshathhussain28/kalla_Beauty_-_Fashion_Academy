@@ -1,4 +1,4 @@
-import type { ImageSlotKey } from "@/data/images";
+import { hasPhotos, type ImageSlotKey } from "@/data/images";
 import { ImageSlot } from "@/components/ui/ImageSlot";
 import { CurtainReveal, Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -27,7 +27,24 @@ function Tile({
 // two small ones, so image sizes alternate instead of tiling evenly. Brand gallery spec:
 // 4px gutter, no captions. On desktop each row is aspect 2:1, so an 8-col frame and two
 // stacked 4-col frames come out the same height without any fixed pixel values.
+//
+// The mosaic only works with all six frames, so until every photograph exists the whole
+// section stays out of the page rather than showing empty boxes. The home page reads
+// MADE_AT_KALA_READY to keep its section backgrounds alternating either way.
+const MADE_SLOTS: ImageSlotKey[] = [
+  "made-makeup",
+  "made-fashion",
+  "made-mehendi",
+  "made-beauty",
+  "made-student",
+  "made-saree",
+];
+
+export const MADE_AT_KALA_READY = hasPhotos(...MADE_SLOTS);
+
 export function MadeAtKala() {
+  if (!MADE_AT_KALA_READY) return null;
+
   return (
     <section className="bg-cream px-6 py-20 lg:px-12 lg:py-32">
       <div className="mx-auto max-w-[1200px]">

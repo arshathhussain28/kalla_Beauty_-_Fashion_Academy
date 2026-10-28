@@ -1,3 +1,4 @@
+import { hasPhotos } from "@/data/images";
 import { WHY_CAREER } from "@/data/why-kala";
 import { ClipReveal } from "@/components/editorial/ClipReveal";
 import { Parallax } from "@/components/editorial/Parallax";
@@ -7,8 +8,10 @@ import { Reveal } from "@/components/ui/Reveal";
 
 // A horizontal composition after the wine band: four words as a rail, then one wide
 // photograph of finished work. Worded as possibility throughout — no placement, income or
-// employment promise.
+// employment promise. The wide photograph is left out until it exists; the rail stands alone.
 export function CareerSection() {
+  const hasPhoto = hasPhotos(WHY_CAREER.slot);
+
   return (
     <section className="bg-cream px-6 py-20 lg:px-12 lg:py-32">
       <div className="mx-auto max-w-[1200px]">
@@ -44,17 +47,23 @@ export function CareerSection() {
           ))}
         </ol>
 
-        <ClipReveal className="mt-16 aspect-[4/3] w-full sm:aspect-[16/9] lg:mt-24 lg:aspect-[21/9]">
-          <Parallax className="h-full w-full" amount={5}>
-            <ImageSlot
-              slot={WHY_CAREER.slot}
-              sizes="(min-width: 1200px) 1100px, 100vw"
-              className="h-full w-full"
-            />
-          </Parallax>
-        </ClipReveal>
+        {hasPhoto && (
+          <ClipReveal className="mt-16 aspect-[4/3] w-full sm:aspect-[16/9] lg:mt-24 lg:aspect-[21/9]">
+            <Parallax className="h-full w-full" amount={5}>
+              <ImageSlot
+                slot={WHY_CAREER.slot}
+                sizes="(min-width: 1200px) 1100px, 100vw"
+                className="h-full w-full"
+              />
+            </Parallax>
+          </ClipReveal>
+        )}
 
-        <Reveal className="mt-8 flex flex-wrap items-center justify-between gap-x-10 gap-y-4">
+        <Reveal
+          className={`flex flex-wrap items-center justify-between gap-x-10 gap-y-4 ${
+            hasPhoto ? "mt-8" : "mt-14 lg:mt-20"
+          }`}
+        >
           <p className="max-w-md text-small text-ink-muted">{WHY_CAREER.note}</p>
           <ArrowLink href="/courses">See Each Course&apos;s Directions</ArrowLink>
         </Reveal>

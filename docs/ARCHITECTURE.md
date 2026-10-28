@@ -215,6 +215,25 @@ graphics baked in. The Work's lightbox only opens for frames that have a `src`. 
 also carry a `focus` (CSS `object-position`, e.g. `"74% 10%"`) so a narrow phone crop of a wide
 photograph stays on the subject — the home hero uses it to keep the founder in frame.
 
+**Sections that wait for their photographs.** Visitors never see an empty frame: any section
+built around photography checks `hasPhotos(...slots)` (`data/images.ts`) and, until every
+slot it needs has a `src`, either leaves the page (Home's *Made at KALA* gallery, the *Student
+Work* strip on each course page, About's *The people* band) or falls back to a text-only
+layout (Why KALA's wine band, career rail, *Learn by making* and *Mentorship*; About's hero and
+experience block). Registering the photographs brings the full layout back — no component
+changes. Where a section's absence would put two same-coloured bands side by side, the
+neighbour's ground is chosen from the same check (Home's `CareerDirections` tone, the course
+FAQ band, About's closing enquiry). **The Work** follows the same rule per chapter
+(`READY_WORK_CHAPTERS`, `WORK_READY` in `data/work.ts`): a chapter shows when all three of its
+photographs exist; until the first one does, the page is a short "being prepared" note, is
+`noindex`, and the navbar, footer, sitemap and the Why KALA link all leave it out.
+
+**Legal pages.** `/privacy` and `/terms` render `data/legal.ts` through `LegalDocument`. The
+text is a **draft written from what the site actually does** and carries a visible "Draft for
+review" notice while `LEGAL_STATUS` is `"draft"`; set it to `"approved"` only after KALA or its
+adviser has reviewed both (the file lists what they must confirm, including removing the
+"illustrative images" sentence once real photographs replace the computer-generated ones).
+
 ### 3c. Navigation, conversion and shell
 
 - **Navbar** — cream, 72px (fixed: pinned sections are positioned against it). On scroll it

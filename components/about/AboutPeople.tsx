@@ -1,4 +1,5 @@
 import { ABOUT_PEOPLE, PEOPLE } from "@/data/about";
+import { hasPhotos } from "@/data/images";
 import { ClipReveal } from "@/components/editorial/ClipReveal";
 import { ImageSlot } from "@/components/ui/ImageSlot";
 import { Reveal } from "@/components/ui/Reveal";
@@ -12,7 +13,13 @@ const FRAMES = [
   { frame: "aspect-[3/4] rounded-t-[140px]", figure: "sm:mt-8" },
 ] as const;
 
+// The captions are only meaningful under the portraits, so the section appears once all
+// three exist; the About page reads ABOUT_PEOPLE_READY to keep its grounds alternating.
+export const ABOUT_PEOPLE_READY = hasPhotos(...PEOPLE.map((person) => person.slot));
+
 export function AboutPeople() {
+  if (!ABOUT_PEOPLE_READY) return null;
+
   return (
     <section className="bg-white px-6 py-20 lg:px-12 lg:py-32">
       <div className="mx-auto max-w-[1200px]">

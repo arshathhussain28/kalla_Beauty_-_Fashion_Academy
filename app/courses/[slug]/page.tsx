@@ -8,7 +8,7 @@ import {
   getAllCourses,
   getCourseBySlug,
 } from "@/data/courses";
-import { craftSlot } from "@/data/images";
+import { craftSlot, hasPhotos, type ImageSlotKey } from "@/data/images";
 import { siteFaqs } from "@/data/faqs";
 import { getTrainerBySlug } from "@/data/trainers";
 import { SITE_NAME, buildMetadata, getSiteUrl } from "@/lib/seo";
@@ -58,6 +58,13 @@ export default async function CoursePage({
 
   const trainer = getTrainerBySlug(course.trainerSlug);
   const categoryLabel = CATEGORY_LABELS[course.category];
+  // The same three frames The Work page uses for this craft, so a course page can never show
+  // another craft's photographs. The strip appears once all three exist; until then it is left
+  // out (no empty boxes) and the FAQ band below takes the ground that keeps the rhythm.
+  const workSlots = ([1, 2, 3] as const).map(
+    (n): ImageSlotKey => `work-${course.category}-${n}`
+  );
+  const showWork = hasPhotos(...workSlots);
   const durationLabel =
     course.duration.status === "confirmed" && course.duration.value
       ? course.duration.value
@@ -244,29 +251,32 @@ export default async function CoursePage({
 
       <LearningMethod tone="white" />
 
-      <section className="bg-cream px-6 py-20 lg:px-12 lg:py-28">
-        <div className="mx-auto max-w-[1200px]">
-          <Reveal>
-            <SectionHeading eyebrow="Student Work" title={`${categoryLabel}, made at KALA.`} />
-          </Reveal>
-          <div className="mt-10 grid grid-cols-3 gap-1">
-            {/* The same three frames The Work page uses for this craft, so a course page
-                can never show another craft's photographs. Square: it has to hold a
-                portrait lead, a square detail and a landscape process shot. */}
-            {([1, 2, 3] as const).map((n, index) => (
-              <CurtainReveal key={n} delay={0.15 * index}>
-                <ImageSlot
-                  slot={`work-${course.category}-${n}`}
-                  sizes="(min-width: 1024px) 400px, 33vw"
-                  className="aspect-square w-full"
-                />
-              </CurtainReveal>
-            ))}
+      {showWork && (
+        <section className="bg-cream px-6 py-20 lg:px-12 lg:py-28">
+          <div className="mx-auto max-w-[1200px]">
+            <Reveal>
+              <SectionHeading eyebrow="Student Work" title={`${categoryLabel}, made at KALA.`} />
+            </Reveal>
+            <div className="mt-10 grid grid-cols-3 gap-1">
+              {/* Square: it has to hold a portrait lead, a square detail and a landscape
+                  process shot. */}
+              {workSlots.map((slot, index) => (
+                <CurtainReveal key={slot} delay={0.15 * index}>
+                  <ImageSlot
+                    slot={slot}
+                    sizes="(min-width: 1024px) 400px, 33vw"
+                    className="aspect-square w-full"
+                  />
+                </CurtainReveal>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      <section className="bg-white px-6 py-20 lg:px-12 lg:py-28">
+      <section
+        className={`px-6 py-20 lg:px-12 lg:py-28 ${showWork ? "bg-white" : "bg-cream"}`}
+      >
         <div className="mx-auto grid max-w-[1200px] gap-12 lg:grid-cols-12 lg:gap-8">
           <div className="lg:col-span-4">
             <Reveal>

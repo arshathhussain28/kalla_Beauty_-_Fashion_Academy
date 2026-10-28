@@ -5,7 +5,7 @@ import { AboutDirections } from "@/components/about/AboutDirections";
 import { AboutExperience } from "@/components/about/AboutExperience";
 import { AboutHero } from "@/components/about/AboutHero";
 import { AboutMethod } from "@/components/about/AboutMethod";
-import { AboutPeople } from "@/components/about/AboutPeople";
+import { ABOUT_PEOPLE_READY, AboutPeople } from "@/components/about/AboutPeople";
 import { AboutStory } from "@/components/about/AboutStory";
 import { PageEnquiry } from "@/components/editorial/PageEnquiry";
 
@@ -33,6 +33,8 @@ export default function AboutPage() {
         title={ABOUT_ENQUIRY.title}
         description={ABOUT_ENQUIRY.description}
         source="about"
+        // The people band above is white; without it the directions band above is cream.
+        tone={ABOUT_PEOPLE_READY ? "cream" : "white"}
       />
     </main>
   );

@@ -5,7 +5,7 @@
  * real ones when the photographs arrive (the slots live in data/images.ts).
  */
 import type { CourseCategory } from "@/data/courses";
-import type { ImageSlotKey } from "@/data/images";
+import { hasPhotos, type ImageSlotKey } from "@/data/images";
 
 export const WORK_HERO = {
   eyebrow: "Made at KALA",
@@ -92,3 +92,18 @@ export const WORK_WIDE = {
   label: "Student projects",
   caption: "Practice, made visible.",
 };
+
+/**
+ * A chapter is composed around exactly three photographs, so it appears only when all three
+ * exist. Until at least one chapter is ready the page shows a short "being prepared" note, the
+ * site's navigation, footer and sitemap leave the page out, and it is not indexed. Registering
+ * photographs in data/images.ts is all it takes to bring a chapter (and the page) to life.
+ */
+export const READY_WORK_CHAPTERS: WorkChapterData[] = WORK_CHAPTERS.filter((chapter) =>
+  hasPhotos(...chapter.frames.map((frame) => frame.slot))
+);
+
+export const WORK_READY = READY_WORK_CHAPTERS.length > 0;
+
+/** The full-bleed pause between chapters needs its own photograph. */
+export const WORK_WIDE_READY = hasPhotos(WORK_WIDE.slot);

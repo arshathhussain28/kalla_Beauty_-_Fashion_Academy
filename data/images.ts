@@ -420,3 +420,12 @@ export const imageSlots: Record<ImageSlotKey, ImageSlotDef> = {
 export function craftSlot(category: CourseCategory): ImageSlotKey {
   return `craft-${category}`;
 }
+
+/**
+ * True when every given slot has a photograph. Sections built around photography use this to
+ * fall back to a text-only layout, or to leave the page altogether, instead of showing empty
+ * frames — and they come back by themselves once the photographs are registered above.
+ */
+export function hasPhotos(...slots: ImageSlotKey[]): boolean {
+  return slots.every((slot) => imageSlots[slot].src !== null);
+}

@@ -1,3 +1,4 @@
+import { hasPhotos } from "@/data/images";
 import { WHY_PEOPLE } from "@/data/why-kala";
 import { ClipReveal } from "@/components/editorial/ClipReveal";
 import { Parallax } from "@/components/editorial/Parallax";
@@ -7,7 +8,42 @@ import { Reveal } from "@/components/ui/Reveal";
 // One large portrait with two smaller frames stepping down beside it, and a single quiet
 // line of four words instead of a feature list. Names, roles and credentials are not
 // asserted anywhere — the people sections of the site carry those once they are supplied.
+//
+// The three portraits are one composition, so they appear together; until all three exist
+// the words stand alone in a single column.
 export function MentorshipSection() {
+  const photos = hasPhotos("people-trainer", "people-student", "people-class");
+
+  const copy = (
+    <Reveal>
+      <p className="text-eyebrow font-medium uppercase tracking-[0.24em] text-rose-deep">
+        {WHY_PEOPLE.eyebrow}
+      </p>
+      <h2 className="mt-4 text-[40px] font-display font-semibold leading-[1.05] tracking-[0.01em] text-ink lg:text-h1">
+        {WHY_PEOPLE.title}
+      </h2>
+      <p className="mt-5 max-w-md text-body text-ink-muted">{WHY_PEOPLE.text}</p>
+      <p className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-2 text-descriptor uppercase tracking-[0.3em] text-rose-deep">
+        {WHY_PEOPLE.words.map((word, index) => (
+          <span key={word} className="flex items-center gap-3">
+            {index > 0 && <span aria-hidden="true" className="h-1 w-1 rounded-full bg-rose" />}
+            {word}
+          </span>
+        ))}
+      </p>
+    </Reveal>
+  );
+
+  if (!photos) {
+    return (
+      <section className="bg-cream px-6 py-20 lg:px-12 lg:py-32">
+        <div className="mx-auto max-w-[1200px]">
+          <div className="max-w-xl">{copy}</div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="bg-cream px-6 py-20 lg:px-12 lg:py-32">
       <div className="mx-auto grid max-w-[1200px] gap-12 lg:grid-cols-12 lg:gap-8">
@@ -22,25 +58,7 @@ export function MentorshipSection() {
         </ClipReveal>
 
         <div className="flex flex-col justify-between gap-12 lg:col-span-5 lg:col-start-8">
-          <Reveal>
-            <p className="text-eyebrow font-medium uppercase tracking-[0.24em] text-rose-deep">
-              {WHY_PEOPLE.eyebrow}
-            </p>
-            <h2 className="mt-4 text-[40px] font-display font-semibold leading-[1.05] tracking-[0.01em] text-ink lg:text-h1">
-              {WHY_PEOPLE.title}
-            </h2>
-            <p className="mt-5 max-w-md text-body text-ink-muted">{WHY_PEOPLE.text}</p>
-            <p className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-2 text-descriptor uppercase tracking-[0.3em] text-rose-deep">
-              {WHY_PEOPLE.words.map((word, index) => (
-                <span key={word} className="flex items-center gap-3">
-                  {index > 0 && (
-                    <span aria-hidden="true" className="h-1 w-1 rounded-full bg-rose" />
-                  )}
-                  {word}
-                </span>
-              ))}
-            </p>
-          </Reveal>
+          {copy}
 
           <div className="grid grid-cols-5 items-end gap-4">
             <ClipReveal delay={0.15} className="col-span-3 aspect-[4/5] w-full">

@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { SITE_LOCATION, SITE_PHONE_DISPLAY, SITE_PHONE_TEL } from "@/data/site";
+import { WORK_READY } from "@/data/work";
 import { trackEvent } from "@/lib/analytics";
 import { EASE_CINEMATIC } from "@/lib/motion";
 import { generalEnquiryWhatsAppLink } from "@/lib/whatsapp";
@@ -18,10 +19,12 @@ import { cn } from "@/lib/utils";
 // cream turns slightly translucent with a soft blur, so imagery passes beneath it
 // without the bar ever feeling heavy. The height never changes — pinned sections below
 // are positioned against the 72px.
+// "The Work" joins the menu once the first chapter of student photographs exists (WORK_READY,
+// data/work.ts); until then the page is left out rather than linking to an empty gallery.
 const NAV_LINKS = [
   { href: "/courses", label: "Courses" },
   { href: "/why-kala", label: "Why KALA" },
-  { href: "/the-work", label: "The Work" },
+  ...(WORK_READY ? [{ href: "/the-work", label: "The Work" }] : []),
   { href: "/about", label: "About" },
 ];
 

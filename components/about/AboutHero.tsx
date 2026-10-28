@@ -1,6 +1,8 @@
 import type { CSSProperties } from "react";
 import { ABOUT_HERO } from "@/data/about";
+import { hasPhotos } from "@/data/images";
 import { ImageSlot } from "@/components/ui/ImageSlot";
+import { cn } from "@/lib/utils";
 
 function delay(ms: number) {
   return { "--kala-delay": `${ms}ms` } as CSSProperties;
@@ -9,21 +11,33 @@ function delay(ms: number) {
 // The Why KALA cover, deliberately reversed: the arched photograph leads on the left and
 // the three words stack on the right, each one arriving in turn — the brand idea in the
 // order it is meant to be read. Pure-CSS entrance so it plays on first paint.
+//
+// Without a photograph the words take the whole row, left-aligned, instead of leaving an
+// empty arch on the left.
 export function AboutHero() {
+  const hasPhoto = hasPhotos(ABOUT_HERO.slot);
+
   return (
     <section className="bg-cream px-6 pb-20 pt-12 lg:px-12 lg:pb-28 lg:pt-20">
       <div className="mx-auto grid max-w-[1200px] gap-12 lg:grid-cols-12 lg:items-end lg:gap-8">
-        <div className="order-2 lg:order-1 lg:col-span-5">
-          <ImageSlot
-            slot={ABOUT_HERO.slot}
-            priority
-            sizes="(min-width: 1024px) 460px, 100vw"
-            className="aspect-[4/5] w-full rounded-t-[200px] lg:rounded-t-[240px]"
-            imageClassName="kala-settle"
-          />
-        </div>
+        {hasPhoto && (
+          <div className="order-2 lg:order-1 lg:col-span-5">
+            <ImageSlot
+              slot={ABOUT_HERO.slot}
+              priority
+              sizes="(min-width: 1024px) 460px, 100vw"
+              className="aspect-[4/5] w-full rounded-t-[200px] lg:rounded-t-[240px]"
+              imageClassName="kala-settle"
+            />
+          </div>
+        )}
 
-        <div className="order-1 lg:order-2 lg:col-span-7 lg:pb-6 lg:text-right">
+        <div
+          className={cn(
+            "order-1 lg:order-2 lg:pb-6",
+            hasPhoto ? "lg:col-span-7 lg:text-right" : "lg:col-span-12"
+          )}
+        >
           <p
             className="kala-rise text-eyebrow font-medium uppercase tracking-[0.24em] text-rose-deep"
             style={delay(150)}
@@ -38,7 +52,10 @@ export function AboutHero() {
             ))}
           </h1>
           <p
-            className="kala-rise mt-8 max-w-md text-body text-ink-muted lg:ml-auto"
+            className={cn(
+              "kala-rise mt-8 max-w-md text-body text-ink-muted",
+              hasPhoto && "lg:ml-auto"
+            )}
             style={delay(1100)}
           >
             {ABOUT_HERO.text}

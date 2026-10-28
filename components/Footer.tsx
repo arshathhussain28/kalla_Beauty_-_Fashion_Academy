@@ -8,6 +8,7 @@ import {
   SITE_PHONE_DISPLAY,
   SITE_PHONE_TEL,
 } from "@/data/site";
+import { WORK_READY } from "@/data/work";
 
 // §16 Website System: Deep Wine ground, cream type, rose-gold hairline above, three
 // columns, monogram bottom-left. The closing statement and CTA sit above the columns, so
@@ -15,7 +16,7 @@ import {
 const EXPLORE_LINKS = [
   { href: "/courses", label: "Courses" },
   { href: "/why-kala", label: "Why KALA" },
-  { href: "/the-work", label: "The Work" },
+  ...(WORK_READY ? [{ href: "/the-work", label: "The Work" }] : []),
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ];

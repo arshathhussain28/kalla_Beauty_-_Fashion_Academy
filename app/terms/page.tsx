@@ -1,18 +1,14 @@
 import { buildMetadata } from "@/lib/seo";
-import { PageStub } from "@/components/ui/PageStub";
+import { TERMS_OF_SERVICE } from "@/data/legal";
+import { LegalDocument } from "@/components/legal/LegalDocument";
 
 export const metadata = buildMetadata({
   title: "Terms of Service",
+  description: "The terms for using the KALA Beauty & Fashion Academy website.",
   path: "/terms",
   noIndex: true,
 });
 
 export default function TermsPage() {
-  return (
-    <PageStub
-      eyebrow="Legal"
-      title="Terms of Service"
-      description="Full terms pending legal review — this page is a placeholder route so the footer link resolves correctly."
-    />
-  );
+  return <LegalDocument doc={TERMS_OF_SERVICE} />;
 }
