@@ -1,6 +1,6 @@
 import { getConfirmedTrainers } from "@/data/trainers";
 import { ImageSlot } from "@/components/ui/ImageSlot";
-import { CurtainReveal, Reveal } from "@/components/ui/Reveal";
+import { CurtainReveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
 // The people behind the craft. Portraits are environmental (in the academy, not
@@ -15,9 +15,7 @@ export function Faculty() {
   return (
     <section className="bg-white px-6 py-20 lg:px-12 lg:py-32">
       <div className="mx-auto max-w-[1200px]">
-        <Reveal>
-          <SectionHeading eyebrow="The People" title="The people behind the craft." />
-        </Reveal>
+        <SectionHeading eyebrow="The People" title="The people behind the craft." />
 
         <div className="mt-12 grid gap-10 sm:grid-cols-3 lg:mt-16">
           {trainers.map((trainer, index) => (

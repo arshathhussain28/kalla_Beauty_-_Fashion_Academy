@@ -1,5 +1,7 @@
 import { LEGAL_STATUS, LEGAL_UPDATED, type LegalDoc } from "@/data/legal";
 import { ArrowLink } from "@/components/ui/ArrowLink";
+import { PageHeading } from "@/components/ui/PageHeading";
+import { Reveal } from "@/components/ui/Reveal";
 
 // A calm reading page for the two legal texts: title, a one-paragraph introduction, then
 // numbered plain-language sections in a narrow column. While LEGAL_STATUS is "draft" a
@@ -9,13 +11,13 @@ export function LegalDocument({ doc }: { doc: LegalDoc }) {
     <main className="flex-1 bg-cream px-6 pb-24 pt-14 lg:px-12 lg:pb-32 lg:pt-24">
       <div className="mx-auto max-w-[1200px]">
         <div className="max-w-2xl">
-          <p className="text-eyebrow font-medium uppercase tracking-[0.24em] text-rose-deep">
-            {doc.eyebrow}
-          </p>
-          <h1 className="mt-4 text-[44px] font-display font-semibold leading-[1.05] tracking-[0.01em] text-ink lg:text-h1">
-            {doc.title}
-          </h1>
-          <p className="mt-3 text-small text-ink-muted">Last updated {LEGAL_UPDATED}</p>
+          <PageHeading
+            eyebrow={doc.eyebrow}
+            title={doc.title}
+            titleClassName="text-[40px] sm:text-[44px] lg:text-h1 leading-[1.05]"
+          >
+            <p className="mt-3 text-small text-ink-muted">Last updated {LEGAL_UPDATED}</p>
+          </PageHeading>
 
           {LEGAL_STATUS === "draft" && (
             <aside
@@ -35,7 +37,8 @@ export function LegalDocument({ doc }: { doc: LegalDoc }) {
 
           <div className="mt-12 space-y-10">
             {doc.sections.map((section, index) => (
-              <section key={section.heading}>
+              <Reveal key={section.heading} delay={0} y={18}>
+                <section>
                 <h2 className="flex items-baseline gap-3 font-display text-h2 font-semibold tracking-[0.01em] text-ink">
                   <span className="text-eyebrow font-medium uppercase tracking-[0.24em] text-rose-deep">
                     {String(index + 1).padStart(2, "0")}
@@ -56,7 +59,8 @@ export function LegalDocument({ doc }: { doc: LegalDoc }) {
                     ))}
                   </ul>
                 )}
-              </section>
+                </section>
+              </Reveal>
             ))}
           </div>
 

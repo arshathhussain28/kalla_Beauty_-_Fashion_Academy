@@ -17,8 +17,9 @@ import { LeadForm } from "@/components/forms/LeadForm";
 import { Button } from "@/components/ui/Button";
 import { Faq } from "@/components/ui/Faq";
 import { ImageSlot } from "@/components/ui/ImageSlot";
-import { CurtainReveal, Reveal } from "@/components/ui/Reveal";
+import { CurtainReveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { PageHeading } from "@/components/ui/PageHeading";
 import { ThreadRule } from "@/components/ui/ThreadRule";
 import { CourseModules } from "@/components/courses/CourseModules";
 import { LearningMethod } from "@/components/sections/LearningMethod";
@@ -95,18 +96,14 @@ export default async function CoursePage({
       <div className="bg-wine-deep px-6 py-16 text-cream lg:px-12 lg:py-20">
         <div className="mx-auto grid max-w-[1200px] items-center gap-12 lg:grid-cols-[1.25fr_1fr]">
           <div>
-            <p className="kala-rise text-eyebrow font-medium uppercase tracking-[0.24em] text-rose-light">
-              {categoryLabel}
-            </p>
-            <h1
-              className="kala-rise mt-3 text-h1 font-display font-semibold tracking-[0.01em]"
-              style={delay(150)}
+            <PageHeading
+              eyebrow={categoryLabel}
+              title={course.name}
+              tone="cream"
+              titleClassName="text-h1"
             >
-              {course.name}
-            </h1>
-            <p className="kala-rise mt-4 max-w-xl text-body text-cream/85" style={delay(350)}>
-              {course.tagline}
-            </p>
+              <p className="mt-4 max-w-xl text-body text-cream/85">{course.tagline}</p>
+            </PageHeading>
 
             {/* Course snapshot — duration/fee only render when explicitly confirmed;
                 see data/courses.ts for why they're pending right now. */}
@@ -254,9 +251,7 @@ export default async function CoursePage({
       {showWork && (
         <section className="bg-cream px-6 py-20 lg:px-12 lg:py-28">
           <div className="mx-auto max-w-[1200px]">
-            <Reveal>
-              <SectionHeading eyebrow="Student Work" title={`${categoryLabel}, made at KALA.`} />
-            </Reveal>
+            <SectionHeading eyebrow="Student Work" title={`${categoryLabel}, made at KALA.`} />
             <div className="mt-10 grid grid-cols-3 gap-1">
               {/* Square: it has to hold a portrait lead, a square detail and a landscape
                   process shot. */}
@@ -279,13 +274,11 @@ export default async function CoursePage({
       >
         <div className="mx-auto grid max-w-[1200px] gap-12 lg:grid-cols-12 lg:gap-8">
           <div className="lg:col-span-4">
-            <Reveal>
-              <SectionHeading
-                eyebrow="Questions"
-                title="Before you enquire."
-                description="The short answers. A course advisor can take you through the rest."
-              />
-            </Reveal>
+            <SectionHeading
+              eyebrow="Questions"
+              title="Before you enquire."
+              description="The short answers. A course advisor can take you through the rest."
+            />
           </div>
           <Faq items={[...course.faqs, ...siteFaqs]} className="lg:col-span-7 lg:col-start-6" />
         </div>

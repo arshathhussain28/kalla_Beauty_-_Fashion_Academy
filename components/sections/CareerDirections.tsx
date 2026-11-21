@@ -15,13 +15,11 @@ export function CareerDirections({ tone = "cream" }: { tone?: "cream" | "white" 
       className={`px-6 py-20 lg:px-12 lg:py-32 ${tone === "white" ? "bg-white" : "bg-cream"}`}
     >
       <div className="mx-auto max-w-[1200px]">
-        <Reveal>
-          <SectionHeading
-            eyebrow="Career Direction"
-            title="Where each craft can take you."
-            description="Possible professional directions for each course — not a placement guarantee."
-          />
-        </Reveal>
+        <SectionHeading
+          eyebrow="Career Direction"
+          title="Where each craft can take you."
+          description="Possible professional directions for each course — not a placement guarantee."
+        />
 
         <ul className="mt-12 border-t border-border lg:mt-16">
           {courses.map((course, index) => (

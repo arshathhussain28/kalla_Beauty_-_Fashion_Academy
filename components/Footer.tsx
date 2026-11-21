@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLink } from "@/components/ui/ArrowLink";
+import { Reveal } from "@/components/ui/Reveal";
+import { RevealText } from "@/components/ui/RevealText";
 import { generalEnquiryWhatsAppLink } from "@/lib/whatsapp";
 import {
   SITE_INSTAGRAM_URL,
@@ -26,10 +28,13 @@ export function Footer() {
     <footer className="border-t border-rose bg-wine-deep text-cream">
       <div className="mx-auto max-w-[1200px] px-6 py-16 lg:px-12 lg:py-20">
         <div className="grid gap-10 border-b border-cream/15 pb-14 lg:grid-cols-12 lg:items-end lg:gap-8 lg:pb-16">
-          <p className="font-display text-[40px] font-semibold leading-[1.05] tracking-[0.01em] lg:col-span-7 lg:text-display">
-            Craft. Confidence. Career.
-          </p>
-          <div className="lg:col-span-5 lg:justify-self-end">
+          <RevealText
+            as="p"
+            text="Craft. Confidence. Career."
+            stagger={0.09}
+            className="font-display text-[40px] font-semibold leading-[1.05] tracking-[0.01em] lg:col-span-7 lg:text-display"
+          />
+          <Reveal delay={0.3} className="lg:col-span-5 lg:justify-self-end">
             <p className="text-eyebrow font-medium uppercase tracking-[0.24em] text-rose-light">
               Ready to craft your future?
             </p>
@@ -47,7 +52,7 @@ export function Footer() {
                 Explore Courses
               </ArrowLink>
             </div>
-          </div>
+          </Reveal>
         </div>
 
         <div className="mt-14 grid gap-12 sm:grid-cols-3">

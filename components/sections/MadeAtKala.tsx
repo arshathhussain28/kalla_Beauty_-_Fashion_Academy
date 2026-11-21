@@ -1,6 +1,6 @@
 import { hasPhotos, type ImageSlotKey } from "@/data/images";
 import { ImageSlot } from "@/components/ui/ImageSlot";
-import { CurtainReveal, Reveal } from "@/components/ui/Reveal";
+import { CurtainReveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
 function Tile({
@@ -48,13 +48,11 @@ export function MadeAtKala() {
   return (
     <section className="bg-cream px-6 py-20 lg:px-12 lg:py-32">
       <div className="mx-auto max-w-[1200px]">
-        <Reveal>
-          <SectionHeading
-            eyebrow="Made at KALA"
-            title="Where learning becomes craft."
-            description="Makeup, beauty, mehendi, saree styling and fashion — the work our students make."
-          />
-        </Reveal>
+        <SectionHeading
+          eyebrow="Made at KALA"
+          title="Where learning becomes craft."
+          description="Makeup, beauty, mehendi, saree styling and fashion — the work our students make."
+        />
 
         <div className="mt-12 space-y-1 lg:mt-16">
           <div className="grid grid-cols-2 gap-1 md:aspect-[2/1] md:grid-cols-12 md:grid-rows-2">

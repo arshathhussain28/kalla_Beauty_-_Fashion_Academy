@@ -215,6 +215,28 @@ graphics baked in. The Work's lightbox only opens for frames that have a `src`. 
 also carry a `focus` (CSS `object-position`, e.g. `"74% 10%"`) so a narrow phone crop of a wide
 photograph stays on the subject — the home hero uses it to keep the founder in frame.
 
+**The motion system.** Four shared pieces carry the site's movement, so pages move alike instead of
+each inventing something:
+
+- `SmoothScroll` (Lenis, in the root layout) eases the wheel. It is **imported dynamically after**
+  checking the visitor, so a phone, a coarse pointer or a reduced-motion visitor never downloads the
+  library at all (measured: 18 scripts / 804 KB desktop vs 15 / 760 KB phone). Native scroll position
+  is untouched, so `useScroll`, the pinned sections and anchors behave exactly as before, and it
+  stops itself while a dialog locks the body (mobile menu, lightbox).
+- `RevealText` is the word-by-word headline. Two traps it exists to avoid: the in-view trigger must
+  sit on the *wrapper* (a word below its own `overflow-hidden` box never intersects, so it would
+  never start) and the spaces must sit *outside* the word boxes (inside, the browser drops them as
+  trailing whitespace and the words run together).
+- `PageHeading` opens every page — eyebrow, a rose hairline drawing out beside it, the title word by
+  word, then the supporting line. It uses `animate`, not `whileInView`: a page's own heading is
+  already on screen at load.
+- `SectionHeading` carries that same entrance for sections, so callers must **not** wrap it in a
+  `Reveal` any more — that would double-animate it.
+
+Everything is transform/opacity only, so CLS stays 0.000, and each piece is stilled by the
+reduced-motion block in globals.css. The route transition is a cream veil (`.kala-page::before`)
+wiping up off the arriving page; it is `pointer-events: none` and removes itself.
+
 **Sections that wait for their photographs.** Visitors never see an empty frame: any section
 built around photography checks `hasPhotos(...slots)` (`data/images.ts`) and, until every
 slot it needs has a `src`, either leaves the page (Home's *Made at KALA* gallery, the *Student
@@ -273,7 +295,7 @@ Six signature moments, deliberately not "animate everything":
 | Pinned craft scroll | `CraftPinned` | Framer `useScroll` drives a translateX track inside a `sticky` stage (section is n × 100svh). Desktop only |
 | Curtain reveal | `CurtainReveal` | wine panel `scaleY 1→0` + image `scale 1.12→1`; transform-only |
 | Learning journey | `LearningMethod` | scroll-drawn connecting line; stages light up at viewport centre and stay lit |
-| Final CTA | `FinalCTA` | calm staggered `Reveal` — no parallax |
+| Final CTA | `FinalCTA` + `FinalCTABackdrop` | "the doorway": scroll-scrubbed dome rising into the band, four hairline arches that draw themselves then breathe, drifting rose-gold light, outlined brand words, gold dust, word-by-word headline with a rose-gold sheen on the last word, button sweep + ripple rings, cursor spotlight (mouse only). Transform/opacity/clip only; each piece stilled under reduced motion (`.kala-cta-*`, `[data-reveal-path]`, `[data-spotlight]` in globals.css) |
 
 Rules that keep it safe: transform/opacity only (GPU, no layout shift — measured CLS
 0.012); one easing curve (`lib/motion.ts`); the pinned section is `sticky`, not

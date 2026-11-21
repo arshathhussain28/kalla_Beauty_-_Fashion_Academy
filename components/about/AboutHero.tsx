@@ -1,12 +1,11 @@
-import type { CSSProperties } from "react";
+"use client";
+
+import { m } from "framer-motion";
 import { ABOUT_HERO } from "@/data/about";
 import { hasPhotos } from "@/data/images";
 import { ImageSlot } from "@/components/ui/ImageSlot";
 import { cn } from "@/lib/utils";
-
-function delay(ms: number) {
-  return { "--kala-delay": `${ms}ms` } as CSSProperties;
-}
+import { EASE_CINEMATIC } from "@/lib/motion";
 
 // The Why KALA cover, deliberately reversed: the arched photograph leads on the left and
 // the three words stack on the right, each one arriving in turn — the brand idea in the
@@ -38,28 +37,47 @@ export function AboutHero() {
             hasPhoto ? "lg:col-span-7 lg:text-right" : "lg:col-span-12"
           )}
         >
-          <p
-            className="kala-rise text-eyebrow font-medium uppercase tracking-[0.24em] text-rose-deep"
-            style={delay(150)}
+          <m.p
+            data-reveal
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.1, ease: EASE_CINEMATIC }}
+            className="flex items-center gap-4 text-eyebrow font-medium uppercase tracking-[0.24em] text-rose-deep lg:justify-end"
           >
             {ABOUT_HERO.eyebrow}
-          </p>
+            <m.span
+              data-reveal
+              aria-hidden="true"
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ duration: 1.1, delay: 0.45, ease: EASE_CINEMATIC }}
+              className="h-px w-12 origin-left bg-rose"
+            />
+          </m.p>
           <h1 className="mt-6 text-[44px] font-display font-semibold leading-[1.02] tracking-[0.01em] text-ink sm:text-[56px] lg:text-display">
             {ABOUT_HERO.words.map((word, index) => (
-              <span key={word} className="kala-rise block" style={delay(350 + index * 220)}>
-                {word}
+              <span key={word} className="block overflow-hidden pb-[0.08em]">
+                <m.span
+                  data-reveal
+                  className="block"
+                  initial={{ y: "110%", opacity: 0 }}
+                  animate={{ y: "0%", opacity: 1 }}
+                  transition={{ duration: 1.1, delay: 0.3 + index * 0.14, ease: EASE_CINEMATIC }}
+                >
+                  {word}
+                </m.span>
               </span>
             ))}
           </h1>
-          <p
-            className={cn(
-              "kala-rise mt-8 max-w-md text-body text-ink-muted",
-              hasPhoto && "lg:ml-auto"
-            )}
-            style={delay(1100)}
+          <m.p
+            data-reveal
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.9, ease: EASE_CINEMATIC }}
+            className={cn("mt-8 max-w-md text-body text-ink-muted", hasPhoto && "lg:ml-auto")}
           >
             {ABOUT_HERO.text}
-          </p>
+          </m.p>
         </div>
       </div>
     </section>

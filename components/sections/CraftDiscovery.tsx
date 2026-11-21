@@ -2,7 +2,6 @@ import { CATEGORY_LABELS, getAllCourses, type Course } from "@/data/courses";
 import { craftSlot } from "@/data/images";
 import { ArrowLink } from "@/components/ui/ArrowLink";
 import { ImageSlot } from "@/components/ui/ImageSlot";
-import { Reveal } from "@/components/ui/Reveal";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { CourseCard } from "@/components/courses/CourseCard";
 import { CraftPinned } from "@/components/sections/CraftPinned";
@@ -41,13 +40,11 @@ export function CraftDiscovery() {
   return (
     <section className="bg-white pt-20 lg:pt-32">
       <div className="mx-auto max-w-[1200px] px-6 lg:px-12">
-        <Reveal>
-          <SectionHeading
-            eyebrow="Find Your Craft"
-            title="What would you like to create?"
-            description="Five advanced, practical programmes — each built around a professional skill."
-          />
-        </Reveal>
+        <SectionHeading
+          eyebrow="Find Your Craft"
+          title="What would you like to create?"
+          description="Five advanced, practical programmes — each built around a professional skill."
+        />
       </div>
 
       <div className="craft-carousel-wrap mt-10 pb-20 lg:hidden">

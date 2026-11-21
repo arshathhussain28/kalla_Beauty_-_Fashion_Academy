@@ -9,6 +9,7 @@ import {
 } from "@/lib/seo";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { MotionProvider } from "@/components/MotionProvider";
+import { SmoothScroll } from "@/components/SmoothScroll";
 import { Navbar } from "@/components/navigation/Navbar";
 import { ScrollProgress } from "@/components/navigation/ScrollProgress";
 import { Footer } from "@/components/Footer";
@@ -67,6 +68,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="flex min-h-full flex-col bg-cream pb-[calc(3.5rem+env(safe-area-inset-bottom))] font-sans text-ink antialiased lg:pb-0">
         <JsonLd data={organizationJsonLd()} />
         <MotionProvider>
+          <SmoothScroll />
           <ScrollProgress />
           <Navbar />
           {children}
