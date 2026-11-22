@@ -1,6 +1,8 @@
 import { createHmac } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
+import { after } from "next/server";
 import { getSiteUrl } from "@/lib/seo";
+import { sendAlert } from "@/lib/alerts";
 import { leadFormSchema } from "@/lib/validation";
 
 // The enquiry form's only server endpoint. It validates, rate-limits, and hands the lead to
@@ -229,8 +231,22 @@ export async function POST(request: NextRequest) {
       console.log("[leads] (dev, no LEADS_WEBHOOK_URL) new enquiry", lead);
       return NextResponse.json({ success: true });
     }
-    console.error("[leads] LEADS_WEBHOOK_URL is not set — enquiry rejected, not stored");
   }
+
+  // A real person tried to enquire and we could not take it. Raise it where someone will see
+  // it, not only in the runtime log. `after()` runs this once the response is on its way, so
+  // the visitor is never kept waiting for a chat webhook. No name or number travels here.
+  after(() =>
+    sendAlert({
+      level: "error",
+      event: delivery === "not_configured" ? "lead.no_destination" : "lead.delivery_failed",
+      message:
+        delivery === "not_configured"
+          ? "An enquiry could not be accepted: LEADS_WEBHOOK_URL is not set, so nothing was stored."
+          : "An enquiry reached the site but could not be delivered to its destination.",
+      context: { leadId: lead.id, source: lead.source ?? "unknown" },
+    })
+  );
 
   // Not configured (production) or the destination failed: say so. The visitor is pointed to
   // WhatsApp / phone, and the form never shows "Thank you" for a lead nobody received.
