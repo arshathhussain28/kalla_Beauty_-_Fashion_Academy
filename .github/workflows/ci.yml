@@ -33,3 +33,58 @@ jobs:
       - run: npm run build
         env:
           NEXT_TELEMETRY_DISABLED: "1"
+
+      # Next freezes headers() into the build output, so a build made with the test-only
+      # E2E_HTTP flag would silently ship without HSTS or upgrade-insecure-requests. This job
+      # builds without that flag, so it is the right place to assert they survived.
+      - name: Verify production security headers
+        run: npm run check:headers
+
+  test:
+    name: Browser tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+
+      # Browser binaries are large and change only when Playwright is upgraded, so they are
+      # cached against the installed version rather than downloaded on every run.
+      - name: Resolve Playwright version
+        id: pw
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v4
+        id: pw-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}
+
+      - name: Install browsers
+        if: steps.pw-cache.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium firefox webkit
+
+      # A cache hit still needs the OS-level libraries the browsers link against.
+      - name: Install browser system dependencies
+        if: steps.pw-cache.outputs.cache-hit == 'true'
+        run: npx playwright install-deps chromium firefox webkit
+
+      # Playwright builds and starts the production server itself (see playwright.config.ts).
+      - name: Run tests
+        run: npm test
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+          CI: "true"
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14

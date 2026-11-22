@@ -19,7 +19,12 @@ const contentSecurityPolicy = [
   "base-uri 'self'",
   "form-action 'self'",
   "frame-ancestors 'none'",
-  "upgrade-insecure-requests",
+  // Dropped only for the browser-test harness (E2E_HTTP=1, see playwright.config.ts): it tells
+  // the browser to fetch every subresource over https. Chromium exempts loopback origins, WebKit
+  // does not — so over a plain `next start` every stylesheet, script and font fails with an SSL
+  // error and the page renders unstyled, which looks like a catastrophic Safari bug that is not
+  // real. Production always keeps it; Vercel serves https regardless.
+  ...(process.env.E2E_HTTP === "1" ? [] : ["upgrade-insecure-requests"]),
 ].join("; ");
 
 // Baseline security headers.
@@ -34,10 +39,15 @@ const securityHeaders = [
     key: "Permissions-Policy",
     value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
   },
-  {
-    key: "Strict-Transport-Security",
-    value: "max-age=63072000; includeSubDomains; preload",
-  },
+  // Omitted for the same reason, under the same test-only flag.
+  ...(process.env.E2E_HTTP === "1"
+    ? []
+    : [
+        {
+          key: "Strict-Transport-Security",
+          value: "max-age=63072000; includeSubDomains; preload",
+        },
+      ]),
 ];
 
 const nextConfig: NextConfig = {
