@@ -33,31 +33,57 @@ actually accepted the lead. If delivery fails, they see the WhatsApp and phone f
 instead. There is a test for this (`tests/enquiry.spec.ts`) because the site shipped the
 opposite behaviour once.
 
-**Setting up a destination (about 15 minutes, free):**
+### Choose a destination
+
+Two options. Both are free; pick on security vs. setup effort.
+
+| | **A — Automation tool** (Make / Zapier / n8n) | **B — Google Sheet** (Apps Script) |
+|---|---|---|
+| Extra account | yes, one | no, just Google |
+| Signature check | **yes** — the HMAC is verifiable | **no** — a URL token instead (see below) |
+| Setup | ~15 min | ~10 min |
+| Recommended for | launch | getting started today |
+
+**Option A — automation tool (recommended)**
 1. In Make, Zapier or n8n, create a scenario starting with a **Custom webhook**.
 2. Add two steps: append a row to a Google Sheet, and send a WhatsApp or email alert to
    whoever handles admissions.
-3. Copy the webhook URL into `LEADS_WEBHOOK_URL` in Vercel and redeploy.
-4. Submit one real test enquiry and confirm the row appears.
+3. Verify the HMAC (below) and reject anything older than a few minutes.
+4. Put the webhook URL in `LEADS_WEBHOOK_URL` and a long random string in
+   `LEADS_WEBHOOK_SECRET` in Vercel, then redeploy.
 
-**What the receiver gets:**
+**Option B — Google Sheet, no extra account**
+1. Create a Google Sheet → **Extensions → Apps Script**.
+2. Paste `docs/lead-receiver.gs` over the default file.
+3. **Project Settings → Script properties**, add `LEAD_TOKEN` (a long random string) and,
+   optionally, `NOTIFY_EMAIL`.
+4. **Deploy → New deployment → Web app**; execute as *Me*, access *Anyone*. Copy the `/exec` URL.
+5. In Vercel set:
+   - `LEADS_WEBHOOK_URL` = that URL **with `?token=<your LEAD_TOKEN>` appended**
+   - `LEADS_WEBHOOK_ACCEPTS_REDIRECT` = `1`
+   - `LEADS_WEBHOOK_SECRET` = a long random string (sent, but unverifiable here — see below)
+6. Redeploy.
 
+> **Why Option B needs that extra flag, and why it is weaker.** An Apps Script web app cannot
+> read request headers, so the `X-KALA-Signature` HMAC is invisible to it — the shared token in
+> the URL is the check instead. Anyone who learns that URL could post a fake enquiry (they could
+> not read your sheet). Apps Script also answers every POST with a 302 *after* the script has
+> run and stored the lead; without `LEADS_WEBHOOK_ACCEPTS_REDIRECT=1` the site treats that as a
+> failure and shows the visitor the WhatsApp fallback even though the row arrived. Leave that
+> flag unset for every other receiver, where a redirect really does mean a wrong URL.
+
+### Prove it works before you rely on it
+
+```bash
+npm run verify:leads -- "<your webhook url>" "<your secret>"
 ```
-POST  Content-Type: application/json
-X-KALA-Event: lead.created
-X-KALA-Lead-Id: <uuid>
-X-KALA-Timestamp: <unix seconds>
-X-KALA-Signature: sha256=<hex HMAC of "<timestamp>.<raw body>">   // when the secret is set
 
-{ id, interest, goal, name, phone, preferredContactTime?, source?,
-  campaign?, courseSlug?, createdAt, status: "new" }
-```
+It sends one clearly-marked test enquiry exactly as the site would — same payload, headers,
+signature, 8-second timeout and redirect handling — then tells you what came back and what to
+do about it. Check the row arrived, then delete the test row.
 
-Verify the signature and reject anything older than a few minutes.
+Afterwards, submit one real enquiry through the live form as a final check.
 
-> **Google Apps Script note:** an Apps Script web app answers a POST with a 302 redirect. The
-> route uses `redirect: "error"` on purpose, so the lead would be saved *and* the visitor told
-> it failed. Use Make/Zapier/n8n, or change the redirect handling first.
 
 ---
 

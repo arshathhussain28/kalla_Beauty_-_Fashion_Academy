@@ -129,15 +129,40 @@ async function deliverLead(lead: Lead): Promise<Delivery> {
   }
 
   try {
+    // `manual`, so a redirect is reported rather than silently followed: following one would
+    // re-send the lead — name, phone and signature — to a host the owner never configured.
     const response = await fetch(target, {
       method: "POST",
       headers,
       body,
       cache: "no-store",
-      redirect: "error",
+      redirect: "manual",
       signal: AbortSignal.timeout(WEBHOOK_TIMEOUT_MS),
     });
+
     if (response.ok) return "delivered";
+
+    // Some receivers answer a POST with a redirect *after* they have already stored the lead.
+    // Google Apps Script is the common one: it always 302s to script.googleusercontent.com,
+    // and the script body has run by then. Treating that as failure made the cheapest
+    // destination (a Google Sheet, no third-party account) unusable.
+    //
+    // This is opt-in, because for any other receiver a redirect usually means a stale or
+    // mistyped URL, and silently calling that "delivered" would lose enquiries. The owner sets
+    // LEADS_WEBHOOK_ACCEPTS_REDIRECT=1 only when they know their receiver behaves this way.
+    const isRedirect = response.status >= 300 && response.status < 400;
+    if (isRedirect && process.env.LEADS_WEBHOOK_ACCEPTS_REDIRECT === "1") {
+      return "delivered";
+    }
+    if (isRedirect) {
+      console.error(
+        `[leads] webhook redirected (${response.status}) for lead ${lead.id} — if the receiver ` +
+          "stores the lead before redirecting (e.g. Google Apps Script), set " +
+          "LEADS_WEBHOOK_ACCEPTS_REDIRECT=1; otherwise the URL is probably wrong"
+      );
+      return "failed";
+    }
+
     console.error(`[leads] webhook answered ${response.status} for lead ${lead.id}`);
     return "failed";
   } catch (error) {
